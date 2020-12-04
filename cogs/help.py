@@ -1,4 +1,4 @@
-import os
+import os #todo finish adding all commands. should i add owner? probably not
 import sys
 import discord
 import config
