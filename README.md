@@ -1,5 +1,5 @@
 # HimejiBot
--<a href="https://github.com/Yat-o/HimejiBot"><img src="https://cdn.myanimelist.net/r/250x350/images/clubs/8/163534.jpg?s=9ec45fdd4232591c01f3c4009caf55e9" alt="HimejiBot"></a>
+<a href="https://github.com/Yat-o/HimejiBot"><img src="https://cdn.myanimelist.net/r/250x350/images/clubs/8/163534.jpg?s=9ec45fdd4232591c01f3c4009caf55e9" alt="HimejiBot"></a>
 
 - Invite [Here](https://discordapp.com/oauth2/authorize?&client_id=784474257832804372&scope=bot&permissions=8)
 
