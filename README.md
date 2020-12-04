@@ -14,7 +14,7 @@
 - Add Leveling System
 - Currency System
 - Perhaps Custom Reactions(regex based)
-- Make this README look cool :c
+- Make this README look cool :c ✅
 
 # Sources
 - [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval Command)
