@@ -11,3 +11,9 @@
 - Add Leveling System
 - Currency System
 - Perhaps Custom Reactions(regex based)
+
+# Sources
+- RoboDanny(Eval Command)
+- RedBot(PR Template)
+- @6days9weeks(Fun Cog)
+- The rest is me and exerts from bots I've wrote in the path.
