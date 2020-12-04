@@ -4,5 +4,5 @@ APPLICATION_ID = ""
 OWNERS = ['']
 BLACKLIST = []
 STARTUP_COGS = [
-    "cogs.general", "cogs.jishaku", "cogs.help", "cogs.moderation", "cogs.owner",
+    "cogs.general", "cogs.jishaku", "cogs.help", "cogs.moderation", "cogs.owner", "cogs.errrorhandler",
 ]
