@@ -1,0 +1,2 @@
+- Discord.py(pip install discord.py)
+- Jishaku(pip install jishaku)
