@@ -33,7 +33,7 @@ intents.invites = True
 intents.voice_states = False
 intents.webhooks = False
 	
-bot = Bot(command_prefix=config.BOT_PREFIX, intents=intents)
+bot = Bot(command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents)
 
 # The code in this even is executed when the bot is ready
 @bot.event
@@ -111,5 +111,5 @@ async def on_command_error(context, error):
 		await context.send(embed=embed)
 	raise error
 
-#todo idk. finish up some more code
+#todo idk. finish up some more code. perhaps add an eval
 bot.run(config.TOKEN)
