@@ -1,2 +1,2 @@
 # HimejiBot
-Nothing For Now :|
+Idk Anymore 

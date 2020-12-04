@@ -1,4 +1,4 @@
-import discord
+import discord #TODO - Add some more stuff/commands
 
 from discord.ext import commands
 
