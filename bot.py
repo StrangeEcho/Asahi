@@ -3,8 +3,10 @@ import platform
 import sys
 import asyncio
 import discord
+import traceback
+import inspect
+import textwrap
 
-from discord.ext.commands import Bot
 from discord.ext import commands
 
 if not os.path.isfile("config.py"):
@@ -33,7 +35,7 @@ intents.invites = True
 intents.voice_states = False
 intents.webhooks = False
 	
-bot = Bot(command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents)
 
 #bot ready stuff
 @bot.event
@@ -111,5 +113,105 @@ async def on_command_error(context, error):
 		await context.send(embed=embed)
 	raise error
 
+<<<<<<< Updated upstream
 #todo idk. finish up some more code. perhaps add an eval
 bot.run(config.TOKEN)
+=======
+def randomcheck():
+    return ctx.author.id == 284102119408140289
+
+@bot.command(name='eval') #Borrowed eval command. -R.Danny
+@commands.check(randomcheck)
+async def _eval(ctx, *, body): 
+    env = {
+        'ctx': ctx,
+        'bot': bot,
+        'channel': ctx.channel,
+        'author': ctx.author,
+        'guild': ctx.guild,
+        'message': ctx.message,
+        'source': inspect.getsource
+    }
+
+    def cleanup_code(content):
+        """Automatically removes code blocks from the code."""
+        # remove ```py\n```
+        if content.startswith('```') and content.endswith('```'):
+            return '\n'.join(content.split('\n')[1:-1])
+
+        # remove `foo`
+        return content.strip('` \n')
+
+    def get_syntax_error(e):
+        if e.text is None:
+            return f'```py\n{e.__class__.__name__}: {e}\n```'
+        return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
+
+    env.update(globals())
+
+    body = cleanup_code(body)
+    stdout = io.StringIO()
+    err = out = None
+
+    to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
+
+    def paginate(text: str):
+        '''Simple generator that paginates text.'''
+        last = 0
+        pages = []
+        for curr in range(0, len(text)):
+            if curr % 1980 == 0:
+                pages.append(text[last:curr])
+                last = curr
+                appd_index = curr
+        if appd_index != len(text) - 1:
+            pages.append(text[last:curr])
+        return list(filter(lambda a: a != '', pages))
+
+    try:
+        exec(to_compile, env)
+    except Exception as e:
+        err = await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+        return await ctx.message.add_reaction('\u2049')
+
+    func = env['func']
+    try:
+        with redirect_stdout(stdout):
+            ret = await func()
+    except Exception as e:
+        value = stdout.getvalue()
+        err = await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+    else:
+        value = stdout.getvalue()
+        if ret is None:
+            if value:
+                try:
+
+                    out = await ctx.send(f'```py\n{value}\n```')
+                except:
+                    paginated_text = paginate(value)
+                    for page in paginated_text:
+                        if page == paginated_text[-1]:
+                            out = await ctx.send(f'```py\n{page}\n```')
+                            break
+                        await ctx.send(f'```py\n{page}\n```')
+        else:
+            try:
+                out = await ctx.send(f'```py\n{value}{ret}\n```')
+            except:
+                paginated_text = paginate(f"{value}{ret}")
+                for page in paginated_text:
+                    if page == paginated_text[-1]:
+                        out = await ctx.send(f'```py\n{page}\n```')
+                        break
+                    await ctx.send(f'```py\n{page}\n```')
+
+    if out:
+        await ctx.message.add_reaction('\u2705')  # tick
+    elif err:
+        await ctx.message.add_reaction('\u2049')  # x
+    else:
+        await ctx.message.add_reaction('\u2705')
+
+bot.run(config.TOKEN)
+>>>>>>> Stashed changes
