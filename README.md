@@ -20,4 +20,4 @@
 - [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval Command)
 - [RedBot](https://github.com/Cog-Creators/Red-DiscordBot)(PR Template)
 - [@6days9weeks](https://www.github.com/6days9weeks/)(Fun Cog)
-- The rest is me and exerts from bots I've wrote in the path.
+- The rest is me and exerts from bots I've wrote in the past.
