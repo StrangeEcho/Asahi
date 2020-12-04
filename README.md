@@ -6,11 +6,14 @@
 
 - If you find any issues within the code please submit a issue via this Repo's [Issue Page](https://github.com/Yat-o/HimejiBot/issues)
 
+- HimejiBot Uses Python Version [3.8.6](https://www.python.org/downloads/release/python-386/)
+
 # TODO
 - C&C Cogs and perhaps bot.py
 - Add Leveling System
 - Currency System
 - Perhaps Custom Reactions(regex based)
+- Make this README look cool :c
 
 # Sources
 - RoboDanny(Eval Command)
