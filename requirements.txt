@@ -1,2 +1,3 @@
 - Discord.py(pip install discord.py)
 - Jishaku(pip install jishaku)
+- nekos.py(pip install nekos.py)
