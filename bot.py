@@ -6,8 +6,10 @@ import discord
 import traceback
 import inspect
 import textwrap
+import contextlib
 
 from discord.ext import commands
+from contextlib import redirect_stdout
 
 if not os.path.isfile("config.py"):
 	sys.exit("'config.py' not found! Please add it and try again.")
@@ -37,7 +39,7 @@ intents.webhooks = False
 	
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents)
 
-#bot ready stuff
+# The code in this even is executed when the bot is ready
 @bot.event
 async def on_ready():
 	bot.loop.create_task(status_task())
@@ -113,10 +115,6 @@ async def on_command_error(context, error):
 		await context.send(embed=embed)
 	raise error
 
-<<<<<<< Updated upstream
-#todo idk. finish up some more code. perhaps add an eval
-bot.run(config.TOKEN)
-=======
 def randomcheck():
     return ctx.author.id == 284102119408140289
 
@@ -214,4 +212,3 @@ async def _eval(ctx, *, body):
         await ctx.message.add_reaction('\u2705')
 
 bot.run(config.TOKEN)
->>>>>>> Stashed changes
