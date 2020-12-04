@@ -2,11 +2,11 @@
 
 - Invite [Here](https://discordapp.com/oauth2/authorize?&client_id=784474257832804372&scope=bot&permissions=8)
 
-- Himeji is a discord bot that I am currently developing. Writen in [Discord.py](https://discordpy.readthedocs.io/en/latest/#)
+- Himeji is a discord bot that I am currently developing. Hoping to make it big one day.
 
 - If you find any issues within the code please submit a issue via this Repo's [Issue Page](https://github.com/Yat-o/HimejiBot/issues)
 
-- HimejiBot Uses Python Version [3.8.6](https://www.python.org/downloads/release/python-386/)
+- HimejiBot Uses Python Version [3.8.6](https://www.python.org/downloads/release/python-386/) and [Discord.py](https://discordpy.readthedocs.io/en/latest/#)
 
 # TODO
 - C&C Cogs and perhaps bot.py
