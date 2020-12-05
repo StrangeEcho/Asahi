@@ -1,6 +1,8 @@
-import discord #TODO - Add some more stuff/commands
+import os #needs rewriting/ugly coding
+import discord
 
 from discord.ext import commands
+
 
 class moderation(commands.Cog, name="moderation"):
     def __init__(self, bot):
