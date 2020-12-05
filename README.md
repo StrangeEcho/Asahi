@@ -14,7 +14,8 @@
 - Add Leveling System
 - Currency System
 - Perhaps Custom Reactions(regex based)
-- Make this README look cool :c ✅
+- Rewrite Error Handler
+
 
 # Sources
 - [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval Command)
