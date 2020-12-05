@@ -31,7 +31,7 @@ class OnEdit(commands.Cog):
             timeout = 0
         await self.config.timeout.set(timeout)
         self.timeout = timeout
-        await ctx.message.add_reaction("<:checkmark:779670688114016256>")
+        await ctx.message.add_reaction("<a:ticky:739397443325526056>")
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
