@@ -8,7 +8,7 @@ class moderation(commands.Cog, name="moderation"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.comamnd(brief = 'Kicks a member', aliases = ['k', 'boot'])
+    @commands.command(brief = 'Kicks a member', aliases = ['k', 'boot'])
     @commands.has_permissions(kick_members = True)
     async def kick(self, ctx, member : discord.Member, *, reason=None):
         await member.kick(reason=reason)
