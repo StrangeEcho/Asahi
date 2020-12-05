@@ -75,6 +75,27 @@ if __name__ == "__main__":
 			extension = extension.replace("cogs.", "")
 			print(f"Failed to load extension {extension}\n{exception}")
 
+@bot.command(brief = 'Loads cogs')
+@commands.is_owner()
+async def load(ctx, extension):
+    bot.load_extension(f'cogs.{extension}')
+    embed = discord.Embed(
+        title="Cog Loaded!",
+        description=f"Cog: {extension}",
+        color=0x000000
+    )
+    await ctx.send(embed=embed)
+
+@bot.command(brief = 'Unloads Cogs')
+@commands.is_owner()
+async def unload(ctx, extension):
+    bot.unload_extension(f'cogs.{extension}')
+    embed = discord.Embed(
+        title="Cog Unloaded!",
+        description=f"Cog: {extension}",
+        color=0x0000000
+    )
+    await ctx.send(embed=embed)
 
 @bot.event
 async def on_message(message):
