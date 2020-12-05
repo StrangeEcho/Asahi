@@ -31,7 +31,7 @@ class moderation(commands.Cog, name="moderation"):
 
     @commands.command(brief = 'Ban People', aliases = ['b'])
     @commands.has_permissions(ban_members = True)
-    async def ban(self, ctx, member : discord.Member, *, reason=reason):
+    async def ban(self, ctx, member : discord.Member, *, reason=None):
         embed = discord.Member(
             description=f"Banned {member.mention} for {reason} from {ctx.guild} ",
             color=0x000000

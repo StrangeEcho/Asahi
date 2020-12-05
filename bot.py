@@ -39,7 +39,7 @@ intents.webhooks = False
 	
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents)
 
-# The code in this even is executed when the bot is ready
+# The code in this event is executed when the bot is ready
 @bot.event
 async def on_ready():
 	bot.loop.create_task(status_task())
