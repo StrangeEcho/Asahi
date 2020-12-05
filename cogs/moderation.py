@@ -20,7 +20,7 @@ class moderation(commands.Cog, name="moderation"):
         await member.send(f'You were kicked from {context.guild} for {reason}.')
 
     @commands.command(brief = 'Nickname a member', aliaes = ['nickname'])
-    @comamnds.has_permissions(manage_nicknames = True)
+    @commands.has_permissions(manage_nicknames = True)
     async def nick(self, ctx, member : discord.Member, name : str):
         embed = discord.Embed(
             description=f"Changed {member.mention}'s Nickname to {name}",
