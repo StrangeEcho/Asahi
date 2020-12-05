@@ -8,7 +8,7 @@ class OnEdit(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.timeout = 30
+        self.timeout = 60
 
     async def edit_process_commands(self, message: discord.Message):
         """Same as Airi's method (Airi.process_commands), but dont dispatch message_without_command."""
