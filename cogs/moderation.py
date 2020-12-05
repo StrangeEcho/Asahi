@@ -30,7 +30,7 @@ class moderation(commands.Cog, name="moderation"):
         await member.change_nickname(name)
 
     @commands.command(brief = 'Ban People', aliases = ['b'])
-    @commands.has_permissions(ban_member = True)
+    @commands.has_permissions(ban_members = True)
     async def ban(self, ctx, member : discord.Member, *, reason=reason):
         embed = discord.Member(
             description=f"Banned {member.mention} for {reason} from {ctx.guild} ",
@@ -40,7 +40,7 @@ class moderation(commands.Cog, name="moderation"):
         await member.send(f'You were banned from {ctx.guild} for {reason}')
 
     @commands.command()
-    @commands.has_permissions(kick_member = True)
+    @commands.has_permissions(kick_members = True)
     async def warn(self, ctx, member : discord.Member, *, reason=None):
         embed = discord.Embed(
             description=f"{member.mention} has been warned by {ctx.author.mention}",
@@ -54,6 +54,7 @@ class moderation(commands.Cog, name="moderation"):
         await ctx.send(embed=embed)
 
     @commands.command(brief = 'clears messages', alises = ['prune', 'clear'])
+    @commands.has_permissions(manage_messages = True)
     async def purge(self, ctx, *, amount = None):
         embed = discord.Embed(
             description=f"Cleared {amount} of messages",
