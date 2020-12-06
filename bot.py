@@ -136,11 +136,10 @@ async def on_command_error(context, error):
 		await context.send(embed=embed)
 	raise error
 
-def randomcheck():
-    return ctx.author.id == 284102119408140289
+
 
 @bot.command(name='eval') #Borrowed eval command. -R.Danny
-@commands.check(randomcheck)
+@commands.is_owner()
 async def _eval(ctx, *, body): 
     env = {
         'ctx': ctx,
