@@ -7,6 +7,7 @@ import traceback
 import inspect
 import textwrap
 import contextlib
+import io
 
 from discord.ext import commands
 from contextlib import redirect_stdout
@@ -123,19 +124,6 @@ async def on_command_completion(ctx):
 	split = fullCommandName.split(" ")
 	executedCommand = str(split[0])
 	print(f"Executed {executedCommand} command in {ctx.guild.name} by {ctx.message.author} (ID: {ctx.message.author.id})")
-
-# error stuff
-@bot.event
-async def on_command_error(context, error):
-	if isinstance(error, commands.CommandOnCooldown):
-		embed = discord.Embed(
-			title="Error!",
-			description="This command is on a %.2fs cooldown" % error.retry_after,
-			color=0x00FF00
-		)
-		await context.send(embed=embed)
-	raise error
-
 
 
 @bot.command(name='eval') #Borrowed eval command. -R.Danny

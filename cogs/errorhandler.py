@@ -66,7 +66,7 @@ class ErrorHandler(commands.Cog):
                                    description=f'ID: {ctx.message.id}\n[Jump]({ctx.message.jump_url})\n\
                                                 {traceback_text}')
 
-            await errchannel.send(embed=embed)
+            await channel.send(embed=embed)
             lines = traceback.format_exception(etype, error, trace, 1)
             traceback_text = f'```py\n{"".join(lines)}\n```'.replace(
                 'rajsharma', 'dev').replace('pinboard', 'HimejiBot')
