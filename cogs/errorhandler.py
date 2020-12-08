@@ -1,77 +1,136 @@
- 
-import sys 
-import traceback
-import discord
+import logging
 
+import discord
 from discord.ext import commands
+
+log = logging.getLogger(__name__)
 
 
 class ErrorHandler(commands.Cog):
+    """Handler for discord.py errors."""
+
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(ctx.channel, discord.DMChannel):
-            return
-
-        if hasattr(ctx.command, 'on_error'):
-            return
-
-        ignored = (commands.CommandNotFound,)
-        error = getattr(error, 'original', error)
-
-        if isinstance(error, ignored):
+    async def on_command_error(
+        self,
+        ctx: commands.Context,
+        error: commands.CommandError
+    ):
+        """Handle errors caused by commands."""
+        # Skips errors that were already handled locally.
+        if getattr(ctx, 'handled', False):
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            try:
-                await ctx.author.send(f'{ctx.command} cannot be used in Private Messages. Please use it in your guild.')
-            except discord.HTTPException:
-                pass
-
-        elif isinstance(error, commands.BadArgument):
-            await ctx.send('\n'.join(error.args))
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`Command Can Not Be Used In Direct Messages`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
 
         elif isinstance(error, commands.TooManyArguments):
-            await ctx.send('\n'.join(error.args))
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`Passed In Too Many Arguments`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
+
+        elif isinstance(error, commands.NSFWChannelRequired):
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`This Channel Is Not NSFW`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
+        
+        elif isinstance(error, discord.Forbidden):
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`Discord Is Restricting Command Execution`',
+                color=0xFF0000
+            )
+            embed.add_field(
+                name='Possiblities',
+                value='`You Are Trying To Use This Command On Someone Who Is Higher Than Either The Bot Or You`',
+                inline=True
+            )
+            await ctx.send(embed=embed)
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send('\n'.join(error.args))
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`Missing Required Argument:`\n`{error.param.name}`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
 
-        elif isinstance(error, commands.CheckFailure):
-            if 'The check functions for command' in error.args[0]:
-                return
-            await ctx.send('\n'.join(error.args))
+        elif (
+            isinstance(error, commands.NotOwner)
+            or isinstance(error, commands.MissingPermissions)
+        ):
+            embed = discord.Embed(
+                title='Oops',
+                description='Command Failed To Execute. Reason:\n`Missing Permissions`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
 
-        elif isinstance(error, discord.Forbidden):
-            await ctx.send('\n'.join(error.args))
+        elif (
+            isinstance(error, commands.CommandOnCooldown)
+            or isinstance(error, commands.CheckFailure)
+        ):
+            embed = discord.Embed(
+                title='Oops',
+                description='Command Failed To Execute. Reason\n```{error}```',
+                color=0xFF0000
+            ) 
+            await ctx.send(embed=embed)
 
-        else:
-            print('Ignoring exception in command {}:'.format(
-                ctx.command), file=sys.stderr)
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr)
+        elif isinstance(error, commands.DisabledCommand): #SoonTM
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`Command Is Disabled`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
 
-            errchannel = self.bot.get_channel(748962623487344753)
+        elif isinstance(error, commands.BadArgument):
+            embed = discord.Embed(
+                title='Oops!',
+                description=f'Command Failed To Execute. Reason:\n`Bad Argument`\n```{error}```',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
 
-            etype = type(error)
-            trace = error.__traceback__
-            verbosity = 2
-            lines = traceback.format_exception(etype, error, trace, verbosity)
-            traceback_text = f'```py\n{"".join(lines)}\n```'.replace(
-                'rajsharma', 'dev').replace('pinboard', 'stellar')
+        elif isinstance(error, commands.BotMissingPermissions):
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`Bot Is Missing Permissions`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
+            log.error(
+                f'{ctx.command.qualified_name} cannot be executed because the '
+                f'bot is missing the following permissions: '
+                f'{", ".join(error.list)}'
+            )
 
-            embed = discord.Embed(title=f'Error during `{ctx.command.qualified_name}`',
-                                   description=f'ID: {ctx.message.id}\n[Jump]({ctx.message.jump_url})\n\
-                                                {traceback_text}')
+        elif isinstance(error, commands.CommandInvokeError):
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`INTERNAL ERROR`',
+                color=0xFF0000 
+            )
+            embed.set_footer(text='Please Contact Tylerr#6979 For Help')
+            await ctx.send(embed=embed)
+            log.error(
+                f'{ctx.command.qualified_name} failed to execute. ',
+                exc_info=error.original
+            )
 
-            await channel.send(embed=embed)
-            lines = traceback.format_exception(etype, error, trace, 1)
-            traceback_text = f'```py\n{"".join(lines)}\n```'.replace(
-                'rajsharma', 'dev').replace('pinboard', 'HimejiBot')
-            embed.description = f'ID: {ctx.message.id}\n[Jump]({ctx.message.jump_url})\n{traceback_text}'
-            await ctx.send(embed=embed) 
-            
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
