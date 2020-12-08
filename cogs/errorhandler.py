@@ -63,7 +63,7 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             embed = discord.Embed(
                 title='Oops!',
-                description='Command Failed To Execute. Reason:\n`Missing Required Argument:`\n`{error.param.name}`',
+                description=f'Command Failed To Execute. Reason:\n`Missing Required Argument:`\n`{error.param.name}`',
                 color=0xFF0000
             )
             await ctx.send(embed=embed)
