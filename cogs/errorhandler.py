@@ -46,6 +46,14 @@ class ErrorHandler(commands.Cog):
                 color=0xFF0000
             )
             await ctx.send(embed=embed)
+
+        elif isinstance(error, commands.CommandNotFound):
+            embed = discord.Embed(
+                title='Oops!',
+                description='Command Failed To Execute. Reason:\n`Not Found`',
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
         
         elif isinstance(error, discord.Forbidden):
             embed = discord.Embed(
