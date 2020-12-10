@@ -33,7 +33,7 @@ class ActionReason(commands.Converter):
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.config = default.config()
+        
 
     @commands.command()
     @commands.guild_only()
