@@ -1,4 +1,4 @@
-- Borrowed From RedBot
+
 ### Type:
 
 - [ ] Bugfix
