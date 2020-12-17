@@ -50,8 +50,8 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.CommandNotFound):
             embed = discord.Embed(
                 title='Oops!',
-                description='Command Failed To Execute. Reason:\n`Not Found`',
-                color=0xFF0000
+                description='Command Failed To Execute. Reason:\n`Not Found`', #Todo - Possibly remove this
+                color=0xFF0000                                                 #Because its kinda annoying ngl
             )
             await ctx.send(embed=embed)
         
