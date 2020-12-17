@@ -109,7 +109,7 @@ async def on_message(message):
 			await bot.process_commands(message)
 		else:
 			# Let em know hes blacklisted
-			context = await bot.get_context(message)
+			context = await bot.get_context(message) #this is dumb. this needs to be fixed. 
 			embed = discord.Embed(
 				title="Looks like you are blacklisted buddy. RIP :c",
 				description="Ask the Tylerr#6979 to remove you from the list if you think it's not normal.",
@@ -123,7 +123,7 @@ async def on_command_completion(ctx):
 	fullCommandName = ctx.command.qualified_name
 	split = fullCommandName.split(" ")
 	executedCommand = str(split[0])
-	print(f"Executed {executedCommand} command in {ctx.guild.name} by {ctx.message.author} (ID: {ctx.message.author.id})")
+	print(f"Command *{executedCommand}* was executed in {ctx.guild.name}\nUser: {ctx.message.author} (ID: {ctx.message.author.id})")
 
 
 @bot.command(name='eval') #Borrowed eval command. -R.Danny

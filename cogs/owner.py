@@ -57,8 +57,8 @@ class owner(commands.Cog, name="owner"):
             )
             await context.send(embed=embed)
 
-    @commands.group(name="blacklist")
-    async def blacklist(self, context):
+    @commands.group(name="blacklist") 
+    async def blacklist(self, context): 
         if context.invoked_subcommand is None:
             embed = discord.Embed(
                 title=f"There are currently {len(config.BLACKLIST)} blacklisted IDs",
