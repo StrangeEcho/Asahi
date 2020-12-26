@@ -64,6 +64,16 @@ async def status_task():
 
 # Remove gross gey dpy help command
 bot.remove_command("help")
+
+
+class HimejiHelpCommand(commands.MinimalHelpCommand):
+    async def send_pages(self):
+        destination = self.get_destination()
+        for page in self.paginator.pages:
+            embed = discord.Embed(description=page, color=0xff00ff)
+            await destination.send(embed=embed)
+bot.help_command = HimejiHelpCommand()
+
 #cog stuff
 if __name__ == "__main__":
 	for extension in config.STARTUP_COGS:
