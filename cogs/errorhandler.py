@@ -23,6 +23,11 @@ class ErrorHandler(commands.Cog):
         if getattr(ctx, 'handled', False):
             return
 
+        ignored = (commands.CommandNotFound)
+
+        if isinstance(error, ignored):
+            return
+
         if isinstance(error, commands.NoPrivateMessage):
             embed = discord.Embed(
                 title='Oops!',
@@ -30,7 +35,8 @@ class ErrorHandler(commands.Cog):
                 color=0xFF0000
             )
             await ctx.send(embed=embed)
-
+		
+        
         elif isinstance(error, commands.TooManyArguments):
             embed = discord.Embed(
                 title='Oops!',
@@ -42,16 +48,8 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.NSFWChannelRequired):
             embed = discord.Embed(
                 title='Oops!',
-                description='Command Failed To Execute. Reason:\n`This Channel Is Not NSFW`',
+                description=f'Command Failed To Execute. Reason:\n`{ctx.channel} Is Not NSFW`',
                 color=0xFF0000
-            )
-            await ctx.send(embed=embed)
-
-        elif isinstance(error, commands.CommandNotFound):
-            embed = discord.Embed(
-                title='Oops!',
-                description='Command Failed To Execute. Reason:\n`Not Found`', #Todo - Possibly remove this
-                color=0xFF0000                                                 #Because its kinda annoying ngl
             )
             await ctx.send(embed=embed)
         
@@ -60,11 +58,6 @@ class ErrorHandler(commands.Cog):
                 title='Oops!',
                 description='Command Failed To Execute. Reason:\n`Discord Is Restricting Command Execution`',
                 color=0xFF0000
-            )
-            embed.add_field(
-                name='Possiblities',
-                value='`You Are Trying To Use This Command On Someone Who Is Higher Than Either The Bot Or You`',
-                inline=True
             )
             await ctx.send(embed=embed)
 
@@ -114,6 +107,20 @@ class ErrorHandler(commands.Cog):
             )
             await ctx.send(embed=embed)
 
+        elif isinstance(error, discord.HTTPException):
+            embed = discord.Embed(
+                title='Oops!',
+                description='Commands Failed To Execute. Reason:\n`A HTTP EXCEPTION WAS THROWN`',
+                color=0xFF0000
+            )
+            embed.add_field(
+                name='Action Command Failure?',
+                value='If the command used was a Action command, there is a high chance that the API Request failed.',
+                inline=True
+            )
+            embed.set_footer(text='Please Contact #Tylerr#6979 For Help.')
+            await ctx.send(embed=embed)
+            
         elif isinstance(error, commands.BotMissingPermissions):
             embed = discord.Embed(
                 title='Oops!',
