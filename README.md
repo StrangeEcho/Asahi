@@ -11,16 +11,19 @@
 
 # TODO
 - C&C Cogs and perhaps bot.py
-- Add Leveling System
-- Currency System
+- Add Leveling System(Im not too sure about this tbh)
+- Currency System(meh)
 - Perhaps Custom Reactions(regex based)
 - Rewrite Error Handler
 
 
+# NOTES
+- Ive removed Fun commands using nekos.py. However, we will continue to use nekos.py for other commands. More than likely those commands will be NSFW
+
 # Sources
 - [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval Command)
 - [RedBot](https://github.com/Cog-Creators/Red-DiscordBot)(PR Template)
-- [@6days9weeks](https://www.github.com/6days9weeks/)(Fun Cog)
+- [@6days9weeks](https://www.github.com/6days9weeks/)(Help With The Fun Cog)
 - [@MarkKoz](https://github.com/MarkKoz)(Base Error Handler)
 - [@AlexFlipnote](https://github.com/AlexFlipnote)(Command Logic/Moderation Cog)
 - The rest is me and excerpts from bots I've wrote in the past.

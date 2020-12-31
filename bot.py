@@ -13,7 +13,7 @@ from discord.ext import commands
 from contextlib import redirect_stdout
 
 if not os.path.isfile("config.py"):
-	sys.exit("'config.py' not found! Please add it and try again.")
+	sys.exit("config.py' not found! Please add it and try again.")
 else:
 	import config
 
@@ -53,7 +53,7 @@ async def on_ready():
 #game status stuff
 async def status_task():
 	while True:
-		await bot.change_presence(activity=discord.Game("with you:D"))
+		await bot.change_presence(activity=discord.Game("with you :D"))
 		await asyncio.sleep(60)
 		await bot.change_presence(activity=discord.Game("with Tylerr#6979!"))
 		await asyncio.sleep(60)
@@ -62,7 +62,7 @@ async def status_task():
 		await bot.change_presence(activity=discord.Game("with humans!"))
 		await asyncio.sleep(60)
 
-# Remove gross gey dpy help command
+# help command stuff
 bot.remove_command("help")
 
 
@@ -86,28 +86,6 @@ if __name__ == "__main__":
 			extension = extension.replace("cogs.", "")
 			print(f"Failed to load extension {extension}\n{exception}")
 
-@bot.command(brief = 'Loads cogs')
-@commands.is_owner()
-async def load(ctx, extension):
-    bot.load_extension(f'cogs.{extension}')
-    embed = discord.Embed(
-        title="Cog Loaded!",
-        description=f"Cog: {extension}",
-        color=0x000000
-    )
-    await ctx.send(embed=embed)
-
-@bot.command(brief = 'Unloads Cogs')
-@commands.is_owner()
-async def unload(ctx, extension):
-    bot.unload_extension(f'cogs.{extension}')
-    embed = discord.Embed(
-        title="Cog Unloaded!",
-        description=f"Cog: {extension}",
-        color=0x0000000
-    )
-    await ctx.send(embed=embed)
-
 @bot.event
 async def on_message(message):
 	# Ignores other bots and itself
@@ -119,7 +97,7 @@ async def on_message(message):
 			await bot.process_commands(message)
 		else:
 			# Let em know hes blacklisted
-			context = await bot.get_context(message) #this is dumb. this needs to be fixed. 
+			context = await bot.get_context(message) #fix this 
 			embed = discord.Embed(
 				title="Looks like you are blacklisted buddy. RIP :c",
 				description="Ask the Tylerr#6979 to remove you from the list if you think it's not normal.",
@@ -133,7 +111,7 @@ async def on_command_completion(ctx):
 	fullCommandName = ctx.command.qualified_name
 	split = fullCommandName.split(" ")
 	executedCommand = str(split[0])
-	print(f"Command *{executedCommand}* was executed in {ctx.guild.name}\nUser: {ctx.message.author} (ID: {ctx.message.author.id})")
+	print(f"Command Executed\nName: {executedCommand}\nGuild Name: {ctx.guild.name} (GID: {ctx.guild.id})\nUser: {ctx.message.author} (ID: {ctx.message.author.id})\nChannel:{ctx.channel} (CID: {ctx.channel.id})\n-------------------")
 
 
 @bot.command(name='eval') #Borrowed eval command. -R.Danny

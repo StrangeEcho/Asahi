@@ -15,9 +15,7 @@ class OnEdit(commands.Cog):
         if not message.author.bot:
             ctx = await self.bot.get_context(message)
             await self.bot.invoke(ctx)
-            if ctx.valid is False:
-                for allowed_name in ("Alias"):
-                    asyncio.ensure_future(listener(message))
+
 
     @commands.command()
     @commands.is_owner()

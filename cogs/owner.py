@@ -1,131 +1,90 @@
-import os
-import sys
-import discord
+import discord #complete re-write using the commands.is_owner() decorator as well as cleaning up unneeded stuff
 import config
 
 from discord.ext import commands
 
+class Owner(commands.Cog):
 
-class owner(commands.Cog, name="owner"):
     def __init__(self, bot):
         self.bot = bot
+    
+    @commands.command()
+    @commands.is_owner()
+    async def shutdown(self, ctx):
+        embed = discord.Embed(description='👋Logging Out!', color=0xffb6c1)
+        await ctx.send(embed=embed)
+        await self.bot.logout()
+        await self.bot.close()
+    
 
-    @commands.command(name="shutdown")
-    async def shutdown(self, context):
-        if context.message.author.id in config.OWNERS:
-            embed = discord.Embed(
-                description="Shutting down. Bye! :wave:",
-                color=0x00FF00
-            )
-            await context.send(embed=embed)
-            await self.bot.logout()
-            await self.bot.close()
-        else:
-            embed = discord.Embed(
-                title="Error!",
-                description="You don't have the permission to use this command.",
-                color=0x00FF00
-            )
-            await context.send(embed=embed)
+    @commands.command()
+    @commands.is_owner()
+    async def load(self, ctx, extension):
+        self.bot.load_extension(f'cogs{extension}')
+        embed = discord.Embed(
+            title='Cog Sucessfully Loaded',
+            description=f'Extension name: {extesion}',
+            color=0xffb6c1
+        )
+        await ctx.send(embed=embed)
+    
+    @commands.command()
+    async def unload(self, ctx, extension):
+        self.bot.unload_extension(f'cogs.{extension}')
+        embed = discord.Embed(
+            title='Cog Sucessfully Unloaded',
+            description=f'Extension Name: {extension}',
+            color=0xffb6c1
+        )
+        await ctx.send(embed=embed)
 
-    @commands.command(name="say", aliases=["echo"])
-    async def say(self, context, *, args):
-        if context.message.author.id in config.OWNERS:
-            await context.send(args)
-            await context.message.delete()
-        else:
+    @commands.command() #ill probably make these 2 commands public soon? say/embed
+    @commands.is_owner()
+    async def say(self, ctx, *, msg):
+        await ctx.delete()
+        await ctx.send(msg)
+    
+    @commands.command()
+    @commands.is_owner()
+    async def embed(self, ctx, *, msg):
+        embed = discord.Embed(description=msg, color=0xffb6c1)
+        await ctx.send(embed=embed)
+    
+    @commands.group()
+    @commands.is_owner()
+    async def blacklist(self, ctx):
+        if ctx.invoked_subcommand is None:
             embed = discord.Embed(
-                title="Error!",
-                description="You don't have the permission to use this command.",
-                color=0x00FF00
+                title=f'There are currently a total of {len(config.BLACKLIST)} blacklisted IDS',
+                description=config.BLACKLIST,
+                color=0xffb6c1
             )
-            await context.send(embed=embed)
-
-    @commands.command(name="embed")
-    async def embed(self, context, *, args):
-        if context.message.author.id in config.OWNERS:
-            embed = discord.Embed(
-                description=args,
-                color=0x00FF00
-            )
-            await context.send(embed=embed)
-        else:
-            embed = discord.Embed(
-                title="Error!",
-                description="You don't have the permission to use this command.",
-                color=0x00FF00
-            )
-            await context.send(embed=embed)
-
-    @commands.group(name="blacklist") 
-    async def blacklist(self, context): 
-        if context.invoked_subcommand is None:
-            embed = discord.Embed(
-                title=f"There are currently {len(config.BLACKLIST)} blacklisted IDs",
-                description=f"{config.BLACKLIST}",
-                color=0x00FF00
-            )
-            await context.send(embed=embed)
-
-    @blacklist.command(name="add")
-    async def blacklist_add(self, context, member: discord.Member):
-        if context.message.author.id in config.OWNERS:
-            userID = member.id
-            try:
-                config.BLACKLIST.append(userID)
-                embed = discord.Embed(
-                    title="User Blacklisted",
-                    description=f"**{member.name}** has been successfully added to the blacklist",
-                    color=0x00FF00
-                )
-                embed.set_footer(
-                    text=f"There are now {len(config.BLACKLIST)} users in the blacklist"
-                )
-                await context.send(embed=embed)
-            except:
-                embed = discord.Embed(
-                    title="Error!",
-                    description=f"An unknown error occurred when trying to add **{member.name}** to the blacklist.",
-                    color=0xFF0000
-                )
-                await context.send(embed=embed)
-        else:
-            embed = discord.Embed(
-                title="Error!",
-                description="You don't have the permission to use this command.",
-                color=0x00FF00
-            )
-            await context.send(embed=embed)
-
-    @blacklist.command(name="remove")
-    async def blacklist_remove(self, context, member: discord.Member):
-        if context.message.author.id in config.OWNERS:
-            userID = member.id
-            try:
-                config.BLACKLIST.remove(userID)
-                embed = discord.Embed(
-                    title="User Unblacklisted",
-                    description=f"**{member.name}** has been successfully removed from the blacklist",
-                    color=0x00FF00
-                )
-                embed.set_footer(
-                    text=f"There are now {len(config.BLACKLIST)} users in the blacklist"
-                )
-                await context.send(embed=embed)
-            except:
-                embed = discord.Embed(
-                    title="Error!",
-                    description=f"An unknown error occurred when trying to remove **{member.name}** from the blacklist.",
-                    color=0xFF0000
-                )
-                await context.send(embed=embed)
-        else:
-            embed = discord.Embed(
-                title="Error!",
-                description="You don't have the permission to use this command.",
-                color=0x00FF00
-            )
-            await context.send(embed=embed)
+            await ctx.send(embed=embed)
+    
+    @blacklist.command(name='add')
+    @commands.is_owner()
+    async def blacklist_add(self, ctx, member : discord.Member):
+        config.BLACKLIST.append(member.id)
+        embed = discord.Embed(
+            title=f'User Blacklisted!!!',
+            description=f'`{member.name}` has been sucessfully added to the blacklist.',
+            color=0xffb6c1
+        )
+        embed.set_footer(text=f'There is now a total of {len(config.BLACKLIST)} blacklisted users')
+        await ctx.send(embed=embed)
+    
+    @blacklist.command(name='remove')
+    @commands.is_owner()
+    async def blacklist_remove(self, ctx, member = discord.Member):
+        config.BLACKLIST.remove(member.id)
+        embed = discord.Embed(
+            title='User Unblacklisted',
+            description=f'`{member.name}` has been sucessfully removed to the blacklist.',
+            color=0xffb6c1
+        )
+        embed.set_footer(text=f'There is now a total of {len(config.BLACKLIST)} blacklisted users')
+        await ctx.send(embed=embed)
 
 def setup(bot):
-    bot.add_cog(owner(bot))
+    bot.add_cog(Owner(bot))
+    

@@ -3,7 +3,7 @@ import discord
 from utils import default
 from discord.ext import commands
 
-
+owners = {284102119408140289}
 
 
 async def check_permissions(ctx, perms, *, check=all):
