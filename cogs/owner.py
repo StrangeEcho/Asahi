@@ -20,7 +20,7 @@ class Owner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def load(self, ctx, extension):
-        self.bot.load_extension(f'cogs{extension}')
+        self.bot.load_extension(f'cogs.{extension}')
         embed = discord.Embed(
             title='Cog Sucessfully Loaded',
             description=f'Extension name: {extesion}',
