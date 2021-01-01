@@ -1,7 +1,7 @@
 import discord
 import re
 import asyncio
-
+import config
 from discord.ext import commands
 from utils import permissions, default
 
@@ -307,7 +307,7 @@ class Moderation(commands.Cog):
     async def _bots(self, ctx, search=100, prefix=None):
         """Removes a bot user's messages and messages with their optional prefix."""
 
-        getprefix = prefix if prefix else self.config["prefix"]
+        getprefix = config.BOT_PREFIX
 
         def predicate(m):
             return (m.webhook_id is None and m.author.bot) or m.content.startswith(tuple(getprefix))

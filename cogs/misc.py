@@ -18,7 +18,7 @@ class Misc(commands.Cog):
                 await ctx.send(meguminpic)
 
 
-    @commands.comand()
+    @commands.command()
     async def shinobu(self, ctx):
         async with aiohttp.ClientSession() as cs:
             async with cs.get('https://waifu.pics/api/sfw/shinobu') as r:
