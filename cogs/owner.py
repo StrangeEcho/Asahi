@@ -16,32 +16,35 @@ class Owner(commands.Cog):
         await self.bot.logout()
         await self.bot.close()
     
-
     @commands.command()
     @commands.is_owner()
-    async def load(self, ctx, extension):
-        self.bot.load_extension(f'cogs.{extension}')
-        embed = discord.Embed(
-            title='Cog Sucessfully Loaded',
-            description=f'Extension name: {extesion}',
-            color=0xffb6c1
-        )
-        await ctx.send(embed=embed)
+    async def load(self, ctx, cog):
+        try:
+            self.bot.load_extension(cog)
+            await ctx.send(':ok_hand: Cog Loaded')
+        except commands.ExtensionError as e:
+            await ctx.send(f'{e.__class__.__name__}: {e}')
     
     @commands.command()
-    async def unload(self, ctx, extension):
-        self.bot.unload_extension(f'cogs.{extension}')
-        embed = discord.Embed(
-            title='Cog Sucessfully Unloaded',
-            description=f'Extension Name: {extension}',
-            color=0xffb6c1
-        )
-        await ctx.send(embed=embed)
+    @commands.is_owner()
+    async def unload(self, ctx, cog):
+        try:
+            self.bot.unload_extension(cog)
+            await ctx.send(':ok_hand: Cog Unloaded')
+        except commands.ExtensionError as e:
+            await ctx.send(f'{e.__class__.__name__}: {e}')
+
+    @commands.command()
+    async def reload(self, ctx, cog):
+        try:
+            self.bot.reload_extension(cog)
+        except commands.ExtensionError as e:
+            await ctx.send(f'{e.__class__.__name__}: {e}')
 
     @commands.command() #ill probably make these 2 commands public soon? say/embed
     @commands.is_owner()
     async def say(self, ctx, *, msg):
-        await ctx.delete()
+        await ctx.message.delete()
         await ctx.send(msg)
     
     @commands.command()
