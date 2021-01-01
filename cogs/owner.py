@@ -35,6 +35,7 @@ class Owner(commands.Cog):
             await ctx.send(f'{e.__class__.__name__}: {e}')
 
     @commands.command()
+    @commands.is_owner()
     async def reload(self, ctx, cog):
         try:
             self.bot.reload_extension(cog)
