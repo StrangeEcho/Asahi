@@ -38,6 +38,7 @@ class Owner(commands.Cog):
     async def reload(self, ctx, cog):
         try:
             self.bot.reload_extension(cog)
+            await ctx.send(':ok_hand: Cog Reloaded')
         except commands.ExtensionError as e:
             await ctx.send(f'{e.__class__.__name__}: {e}')
 
