@@ -37,7 +37,8 @@ class Misc(commands.Cog):
                 await ctx.send(nekopic)
 
  
-
+def setup(bot):
+    bot.add_cog(Misc(bot))
     
 
     
