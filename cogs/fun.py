@@ -4,7 +4,7 @@ import nekos
 
 from discord.ext import commands
 
-npa = ' '
+npa = ' ' #default value for the args param if not passed in by a user
 
 class Fun(commands.Cog):
     def __init__(self, bot):

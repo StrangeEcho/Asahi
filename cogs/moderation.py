@@ -4,6 +4,7 @@ import asyncio
 import config
 from discord.ext import commands
 from utils import permissions, default
+import config
 
 
 # Source: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/mod.py

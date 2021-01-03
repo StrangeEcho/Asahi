@@ -1,4 +1,3 @@
-# just gonna make one command and call it a day
 import discord 
 import platform
 import sys
@@ -86,7 +85,7 @@ class General(commands.Cog):
     @commands.command()
     async def support(self, ctx):
         await ctx.send("I sent you a private message!")
-        await ctx.author.send("Join my support server by clicking here: https://discord.gg/planets")
+        await ctx.author.send("Join my support server by clicking here: https://discord.gg/GAeb2eXW7a")
 
     @commands.command()
     async def poll(self, ctx, *args):
