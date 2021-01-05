@@ -11,14 +11,14 @@
 
 # TODO
 - C&C Cogs and perhaps bot.py
-- Add Leveling System(Im not too sure about this tbh)
+- Add Leveling System(I'm not too sure about this tbh)
 - Currency System(meh)
 - Perhaps Custom Reactions(regex based)
 - Rewrite Error Handler
 
 
 # NOTES
-- Ive removed Fun commands using nekos.py. However, we will continue to use nekos.py for other commands. More than likely those commands will be NSFW
+- I've removed Fun commands using nekos.py. However, I will continue to use nekos.py for other commands. More than likely those commands will be NSFW
 
 # Sources
 - [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval Command)
