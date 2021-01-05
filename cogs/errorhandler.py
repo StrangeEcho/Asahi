@@ -58,6 +58,7 @@ class ErrorHandler(commands.Cog):
             )
             await ctx.send(embed=embed)
 
+        
         elif isinstance(error, commands.MissingRequiredArgument):
             embed = discord.Embed(
                 title="Oops!",
