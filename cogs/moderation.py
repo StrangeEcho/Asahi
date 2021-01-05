@@ -16,7 +16,9 @@ class MemberID(commands.Converter):
             try:
                 return int(argument, base=10)
             except ValueError:
-                raise commands.BadArgument(f"{argument} is not a valid member or member ID.") from None
+                raise commands.BadArgument(
+                    f"{argument} is not a valid member or member ID."
+                ) from None
         else:
             return m.id
 
@@ -27,14 +29,15 @@ class ActionReason(commands.Converter):
 
         if len(ret) > 512:
             reason_max = 512 - len(ret) - len(argument)
-            raise commands.BadArgument(f'reason is too long ({len(argument)}/{reason_max})')
+            raise commands.BadArgument(
+                f"reason is too long ({len(argument)}/{reason_max})"
+            )
         return ret
 
 
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
 
     @commands.command()
     @commands.guild_only()
@@ -59,7 +62,9 @@ class Moderation(commands.Cog):
             return
 
         try:
-            await member.edit(nick=name, reason=default.responsible(ctx.author, "Changed by command"))
+            await member.edit(
+                nick=name, reason=default.responsible(ctx.author, "Changed by command")
+            )
             message = f"Changed **{member.name}'s** nickname to **{name}**"
             if name is None:
                 message = f"Reset **{member.name}'s** nickname"
@@ -77,7 +82,10 @@ class Moderation(commands.Cog):
             return
 
         try:
-            await ctx.guild.ban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
+            await ctx.guild.ban(
+                discord.Object(id=member),
+                reason=default.responsible(ctx.author, reason),
+            )
             await ctx.send(default.actionmessage("banned"))
         except Exception as e:
             await ctx.send(e)
@@ -90,7 +98,10 @@ class Moderation(commands.Cog):
         """ Mass bans multiple members from the server. """
         try:
             for member_id in members:
-                await ctx.guild.ban(discord.Object(id=member_id), reason=default.responsible(ctx.author, reason))
+                await ctx.guild.ban(
+                    discord.Object(id=member_id),
+                    reason=default.responsible(ctx.author, reason),
+                )
             await ctx.send(default.actionmessage("massbanned", mass=True))
         except Exception as e:
             await ctx.send(e)
@@ -101,7 +112,10 @@ class Moderation(commands.Cog):
     async def unban(self, ctx, member: MemberID, *, reason: str = None):
         """ Unbans a user from the current server. """
         try:
-            await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
+            await ctx.guild.unban(
+                discord.Object(id=member),
+                reason=default.responsible(ctx.author, reason),
+            )
             await ctx.send(default.actionmessage("unbanned"))
         except Exception as e:
             await ctx.send(e)
@@ -117,10 +131,14 @@ class Moderation(commands.Cog):
         muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
 
         if not muted_role:
-            return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
+            return await ctx.send(
+                "Are you sure you've made a role called **Muted**? Remember that it's case sensetive too..."
+            )
 
         try:
-            await member.add_roles(muted_role, reason=default.responsible(ctx.author, reason))
+            await member.add_roles(
+                muted_role, reason=default.responsible(ctx.author, reason)
+            )
             await ctx.send(default.actionmessage("muted"))
         except Exception as e:
             await ctx.send(e)
@@ -136,10 +154,14 @@ class Moderation(commands.Cog):
         muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
 
         if not muted_role:
-            return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
+            return await ctx.send(
+                "Are you sure you've made a role called **Muted**? Remember that it's case sensetive too..."
+            )
 
         try:
-            await member.remove_roles(muted_role, reason=default.responsible(ctx.author, reason))
+            await member.remove_roles(
+                muted_role, reason=default.responsible(ctx.author, reason)
+            )
             await ctx.send(default.actionmessage("unmuted"))
         except Exception as e:
             await ctx.send(e)
@@ -150,34 +172,56 @@ class Moderation(commands.Cog):
     async def announcerole(self, ctx, *, role: discord.Role):
         """ Makes a role mentionable and removes it whenever you mention the role """
         if role == ctx.guild.default_role:
-            return await ctx.send("To prevent abuse, I won't allow mentionable role for everyone/here role.")
+            return await ctx.send(
+                "To prevent abuse, I won't allow mentionable role for everyone/here role."
+            )
 
         if ctx.author.top_role.position <= role.position:
-            return await ctx.send("It seems like the role you attempt to mention is over your permissions, therefor I won't allow you.")
+            return await ctx.send(
+                "It seems like the role you attempt to mention is over your permissions, therefor I won't allow you."
+            )
 
         if ctx.me.top_role.position <= role.position:
-            return await ctx.send("This role is above my permissions, I can't make it mentionable ;-;")
+            return await ctx.send(
+                "This role is above my permissions, I can't make it mentionable ;-;"
+            )
 
-        await role.edit(mentionable=True, reason=f"[ {ctx.author} ] announcerole command")
-        msg = await ctx.send(f"**{role.name}** is now mentionable, if you don't mention it within 30 seconds, I will revert the changes.")
+        await role.edit(
+            mentionable=True, reason=f"[ {ctx.author} ] announcerole command"
+        )
+        msg = await ctx.send(
+            f"**{role.name}** is now mentionable, if you don't mention it within 30 seconds, I will revert the changes."
+        )
 
         while True:
+
             def role_checker(m):
-                if (role.mention in m.content):
+                if role.mention in m.content:
                     return True
                 return False
 
             try:
-                checker = await self.bot.wait_for('message', timeout=30.0, check=role_checker)
+                checker = await self.bot.wait_for(
+                    "message", timeout=30.0, check=role_checker
+                )
                 if checker.author.id == ctx.author.id:
-                    await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
-                    return await msg.edit(content=f"**{role.name}** mentioned by **{ctx.author}** in {checker.channel.mention}")
+                    await role.edit(
+                        mentionable=False,
+                        reason=f"[ {ctx.author} ] announcerole command",
+                    )
+                    return await msg.edit(
+                        content=f"**{role.name}** mentioned by **{ctx.author}** in {checker.channel.mention}"
+                    )
                     break
                 else:
                     await checker.delete()
             except asyncio.TimeoutError:
-                await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
-                return await msg.edit(content=f"**{role.name}** was never mentioned by **{ctx.author}**...")
+                await role.edit(
+                    mentionable=False, reason=f"[ {ctx.author} ] announcerole command"
+                )
+                return await msg.edit(
+                    content=f"**{role.name}** was never mentioned by **{ctx.author}**..."
+                )
                 break
 
     @commands.group()
@@ -198,26 +242,42 @@ class Moderation(commands.Cog):
                         loop.append(f"{i} | {type(g).__name__}: {g.name} ({i.id})")
 
         await default.prettyResults(
-            ctx, "playing", f"Found **{len(loop)}** on your search for **{search}**", loop
+            ctx,
+            "playing",
+            f"Found **{len(loop)}** on your search for **{search}**",
+            loop,
         )
 
     @find.command(name="username", aliases=["name"])
     async def find_name(self, ctx, *, search: str):
-        loop = [f"{i} ({i.id})" for i in ctx.guild.members if search.lower() in i.name.lower() and not i.bot]
+        loop = [
+            f"{i} ({i.id})"
+            for i in ctx.guild.members
+            if search.lower() in i.name.lower() and not i.bot
+        ]
         await default.prettyResults(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="nickname", aliases=["nick"])
     async def find_nickname(self, ctx, *, search: str):
-        loop = [f"{i.nick} | {i} ({i.id})" for i in ctx.guild.members if i.nick if (search.lower() in i.nick.lower()) and not i.bot]
+        loop = [
+            f"{i.nick} | {i} ({i.id})"
+            for i in ctx.guild.members
+            if i.nick
+            if (search.lower() in i.nick.lower()) and not i.bot
+        ]
         await default.prettyResults(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
     @find.command(name="id")
     async def find_id(self, ctx, *, search: int):
-        loop = [f"{i} | {i} ({i.id})" for i in ctx.guild.members if (str(search) in str(i.id)) and not i.bot]
+        loop = [
+            f"{i} | {i} ({i.id})"
+            for i in ctx.guild.members
+            if (str(search) in str(i.id)) and not i.bot
+        ]
         await default.prettyResults(
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
@@ -229,7 +289,10 @@ class Moderation(commands.Cog):
 
         loop = [f"{i} ({i.id})" for i in ctx.guild.members if search == i.discriminator]
         await default.prettyResults(
-            ctx, "discriminator", f"Found **{len(loop)}** on your search for **{search}**", loop
+            ctx,
+            "discriminator",
+            f"Found **{len(loop)}** on your search for **{search}**",
+            loop,
         )
 
     @commands.group()
@@ -241,9 +304,11 @@ class Moderation(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(str(ctx.command))
 
-    async def do_removal(self, ctx, limit, predicate, *, before=None, after=None, message=True):
+    async def do_removal(
+        self, ctx, limit, predicate, *, before=None, after=None, message=True
+    ):
         if limit > 2000:
-            return await ctx.send(f'Too many messages to search given ({limit}/2000)')
+            return await ctx.send(f"Too many messages to search given ({limit}/2000)")
 
         if not before:
             before = ctx.message
@@ -254,15 +319,19 @@ class Moderation(commands.Cog):
             after = discord.Object(id=after)
 
         try:
-            deleted = await ctx.channel.purge(limit=limit, before=before, after=after, check=predicate)
+            deleted = await ctx.channel.purge(
+                limit=limit, before=before, after=after, check=predicate
+            )
         except discord.Forbidden:
-            return await ctx.send('I do not have permissions to delete messages.')
+            return await ctx.send("I do not have permissions to delete messages.")
         except discord.HTTPException as e:
-            return await ctx.send(f'Error: {e} (try a smaller search?)')
+            return await ctx.send(f"Error: {e} (try a smaller search?)")
 
         deleted = len(deleted)
         if message is True:
-            await ctx.send(f'🚮 Successfully removed {deleted} message{"" if deleted == 1 else "s"}.')
+            await ctx.send(
+                f'🚮 Successfully removed {deleted} message{"" if deleted == 1 else "s"}.'
+            )
 
     @prune.command()
     async def embeds(self, ctx, search=100):
@@ -277,14 +346,18 @@ class Moderation(commands.Cog):
     @prune.command()
     async def mentions(self, ctx, search=100):
         """Removes messages that have mentions in them."""
-        await self.do_removal(ctx, search, lambda e: len(e.mentions) or len(e.role_mentions))
+        await self.do_removal(
+            ctx, search, lambda e: len(e.mentions) or len(e.role_mentions)
+        )
 
     @prune.command()
     async def images(self, ctx, search=100):
         """Removes messages that have embeds or attachments."""
-        await self.do_removal(ctx, search, lambda e: len(e.embeds) or len(e.attachments))
+        await self.do_removal(
+            ctx, search, lambda e: len(e.embeds) or len(e.attachments)
+        )
 
-    @prune.command(name='all')
+    @prune.command(name="all")
     async def _remove_all(self, ctx, search=100):
         """Removes all messages."""
         await self.do_removal(ctx, search, lambda e: True)
@@ -300,22 +373,24 @@ class Moderation(commands.Cog):
         The substring must be at least 3 characters long.
         """
         if len(substr) < 3:
-            await ctx.send('The substring length must be at least 3 characters.')
+            await ctx.send("The substring length must be at least 3 characters.")
         else:
             await self.do_removal(ctx, 100, lambda e: substr in e.content)
 
-    @prune.command(name='bots')
+    @prune.command(name="bots")
     async def _bots(self, ctx, search=100, prefix=None):
         """Removes a bot user's messages and messages with their optional prefix."""
 
         getprefix = config.BOT_PREFIX
 
         def predicate(m):
-            return (m.webhook_id is None and m.author.bot) or m.content.startswith(tuple(getprefix))
+            return (m.webhook_id is None and m.author.bot) or m.content.startswith(
+                tuple(getprefix)
+            )
 
         await self.do_removal(ctx, search, predicate)
 
-    @prune.command(name='users')
+    @prune.command(name="users")
     async def _users(self, ctx, prefix=None, search=100):
         """Removes only user messages. """
 
@@ -324,22 +399,22 @@ class Moderation(commands.Cog):
 
         await self.do_removal(ctx, search, predicate)
 
-    @prune.command(name='emojis')
+    @prune.command(name="emojis")
     async def _emojis(self, ctx, search=100):
         """Removes all messages containing custom emoji."""
-        custom_emoji = re.compile(r'<a?:(.*?):(\d{17,21})>|[\u263a-\U0001f645]')
+        custom_emoji = re.compile(r"<a?:(.*?):(\d{17,21})>|[\u263a-\U0001f645]")
 
         def predicate(m):
             return custom_emoji.search(m.content)
 
         await self.do_removal(ctx, search, predicate)
 
-    @prune.command(name='reactions')
+    @prune.command(name="reactions")
     async def _reactions(self, ctx, search=100):
         """Removes all reactions from messages that have them."""
 
         if search > 2000:
-            return await ctx.send(f'Too many messages to search for ({search}/2000)')
+            return await ctx.send(f"Too many messages to search for ({search}/2000)")
 
         total_reactions = 0
         async for message in ctx.history(limit=search, before=ctx.message):
@@ -347,7 +422,7 @@ class Moderation(commands.Cog):
                 total_reactions += sum(r.count for r in message.reactions)
                 await message.clear_reactions()
 
-        await ctx.send(f'Successfully removed {total_reactions} reactions.')
+        await ctx.send(f"Successfully removed {total_reactions} reactions.")
 
 
 def setup(bot):
