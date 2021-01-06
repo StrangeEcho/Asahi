@@ -21,6 +21,7 @@ class Owner(commands.Cog):
             await ctx.send(f"{e.__class__.__name__}: {e}")
 
     @commands.command(aliases=["logout"])
+    @commands.is_owner()
     async def shutdown(self, ctx: commands.Context):
         """
         Logs this bot out.
