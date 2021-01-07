@@ -6,11 +6,12 @@ import os
 
 from datetime import datetime
 from utils.misc import time_notation
+from utils.misc import bot_start_time
 
 from discord.ext import commands
 from EZPaginator import Paginator
 
-bot_start_time = datetime.now()
+
 
 class Stats(commands.Cog):
     def __init__(self, bot):

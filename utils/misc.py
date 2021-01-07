@@ -1,4 +1,5 @@
 from datetime import timedelta
+from datetime import datetime
 
 #Credit Goes To crazygmr101/aoi
 def time_notation(td: timedelta, sep="", full=False):
@@ -7,3 +8,6 @@ def time_notation(td: timedelta, sep="", full=False):
     return sep.join([f"{td.days}{'days' if full else 'd '}",
                      f"{hours}{'hours' if full else 'h '}",
                      f"{minutes}{'minutes' if full else 'm '}"])
+
+
+bot_start_time = datetime.now()
