@@ -1,6 +1,7 @@
 import logging
-
 import discord
+
+
 from discord.ext import commands
 
 log = logging.getLogger(__name__)
@@ -103,20 +104,6 @@ class ErrorHandler(commands.Cog):
             )
             await ctx.send(embed=embed)
 
-        elif isinstance(error, discord.HTTPException):
-            embed = discord.Embed(
-                title="Oops!",
-                description="Commands Failed To Execute. Reason:\n`A HTTP EXCEPTION WAS THROWN`",
-                color=0xFF0000,
-            )
-            embed.add_field(
-                name="Action Command Failure?",
-                value="If the command used was a Action command, there is a high chance that the API Request failed.",
-                inline=True,
-            )
-            embed.set_footer(text="Please Contact #Tylerr#6979 For Help.")
-            await ctx.send(embed=embed)
-
         elif isinstance(error, commands.BotMissingPermissions):
             embed = discord.Embed(
                 title="Oops!",
@@ -142,7 +129,6 @@ class ErrorHandler(commands.Cog):
                 f"{ctx.command.qualified_name} failed to execute. ",
                 exc_info=error.original,
             )
-
-
+            
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))

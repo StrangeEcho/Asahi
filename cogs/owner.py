@@ -57,26 +57,26 @@ class Owner(commands.Cog):
         await ctx.message.delete()
         await ctx.send(msg)
 
-        @commands.is_owner()
-        @commands.bot_has_permissions(embed_links=True)
-        @commands.command()
-        async def embed(self, ctx, color: Optional[discord.Color] = None, *, text):
-            """
-            Send an embed.
-            """
-            if color is None:
-                color = await ctx.embed_color()
-            embed = discord.Embed(description=text, color=color)
-            if ctx.message.attachments:
-                content = await ctx.message.attachments[0].to_file()
-                embed.set_image(url="attachment://" + str(content.filename))
+    @commands.is_owner()
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.command()
+    async def embed(self, ctx, color: Optional[discord.Color] = None, *, text):
+        """
+        Send an embed.
+         """
+        if color is None:
+            color = await ctx.embed_color()
+        embed = discord.Embed(description=text, color=color)
+        if ctx.message.attachments:
+            content = await ctx.message.attachments[0].to_file()
+            embed.set_image(url="attachment://" + str(content.filename))
             await ctx.send(
-                embed=embed, file=content if ctx.message.attachments else None
-            )
-            try:
-                await ctx.message.delete()
-            except discord.Forbidden:
-                pass
+            embed=embed, file=content if ctx.message.attachments else None
+        )
+        try:
+            await ctx.message.delete()
+        except discord.Forbidden:
+            pass
 
     @commands.group()
     @commands.is_owner()
