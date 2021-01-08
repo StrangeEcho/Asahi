@@ -14,10 +14,7 @@ class Anime(commands.Cog):
         """Megumin pics from waifu.pics api."""
         async with aiohttp.ClientSession() as cs:
             async with cs.get("https://waifu.pics/api/sfw/megumin") as r:
-
-                meguminpic = (await r.json())["url"]
-
-                await ctx.send(meguminpic)
+                await ctx.send((await r.json())["url"])
 
     @commands.command()
     @commands.guild_only()
@@ -25,10 +22,7 @@ class Anime(commands.Cog):
         """Shinobu pics from waifu.pics api."""
         async with aiohttp.ClientSession() as cs:
             async with cs.get("https://waifu.pics/api/sfw/shinobu") as r:
-
-                shinobupic = (await r.json())["url"]
-
-                await ctx.send(shinobupic)
+                await ctx.send((await r.json())["url"])
 
     @commands.command()
     @commands.guild_only()
@@ -36,9 +30,6 @@ class Anime(commands.Cog):
         """Neko pics from waifu.pics api."""
         async with aiohttp.ClientSession() as cs:
             async with cs.get("https://waifu.pics/api/sfw/neko"):
-
-                nekopic = (await r.json())["url"]
-
                 await ctx.send(nekopic)
 
     @commands.command()
@@ -47,10 +38,7 @@ class Anime(commands.Cog):
         """Waifus from waifu.pics api."""
         async with aiohttp.ClientSession() as cs:
             async with cs.get("https://waifu.pics/api/sfw/waifu") as r:
-
-                waifu = (await r.json())["url"]
-
-                await ctx.send(waifu)
+                await ctx.send((await r.json())["url"])
 
 
 def setup(bot):
