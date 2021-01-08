@@ -29,8 +29,8 @@ class Anime(commands.Cog):
     async def neko(self, ctx):
         """Neko pics from waifu.pics api."""
         async with aiohttp.ClientSession() as cs:
-            async with cs.get("https://waifu.pics/api/sfw/neko"):
-                await ctx.send(nekopic)
+            async with cs.get("https://waifu.pics/api/sfw/neko") as r:
+                await ctx.send((await r.json())["url"])
 
     @commands.command()
     @commands.guild_only()
