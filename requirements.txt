@@ -1,6 +1,6 @@
-git+https://github.com/adolphin-hitler/discord.py
 jishaku
 nekos.py
 timeago
 EZPaginator 
 psutil
+discord.py 

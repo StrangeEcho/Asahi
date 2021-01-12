@@ -34,8 +34,32 @@ class Anime(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    async def img(self, ctx, category):
+        """Fetch a **SFW** image from the waifu.pics API.\nAvailable categories at https://waifu.pics/docs"""
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get(f"https://waifu.pics/api/sfw/{category}") as r:
+
+                img = (await r.json())['url']
+
+                await ctx.send(img)  
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.is_nsfw()
+    async def imgnsfw(self, ctx, category):
+        """Fetch a **NSFW** image from the waifu.pics API.\nAvailable categories at https://waifu.pics/docs"""
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get(f"https://waifu.pics/api/nsfw/{category}") as r:
+
+                imgnsfw = (await r.json())["url"]
+
+                await ctx.send(imgnsfw)
+
+
+    @commands.command()
+    @commands.guild_only()
     async def waifu(self, ctx):
-        """Waifus from waifu.pics api."""
+        """Get yourself a waifu"""
         async with aiohttp.ClientSession() as cs:
             async with cs.get("https://waifu.pics/api/sfw/waifu") as r:
                 await ctx.send((await r.json())["url"])

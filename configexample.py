@@ -12,4 +12,5 @@ STARTUP_COGS = [
     "cogs.fun",
     "cogs.stats",
     "cogs.misc",
+    "cogs.anime",
 ]
