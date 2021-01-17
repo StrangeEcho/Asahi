@@ -1,6 +1,11 @@
 import discord
 import aiohttp  # requests are gey. dey blocking
 import nekos
+import random
+
+from utils import lists 
+
+from typing import Optional
 
 from discord.ext import commands
 
@@ -188,5 +193,29 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+    @commands.command(name='8ball')
+    async def _8ball(self, ctx, *, question):
+        embed = discord.Embed(
+            title='🎱The Magic 8ball🎱',
+            description=f'Question: {question}\nAnswer: {random.choice(lists.eightball)}',
+            color=ctx.author.top_role.color 
+        )
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def compliment(self, ctx, member : Optional[discord.Member]):
+        if member is None:
+            embed = discord.Embed(
+                description=f'{ctx.author.mention} {random.choice(lists.compliments)}',
+                color=ctx.author.top_role.color
+            )
+        else:
+            embed = discord.Embed(
+                description=f'{member.mention} {random.choice(lists.compliments)}',
+                color=member.top_role.color
+            )
+        await ctx.send(embed=embed)
+
+
+def setup(bot): 
     bot.add_cog(Fun(bot))

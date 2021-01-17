@@ -100,27 +100,6 @@ class General(commands.Cog):
         await embed_message.add_reaction("👎")
         await embed_message.add_reaction("🤷")
 
-    @commands.command(name="8ball")
-    @commands.guild_only()
-    async def eightball(self, ctx, *, question):
-        """Use the magic 8ball."""
-        embed = discord.Embed(
-            title="The Magic 8ball",
-            description=f"Question: {question}\nAnswer: {random.choice(lists.eightball)}",
-            color=0xFFB6C1,
-        )
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @commands.guild_only()
-    async def compliment(self, ctx):
-        """Compliment yourself."""
-        embed = discord.Embed(
-            description=f"{ctx.author.mention}\n{random.choice(lists.compliments)}",
-            color=0xFFB6C1,
-        )
-        await ctx.send(embed=embed)
-
     @commands.command()
     @commands.guild_only()
     async def bitcoin(self, ctx):
@@ -138,6 +117,27 @@ class General(commands.Cog):
             )
             await ctx.send(embed=embed)
 
+    @commands.group()
+    async def avatar(self, ctx):
+        if ctx.invoked_subcommand is None:
+            embed = discord.Embed(description=f'[URL]({ctx.author.avatar_url})', color=ctx.author.top_role.color)
+            embed.set_image(url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
+        
+    @avatar.command()
+    async def user(self, ctx, member : discord.Member):
+        embed = discord.Embed(description=f'[URL]({member.avatar_url})', color=member.top_role.color)
+        embed.set_image(url=member.avatar_url)
+        await ctx.send(embed=embed)
+    
+    @avatar.command()
+    async def server(self, ctx):
+        embed = discord.Embed(
+            description=f'[URL]({ctx.guild.icon_url})',
+            color=ctx.author.top_role.color
+        )
+        embed.set_image(url=ctx.guild.icon_url)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(General(bot))
