@@ -59,11 +59,6 @@ class General(commands.Cog):
     @commands.guild_only()
     async def invite(self, ctx):
         """Bot invite link."""
-        await ctx.send("I sent you a private message!")
-        await ctx.author.send(
-            f"Invite me by clicking here: https://discordapp.com/oauth2/authorize?&client_id={config.APPLICATION_ID}&scope=bot&permissions=8"
-        )
-
         try:
             await ctx.author.send(f"Invite me by clicking here: https://discordapp.com/oauth2/authorize?&client_id={config.APPLICATION_ID}&scope=bot&permissions=8")
             await ctx.send('You Have Mail :envelope:')
