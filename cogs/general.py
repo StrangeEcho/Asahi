@@ -63,7 +63,8 @@ class General(commands.Cog):
             await ctx.author.send(f"Invite me by clicking here: https://discordapp.com/oauth2/authorize?&client_id={config.APPLICATION_ID}&scope=bot&permissions=8")
             await ctx.send('You Have Mail :envelope:')
         except discord.Forbidden:
-            await ctx.send(f'I Cannot Direct Message **{ctx.author.display_name}**')
+            await ctx.send(f'I Cannot Direct Message You **{ctx.author.display_name}**\n'
+                            'Go To Your Discord Settings -> Privacy & Safety -> Allow Direct Messages From Sever Members')`~`
             
     @commands.command()
     @commands.guild_only()
@@ -111,13 +112,13 @@ class General(commands.Cog):
     @commands.group()
     async def avatar(self, ctx):
         if ctx.invoked_subcommand is None:
-            embed = discord.Embed(description=f'[URL]({ctx.author.avatar_url})', color=ctx.author.top_role.color)
+            embed = discord.Embed(description=f'[URL]({ctx.author.avatar_url})', color=ctx.author.color)
             embed.set_image(url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
         
     @avatar.command()
     async def user(self, ctx, member : discord.Member):
-        embed = discord.Embed(description=f'[URL]({member.avatar_url})', color=member.top_role.color)
+        embed = discord.Embed(description=f'[URL]({member.avatar_url})', color=member.color)
         embed.set_image(url=member.avatar_url)
         await ctx.send(embed=embed)
     
@@ -125,7 +126,7 @@ class General(commands.Cog):
     async def server(self, ctx):
         embed = discord.Embed(
             description=f'[URL]({ctx.guild.icon_url})',
-            color=ctx.author.top_role.color
+            color=ctx.author.color
         )
         embed.set_image(url=ctx.guild.icon_url)
         await ctx.send(embed=embed)
