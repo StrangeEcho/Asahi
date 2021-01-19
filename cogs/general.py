@@ -64,7 +64,7 @@ class General(commands.Cog):
             await ctx.send('You Have Mail :envelope:')
         except discord.Forbidden:
             await ctx.send(f'I Cannot Direct Message You **{ctx.author.display_name}**\n'
-                            'Go To Your Discord Settings -> Privacy & Safety -> Allow Direct Messages From Sever Members')`~`
+                            'Go To Your Discord Settings -> Privacy & Safety -> Allow Direct Messages From Sever Members')
             
     @commands.command()
     @commands.guild_only()
