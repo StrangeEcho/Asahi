@@ -74,15 +74,11 @@ class General(commands.Cog):
     @commands.guild_only()
     async def support(self, ctx):
         """Sends an invite to the bot support server."""
-        await ctx.send("I sent you a private message!")
-        await ctx.author.send(
-            "Join my support server by clicking here: https://discord.gg/GAeb2eXW7a"
-        )
         try:
             await ctx.author.send("Join my support server by clicking here: https://discord.gg/GAeb2eXW7a")
             await ctx.send('You Have Mail :envelope:')
         except discord.Forbidden:
-            await ctx.send(f'I Cannot Direct Message **{ctx.author.display_name}**')
+            await ctx.send(f'I Cannot Direct Message You **{ctx.author.display_name}**')
 
     @commands.command()
     @commands.guild_only()
