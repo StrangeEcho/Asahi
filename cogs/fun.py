@@ -85,7 +85,7 @@ class Fun(commands.Cog):
     async def lick(self, ctx, *, args=npa):
         """Lick someone."""
         async with aiohttp.ClientSession() as cs:
-            async with cs.get("https://waifu.pics/sfw/lick") as r:
+            async with cs.get("https://waifu.pics/api/sfw/lick") as r:
 
                 lick = (await r.json())["url"]
 
@@ -139,7 +139,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def slap(self, ctx, *, args):
+    async def slap(self, ctx, *, args=npa):
         """Slap someone."""
         async with aiohttp.ClientSession() as cs:
             async with cs.get("https://waifu.pics/api/sfw/slap") as r:
