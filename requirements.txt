@@ -4,3 +4,6 @@ timeago
 EZPaginator 
 psutil
 discord.py 
+tabulate 
+matplotlib
+git+https://github.com/Rapptz/discord-ext-menus
