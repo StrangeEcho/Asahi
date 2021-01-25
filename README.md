@@ -13,7 +13,6 @@
 - C&C Cogs and perhaps bot.py
 - Add Leveling System(I'm not too sure about this tbh)
 - Currency System(meh)
-- Perhaps Custom Reactions(regex based)
 - Rewrite Error Handler
 
 

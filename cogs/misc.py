@@ -11,7 +11,7 @@ class Misc(commands.Cog):
     async def bug(self, ctx):
         """Bug report command."""
         await ctx.send(
-            "See a bug or issue with the bot. Please report it at https://github.com/Yat-o/HimejiBot/issues"
+            "See a bug or issue with the bot? Please report it at https://github.com/Yat-o/HimejiBot/issues"
         )
 
 

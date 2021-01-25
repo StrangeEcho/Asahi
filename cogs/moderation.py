@@ -120,6 +120,19 @@ class Moderation(commands.Cog):
         except Exception as e:
             await ctx.send(e)
 
+
+    @commands.command(aliases = ['clear', 'prune'])
+    @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def purge(self, ctx, amount=0):
+        """Purge an amount of messages"""
+        if amount == 0:
+            await ctx.send('Please Pass In A Desired Amount To Purge')
+        else:
+            await ctx.channel.purge(limit=amount+1)
+            await ctx.send(f'Done. {amount} purged.')
+
     @commands.command()
     @commands.guild_only()
     @permissions.has_permissions(manage_roles=True)

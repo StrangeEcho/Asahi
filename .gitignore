@@ -8,3 +8,5 @@
 /.theia
 /cogs/testing.txt
 /cogs/testing.py
+/.vscode
+/cogs/wss/__pycache__

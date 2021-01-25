@@ -28,9 +28,9 @@ intents.emojis = True
 intents.bans = True
 intents.guild_typing = False
 intents.typing = False
-intents.dm_messages = False
-intents.dm_reactions = False
-intents.dm_typing = False
+intents.dm_messages = True
+intents.dm_reactions = True
+intents.dm_typing = True
 intents.guild_messages = True
 intents.guild_reactions = True
 intents.integrations = True
@@ -42,6 +42,7 @@ bot = commands.Bot(
     command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents
 )
 
+bot.owner_ids={682849186227552266, 284102119408140289}    
 # The code in this event is executed when the bot is ready
 @bot.event
 async def on_ready():
