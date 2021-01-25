@@ -28,103 +28,39 @@ class ErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            embed = discord.Embed(
-                title="Oops!",
-                description="Command Failed To Execute. Reason:\n`Command Can Not Be Used In Direct Messages`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+            await ctx.send('This Command Cannot Be Used In Private DMS')
 
         elif isinstance(error, commands.TooManyArguments):
-            embed = discord.Embed(
-                title="Oops!",
-                description="Command Failed To Execute. Reason:\n`Passed In Too Many Arguments`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+            await ctx.send('You Passed In Too Many Arguments')
 
         elif isinstance(error, commands.NSFWChannelRequired):
-            embed = discord.Embed(
-                title="Oops!",
-                description=f"Command Failed To Execute. Reason:\n`{ctx.channel} Is Not NSFW`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+            await ctx.send(f'**{ctx.channel}** is not a NSFW channel')
 
-        elif isinstance(error, discord.Forbidden):
-            embed = discord.Embed(
-                title="Oops!",
-                description="Command Failed To Execute. Reason:\n`Discord Is Restricting Command Execution`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
-
-        
         elif isinstance(error, commands.MissingRequiredArgument):
-            embed = discord.Embed(
-                title="Oops!",
-                description=f"Command Failed To Execute. Reason:\n`Missing Required Argument:`\n`{error.param.name}`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+           await ctx.send(f'You are missing some required arguments\n`{error.param.name}`')
 
         elif isinstance(error, commands.NotOwner) or isinstance(
             error, commands.MissingPermissions
         ):
-            embed = discord.Embed(
-                title="Oops",
-                description="Command Failed To Execute. Reason:\n`Missing Permissions`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+            await ctx.send('You are missing the correct permissions to execute this command')
 
         elif isinstance(error, commands.CommandOnCooldown) or isinstance(
             error, commands.CheckFailure
         ):
-            embed = discord.Embed(
-                title="Oops",
-                description="Command Failed To Execute. Reason\n```{error}```",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+            await ctx.send(error)
 
         elif isinstance(error, commands.DisabledCommand):  # SoonTM
-            embed = discord.Embed(
-                title="Oops!",
-                description="Command Failed To Execute. Reason:\n`Command Is Disabled`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+            await ctx.send('This command is disabled')
 
         elif isinstance(error, commands.BadArgument):
-            embed = discord.Embed(
-                title="Oops!",
-                description=f"Command Failed To Execute. Reason:\n`Bad Argument`\n```{error}```",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
+            await ctx.send(f'You passed in a bad argument\n{error}')
 
         elif isinstance(error, commands.BotMissingPermissions):
-            embed = discord.Embed(
-                title="Oops!",
-                description="Command Failed To Execute. Reason:\n`Bot Is Missing Permissions`",
-                color=0xFF0000,
-            )
-            await ctx.send(embed=embed)
-            log.error(
-                f"{ctx.command.qualified_name} cannot be executed because the "
-                f"bot is missing the following permissions: "
-                f'{", ".join(error.list)}'
-            )
+            await ctx.send('I am missing permissions to execute this command')
+            
 
         elif isinstance(error, commands.CommandInvokeError):
-            embed = discord.Embed(
-                title="Oops!",
-                description="Command Failed To Execute. Reason:\n`INTERNAL ERROR`",
-                color=0xFF0000,
-            )
-            embed.set_footer(text="Please Contact Tylerr#6979 For Help")
-            await ctx.send(embed=embed)
+            await ctx.send('If you are getting this error, contact Tylerr#6079 for help.\nThis is due to the fact he is a terrible coder')
             log.error(
                 f"{ctx.command.qualified_name} failed to execute. ",
                 exc_info=error.original,
