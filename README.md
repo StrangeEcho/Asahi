@@ -23,6 +23,4 @@
 - [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval Command)
 - [RedBot](https://github.com/Cog-Creators/Red-DiscordBot)(PR Template)
 - [@6days9weeks](https://www.github.com/6days9weeks/)(Help With The Fun Cog)
-- [@MarkKoz](https://github.com/MarkKoz)(Base Error Handler)
-- [@AlexFlipnote](https://github.com/AlexFlipnote)(Command Logic/Moderation Cog)
 - The rest is me and excerpts from bots I've wrote in the past.
