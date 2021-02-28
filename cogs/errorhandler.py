@@ -70,7 +70,7 @@ class ErrorHandler(commands.Cog):
                 title="Baka!",
                 description=(f"""
                 You idiot coder.\n
-                {ctx.command.name} errored out because you're dumb\n
+                **{ctx.command.name}** in **{ctx.guild}** errored out because you're dumb\n
                 error:\n
                 ```{error}```       
             """),
