@@ -65,6 +65,19 @@ class ErrorHandler(commands.Cog):
                 f"{ctx.command.qualified_name} failed to execute. ",
                 exc_info=error.original,
             )
-            
+
+            embed = discord.Embed(
+                title="Baka!",
+                description=(f"""
+                You idiot coder.\n
+                {ctx.command.name} errored out because you're dumb\n
+                error:\n
+                ```{error}```       
+            """),
+                color=discord.Color.red()
+            )
+            await self.bot.get_user(284102119408140289).send(embed=embed)
+
+
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
