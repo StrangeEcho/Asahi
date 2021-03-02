@@ -20,8 +20,7 @@ def pagify(
     shorten_by: int = 8,
     page_length: int = 2000,
 ) -> Iterator[str]:
-    """Generate multiple pages from the given text.
-    """
+    """Generate multiple pages from the given text."""
     in_text = text
     page_length -= shorten_by
     while len(in_text) > page_length:

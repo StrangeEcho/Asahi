@@ -39,9 +39,9 @@ class Anime(commands.Cog):
         async with aiohttp.ClientSession() as cs:
             async with cs.get(f"https://waifu.pics/api/sfw/{category}") as r:
 
-                img = (await r.json())['url']
+                img = (await r.json())["url"]
 
-                await ctx.send(img)  
+                await ctx.send(img)
 
     @commands.command()
     @commands.guild_only()
@@ -54,7 +54,6 @@ class Anime(commands.Cog):
                 imgnsfw = (await r.json())["url"]
 
                 await ctx.send(imgnsfw)
-
 
     @commands.command()
     @commands.guild_only()

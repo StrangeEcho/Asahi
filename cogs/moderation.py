@@ -1,23 +1,23 @@
 import discord
 
-import typing 
+import typing
 
-from utils import misc
+from utils.misc import check_hierachy
 
 from discord.ext import commands
 
-class Moderation(commands.Cog):
 
+class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     @commands.guild_only()
-    @commands.has_permissions(kick_members = True)
-    async def kick(self, ctx, member : discord.Member, reason=None):
+    @commands.has_permissions(kick_members=True)
+    async def kick(self, ctx, member: discord.Member, reason=None):
         """Kicks a user"""
-        if await misc.check_hierachy(ctx, member):
+        if await check_hierachy(ctx, member):
             return
 
         try:
@@ -26,32 +26,32 @@ class Moderation(commands.Cog):
             await member.send(f"⚠️You were kicked from {ctx.guild} for {reason}")
         except Exception as e:
             await ctx.send(e)
-        
+
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     @commands.guild_only()
-    @commands.has_permissions(ban_members = True)
-    async def ban(self, ctx, member : discord.Member, *, reason=None):
+    @commands.has_permissions(ban_members=True)
+    async def ban(self, ctx, member: discord.Member, *, reason=None):
         """Bans a user"""
-        if await misc.check_hierachy(ctx, member):
+        if await check_hierachy(ctx, member):
             return
-        
+
         try:
             await member.ban(reason=f"{reason} - {ctx.author.name}")
             await ctx.send(f"🔴{member.name} was banned for {reason}")
             await member.send(f"🔴You were banned from {ctx.guild} for {reason}")
         except Exception as e:
             await ctx.send(e)
-    
+
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     @commands.guild_only()
-    @commands.has_permissions(manage_nicknames = True)
-    async def nickname(self, ctx, member : discord.Member, *, nickname=None):
+    @commands.has_permissions(manage_nicknames=True)
+    async def nickname(self, ctx, member: discord.Member, *, nickname=None):
         """Nicknames a user"""
-        if await misc.check.hierachy(ctx, member):
+        if await check.hierachy(ctx, member):
             return
-        
+
         try:
             if nickname is None:
                 await member.edit(nick=member.name)
@@ -61,11 +61,12 @@ class Moderation(commands.Cog):
                 await ctx.send(f"{member.name}'s nickname was changed to {nickname}")
         except Exception as e:
             await ctx.send(e)
+
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, id : int = None):
+    async def unban(self, ctx, id: int = None):
         if id is None:
             await ctx.send("Please pass in a ID")
         else:
@@ -76,6 +77,7 @@ class Moderation(commands.Cog):
                 await ctx.send(f"🟢Successfully unbanned `{user}`")
             except Exception as e:
                 await ctx.send(e)
-                
+
+
 def setup(bot):
     bot.add_cog(Moderation(bot))

@@ -5,9 +5,22 @@ import json
 from asyncio import Semaphore, as_completed
 from asyncio.futures import isfuture
 from itertools import chain
-from typing import (Any, AsyncIterable, AsyncIterator, Awaitable, Callable,
-                    Coroutine, Generator, Iterable, Iterator, List, Optional,
-                    Tuple, TypeVar, Union)
+from typing import (
+    Any,
+    AsyncIterable,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Coroutine,
+    Generator,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 from discord.utils import maybe_coroutine
 

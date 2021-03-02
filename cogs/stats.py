@@ -12,7 +12,6 @@ from discord.ext import commands
 from EZPaginator import Paginator
 
 
-
 class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -31,8 +30,16 @@ class Stats(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.add_field(name="Mention:", value=self.bot.user.mention, inline=True)
         embed.add_field(name="Owner:", value="Tylerr#6979", inline=True)
-        embed.add_field(name="Prefix:", value=f'`{config.BOT_PREFIX}` or {self.bot.user.mention}', inline=True)
-        embed.add_field(name='Uptime:',value= time_notation(datetime.now() - bot_start_time), inline=True)
+        embed.add_field(
+            name="Prefix:",
+            value=f"`{config.BOT_PREFIX}` or {self.bot.user.mention}",
+            inline=True,
+        )
+        embed.add_field(
+            name="Uptime:",
+            value=time_notation(datetime.now() - bot_start_time),
+            inline=True,
+        )
         embed.add_field(
             name="Latency:",
             value=f"{self.bot.latency * 1000} Milliseconds",

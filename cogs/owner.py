@@ -50,9 +50,9 @@ class Owner(commands.Cog):
         except commands.ExtensionError as e:
             await ctx.send(f"{e.__class__.__name__}: {e}")
 
-    @commands.command()  # ill probably make these 2 commands public soon? say/embed once I filter out the default role mentions 
+    @commands.command()  # ill probably make these 2 commands public soon? say/embed once I filter out the default role mentions
     @commands.is_owner()
-    async def say(self, ctx, chan : Optional[discord.TextChannel] = None, *, msg):
+    async def say(self, ctx, chan: Optional[discord.TextChannel] = None, *, msg):
         """Say something with the bot."""
         await ctx.message.delete()
         if chan is None:
@@ -60,14 +60,13 @@ class Owner(commands.Cog):
         else:
             await chan.send(msg)
 
-
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @commands.command()
     async def embed(self, ctx, color: Optional[discord.Color] = None, *, text):
         """
         Send an embed.
-         """
+        """
         if color is None:
             color = await ctx.embed_color()
         embed = discord.Embed(description=text, color=color)
@@ -75,8 +74,8 @@ class Owner(commands.Cog):
             content = await ctx.message.attachments[0].to_file()
             embed.set_image(url="attachment://" + str(content.filename))
             await ctx.send(
-            embed=embed, file=content if ctx.message.attachments else None
-        )
+                embed=embed, file=content if ctx.message.attachments else None
+            )
         try:
             await ctx.message.delete()
         except discord.Forbidden:

@@ -42,7 +42,7 @@ bot = commands.Bot(
     command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents
 )
 
-bot.owner_ids={682849186227552266, 284102119408140289}    
+bot.owner_ids = {682849186227552266, 284102119408140289}
 # The code in this event is executed when the bot is ready
 @bot.event
 async def on_ready():
