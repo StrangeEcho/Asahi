@@ -76,6 +76,7 @@ class ErrorHandler(commands.Cog):
             """),
                 color=discord.Color.red()
             )
+            embed.set_footer(text="Look in console for a more detailed error message")
             await self.bot.get_user(284102119408140289).send(embed=embed)
 
 
