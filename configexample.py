@@ -1,7 +1,6 @@
 BOT_PREFIX = ""
 TOKEN = ""
 APPLICATION_ID = ""
-BLACKLIST = []  # Blacklisting is a bit weird. F
 STARTUP_COGS = [
     "cogs.general",
     "cogs.moderation",
@@ -12,4 +11,5 @@ STARTUP_COGS = [
     "cogs.stats",
     "cogs.misc",
     "cogs.anime",
+    "cogs.status",
 ]

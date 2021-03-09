@@ -18,53 +18,21 @@ else:
     import config
 
 # intent stuff
-intents = discord.Intents().default()
-intents.messages = True
-intents.reactions = True
-intents.presences = True
-intents.members = True
-intents.guilds = True
-intents.emojis = True
-intents.bans = True
-intents.guild_typing = False
-intents.typing = False
-intents.dm_messages = True
-intents.dm_reactions = True
-intents.dm_typing = True
-intents.guild_messages = True
-intents.guild_reactions = True
-intents.integrations = True
-intents.invites = True
-intents.voice_states = False
-intents.webhooks = False
 
 bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or(config.BOT_PREFIX), intents=intents
+    command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
+    intents=discord.Intents.all(),
 )
 
 bot.owner_ids = {682849186227552266, 284102119408140289}
 # The code in this event is executed when the bot is ready
 @bot.event
 async def on_ready():
-    bot.loop.create_task(status_task())
     print(f"Logged in as {bot.user.name}")
     print(f"Discord.py API version: {discord.__version__}")
     print(f"Python version: {platform.python_version()}")
     print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
     print("-------------------")
-
-
-# game status stuff
-async def status_task():
-    while True:
-        await bot.change_presence(activity=discord.Game("with you :D"))
-        await asyncio.sleep(60)
-        await bot.change_presence(activity=discord.Game("with Tylerr#6979!"))
-        await asyncio.sleep(60)
-        await bot.change_presence(activity=discord.Game(f"{config.BOT_PREFIX}help"))
-        await asyncio.sleep(60)
-        await bot.change_presence(activity=discord.Game("with humans!"))
-        await asyncio.sleep(60)
 
 
 # help command stuff
@@ -94,26 +62,6 @@ if __name__ == "__main__":
             print(f"Failed to load extension {extension}\n{exception}")
 
 
-@bot.event
-async def on_message(message):
-    # Ignores other bots and itself
-    if message.author == bot.user or message.author.bot:
-        return
-    else:
-        if message.author.id not in config.BLACKLIST:
-            # Process command if user isnt blacklisted
-            await bot.process_commands(message)
-        else:
-            # Let em know hes blacklisted
-            context = await bot.get_context(message)  # fix this
-            embed = discord.Embed(
-                title="Looks like you are blacklisted buddy. RIP :c",
-                description="Ask the Tylerr#6979 to remove you from the list if you think it's not normal.",
-                color=0x00FF00,
-            )
-            await context.send(embed=embed)
-
-
 # logs sucessfull commands
 @bot.event
 async def on_command_completion(ctx):
@@ -121,7 +69,7 @@ async def on_command_completion(ctx):
     split = fullCommandName.split(" ")
     executedCommand = str(split[0])
     print(
-        f"Command Executed\nName: {executedCommand}\nGuild Name: {ctx.guild.name} (GID: {ctx.guild.id})\nUser: {ctx.message.author} (ID: {ctx.message.author.id})\nChannel:{ctx.channel} (CID: {ctx.channel.id})\n-------------------"
+        f"Command Executed\nName: {executedCommand} | {ctx.message}\nGuild Name: {ctx.guild.name} (GID: {ctx.guild.id})\nUser: {ctx.message.author} (ID: {ctx.message.author.id})\nChannel:{ctx.channel} (CID: {ctx.channel.id})\n-------------------"
     )
 
 
