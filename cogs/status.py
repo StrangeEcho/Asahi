@@ -23,9 +23,13 @@ class Status(commands.Cog):
             activity=discord.Game(f"{config.BOT_PREFIX}help")
         )
         await asyncio.sleep(60)
-        await self.bot.change_presence(activity=discord.Game(f"with {len(self.bot.users)} humans!"))
+        await self.bot.change_presence(
+            activity=discord.Game(f"with {len(self.bot.users)} humans!")
+        )
         await asyncio.sleep(60)
-        await self.bot.change_presence(activity==discord.Game(f"in {len(self.bot.guilds)} guilds"))
+        await self.bot.change_presence(
+            activity=discord.Game(f"in {len(self.bot.guilds)} guilds")
+        )
         await asyncio.sleep(60)
 
 

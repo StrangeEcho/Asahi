@@ -123,6 +123,15 @@ class Owner(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.is_owner()
+    async def dm(self, ctx, id: int, *, msg):
+        try:
+            await bot.get_user(id).send(msg)
+            await ctx.send("Message Sent!")
+        except (discord.Forbidden, discord.NotFound) as e:
+            await ctx.send(e)
+
     @commands.is_owner()
     @commands.guild_only()
     @commands.command(name="frick", aliases=["sho"], hidden=True)

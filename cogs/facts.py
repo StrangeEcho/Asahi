@@ -41,5 +41,12 @@ class Facts(commands.Cog):
                 await ctx.send((await r.json())["fact"])
 
 
+    @commands.command()
+    async def koalafact(self, ctx):
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get("https://some-random-api.ml/facts/koala") as r:
+                
+                await ctx.send(await r.json()["url"])
+
 def setup(bot):
     bot.add_cog(Facts(bot))

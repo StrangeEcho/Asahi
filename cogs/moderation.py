@@ -83,8 +83,9 @@ class Moderation(commands.Cog):
         if limit == 0:
             await ctx.send("Please pass in a valid amount to purge.")
         else:
-            await ctx.channel.purge(limit=limit+1)
+            await ctx.channel.purge(limit=limit + 1)
             await ctx.send(f"Done. {limit} messages deleted", delete_after=5)
+
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
