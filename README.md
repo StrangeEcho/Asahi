@@ -16,7 +16,7 @@
 - Rewrite Error Handler
 
 
-# NOTES
+# Notes
 - I've removed Fun commands using nekos.py. However, I will continue to use nekos.py for other commands. More than likely those commands will be NSFW
 
 # Sources
@@ -26,7 +26,7 @@
 - The rest is me and excerpts from bots I've wrote in the past.
 
 
-# SUPPORTERS
+# Supporters
 [![Stargazers repo roster for @Yat-o/HimejiBot](https://reporoster.com/stars/Yat-o/HimejiBot)](https://github.com/Yat-o/HimejiBot/stargazers)
 
 [![Forkers repo roster for @Yat-o/HimejiBot](https://reporoster.com/forks/Yat-o/HimejiBot)](https://github.com/Yat-o/HimejiBot/network/members)
