@@ -10,11 +10,17 @@ class GuildManagement(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.guild)
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
-    async def servername(self, ctx, *, name):
+    async def servername(self, ctx, *, name=None):
         """Change the servers name"""
-        await ctx.guild.edit(name=name)
-        await ctx.send(f"Successfully changed this severs name to **{name}**")
-
+        if name is None:
+            await ctx.send(f"The current name of this guild is **{ctx.guild.name}**")
+        else:
+            try:
+                await ctx.guild.edit(name=name)
+                await ctx.send(f"Successfully changed this severs name to **{name}**")
+            except discord.Forbiden as e:
+                await ctx.send(e)
+                
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.guild)
     @commands.guild_only()
