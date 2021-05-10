@@ -69,7 +69,7 @@ async def on_command_completion(ctx):
     split = fullCommandName.split(" ")
     executedCommand = str(split[0])
     print(
-        f"Command Executed\nName: {executedCommand} | {ctx.message}\nGuild Name: {ctx.guild.name} (GID: {ctx.guild.id})\nUser: {ctx.message.author} (ID: {ctx.message.author.id})\nChannel:{ctx.channel} (CID: {ctx.channel.id})\n-------------------"
+        f"Command Executed\nName: {executedCommand} | {ctx.message.content}\nGuild Name: {ctx.guild.name} (GID: {ctx.guild.id})\nUser: {ctx.message.author} (ID: {ctx.message.author.id})\nChannel:{ctx.channel} (CID: {ctx.channel.id})\n-------------------"
     )
 
 

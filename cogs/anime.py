@@ -2,6 +2,7 @@ import discord
 import aiohttp
 
 from discord.ext import commands
+from discord.ext.commands.errors import UnexpectedQuoteError
 
 
 class Anime(commands.Cog):
@@ -62,6 +63,17 @@ class Anime(commands.Cog):
         async with aiohttp.ClientSession() as cs:
             async with cs.get("https://waifu.pics/api/sfw/waifu") as r:
                 await ctx.send((await r.json())["url"])
+
+    @commands.command()
+    async def animequote(self, ctx: commands.Context):
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get("https://animechan.vercel.app/api/random") as resp:
+                #vars
+                char = (await resp.json())["character"]
+                quote = (await resp.json())["quote"]
+                anime = (await resp.json())["anime"]
+                await ctx.send(embed=discord.Embed(description=f"{quote}\n~{char}", color=0xFFB6C1).set_footer(text=f"Quote From: {anime}"))
+
 
 
 def setup(bot):
