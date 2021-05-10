@@ -16,7 +16,7 @@
 - Rewrite Error Handler
 
 
-# NOTES
+# Notes
 - I've removed Fun commands using nekos.py. However, I will continue to use nekos.py for other commands. More than likely those commands will be NSFW
 
 # Sources
@@ -24,3 +24,10 @@
 - [RedBot](https://github.com/Cog-Creators/Red-DiscordBot)(PR Template)
 - [@6days9weeks](https://www.github.com/6days9weeks/)(Help With The Fun Cog)
 - The rest is me and excerpts from bots I've wrote in the past.
+
+
+# Supporters
+[![Stargazers repo roster for @Yat-o/HimejiBot](https://reporoster.com/stars/Yat-o/HimejiBot)](https://github.com/Yat-o/HimejiBot/stargazers)
+
+[![Forkers repo roster for @Yat-o/HimejiBot](https://reporoster.com/forks/Yat-o/HimejiBot)](https://github.com/Yat-o/HimejiBot/network/members)
+
