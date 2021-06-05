@@ -46,7 +46,7 @@ class BotOwner(commands.Cog):
     
     @commands.command()
     @commands.is_owner()
-    async def relaod(self, ctx: commands.Context, extension):
+    async def reload(self, ctx: commands.Context, extension):
         """Reload bot extensions"""
         try:
             await self.bot.reload_extension(extension)
