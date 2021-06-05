@@ -10,6 +10,16 @@ loaded_cogs = 0
 
 bot = commands.Bot(commands.when_mentioned_or(config.BOT_PREFIX), intents=discord.Intents.all())
 
+bot.remove_command("help")
+class HimejiHelpCommand(commands.MinimalHelpCommand):
+    async def send_pages(self):
+        destination = self.get_destination()
+        for page in self.paginator.pages:
+            embed = discord.Embed(description=page, color=discord.Color.random())
+            await destination.send(embed=embed)
+
+bot.help_command = HimejiHelpCommand(no_category="Help")
+
 
 print(Fore.MAGENTA + "STARTING COG LOADING PROCESS", Style.RESET_ALL)
 for cog in os.listdir("./cogs"):

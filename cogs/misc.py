@@ -9,6 +9,7 @@ class Miscellaneous(commands.Cog):
     
     @commands.command()
     async def ping(self, ctx: commands.Context):
+        """Obligitory ping command that shows Websocket latency"""
         await ctx.send(embed=discord.Embed(
             title=":ping_pong: Pong!",
             description=f"Websocket: {round(self.bot.latency * 1000)}ms",
