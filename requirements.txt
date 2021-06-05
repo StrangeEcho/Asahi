@@ -1,10 +1,9 @@
 jishaku
-nekos.py
-timeago
-EZPaginator 
 psutil
 discord.py 
 tabulate 
 matplotlib
 git+https://github.com/Rapptz/discord-ext-menus
 babel
+colorama 
+git+https://github.com/crazygmr101/button-utils
