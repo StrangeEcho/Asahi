@@ -286,6 +286,39 @@ class Miscellaneous(commands.Cog):
         embed.set_footer(text=f"Since: {since}")
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.command(aliases=["sinfo", "ginfo", "guildinfo"])
+    async def serverinfo(self, ctx: commands.Context, guild: discord.Guild = None):
+        """Get information about a certain guild"""
+        if guild is None:
+            guild = ctx.guild
+        
+        try:
+            await ctx.send(embed=discord.Embed(
+            title=guild.name,
+            color=discord.Color.random()
+            )
+            .set_thumbnail(url=guild.icon_url)
+            .add_field(name="Owner", value=f"{guild.owner}({guild.owner.id})", inline=True)
+            .add_field(name="Server ID", value=guild.id, inline=True)
+            .add_field(name="Region", value=str(guild.region).upper(), inline=True)
+            .add_field(name="Member Count", value=guild.member_count, inline=True)
+            .add_field(name="Role Count", value=len(guild.roles), inline=True)
+            .add_field(
+                name="Channel Count",
+                value=f"Text: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}\nTotal: {len(guild.text_channels) + len(guild.voice_channels)}",
+                inline=True
+            )
+            .add_field(name="Emoji Count", value=len(guild.emojis), inline=True)
+            .add_field(
+                    name="Features",
+                    value=str(guild.features).replace("[", "").replace("]", "").replace("'", "").replace(",", "\r\n"),
+                    inline=True
+                )
+            )
+        except discord.Forbidden:
+            await ctx.send("Cannot pull up statistics for this server because its not in my cache.")
+
+
 
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))

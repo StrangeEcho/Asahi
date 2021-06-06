@@ -1,12 +1,9 @@
-from typing import Union
-
 import discord
 
 from discord.ext import commands
 from discord.utils import get
 from utils.classes import MemberID
 from utils.funcs import check_hierachy
-
 
 class Moderation(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -71,6 +68,7 @@ class Moderation(commands.Cog):
     async def mute(
         self, ctx: commands.Context, member: discord.Member, *, reason: str = None
     ):
+        """Mute a member"""
         if await check_hierachy(ctx, member):
             return
         if reason is None:
@@ -94,11 +92,28 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def unmute(self, ctx: commands.Context, member: discord.Member):
+        """Unmute a member"""
         if not get(ctx.guild.roles, name="Himeji-Mute") in member.roles:
             await ctx.send(f"{member} is not muted.")
         elif get(ctx.guild.roles, name="Himeji-Mute") in member.roles:
             await member.remove_roles(get(ctx.guild.roles, name="Himeji-Mute"))
             await ctx.send(f"`{member}` is now unmuted")
+    
+    @commands.command(aliases=["clear", "remove"])
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    @commands.bot_has_permissions(manage_messages=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def purge(self, ctx: commands.Context, amount: int = None):
+        """Purge x amount of messages"""
+        if amount is None:
+            await ctx.send("Please pass in a amount of messages you want me to delete.")
+        else:
+            await ctx.message.delete()
+            await ctx.channel.purge(limit=amount)
+            await ctx.send(f"Purged {amount} messages.")
+    
+
 
 
 def setup(bot):

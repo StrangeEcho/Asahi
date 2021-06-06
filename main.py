@@ -4,7 +4,7 @@ from datetime import datetime
 
 import discord
 from aiohttp import ClientSession
-from colorama import Fore, Style
+from colorama import Fore, Style, Back
 from discord.ext import commands
 
 import config
@@ -100,9 +100,11 @@ class Bot(commands.AutoShardedBot):
                 except Exception as e:
                     unloaded_cogs += 1
                     print(
-                        Fore.RED + f"Failed to load the cog: {cog}\n{e}",
+                        Fore.RED + f"Failed to load the cog: {cog}",
                         Style.RESET_ALL,
                     )
+                    print(Back.RED, Fore.WHITE, f"\r{e}", Style.RESET_ALL)
+        print(Fore.MAGENTA, "\rDONE", Style.RESET_ALL)
         print(Fore.GREEN, f"\rTotal loaded cogs: {loaded_cogs}", Style.RESET_ALL)
         print(Fore.RED, f"\rTotal unloaded cogs: {unloaded_cogs}", Style.RESET_ALL)
         print("-" * 15)
