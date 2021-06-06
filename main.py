@@ -1,5 +1,6 @@
 import os
 import platform
+from datetime import datetime
 
 import aiohttp
 import discord
@@ -32,6 +33,7 @@ class Bot(commands.AutoShardedBot):
         )
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.owner_ids = config.OWNER_IDS
+        self.uptime = None
 
     async def on_connect(self):
         print(Fore.GREEN, f"\rLogged in as {self.user.name}(ID: {self.user.id})")
@@ -45,6 +47,9 @@ class Bot(commands.AutoShardedBot):
         print("-" * 15)
 
     async def on_ready(self):
+        if bot.uptime is not None:
+            return
+        bot.uptime = datetime.utcnow()
         print(Fore.MAGENTA + "STARTING COG LOADING PROCESS", Style.RESET_ALL)
         loaded_cogs = 0
         for cog in os.listdir("./cogs"):
