@@ -1,9 +1,9 @@
 import discord
 
-from discord.ext import commands
+from discord.ext import commands, menus
 from utils.funcs import can_execute_action
 
-#Borrowed from RoboDanny
+# Borrowed from RoboDanny
 class MemberID(commands.Converter):
     async def convert(self, ctx, argument):
         try:
@@ -12,16 +12,25 @@ class MemberID(commands.Converter):
             try:
                 member_id = int(argument, base=10)
             except ValueError:
-                raise commands.BadArgument(f"{argument} is not a valid member or member ID.") from None
+                raise commands.BadArgument(
+                    f"{argument} is not a valid member or member ID."
+                ) from None
             else:
                 m = await ctx.bot.get_or_fetch_member(ctx.guild, member_id)
                 if m is None:
                     # hackban case
-                    return type('_Hackban', (), {'id': member_id, '__str__': lambda s: f'Member ID {s.id}'})()
+                    return type(
+                        "_Hackban",
+                        (),
+                        {"id": member_id, "__str__": lambda s: f"Member ID {s.id}"},
+                    )()
 
         if not can_execute_action(ctx, ctx.author, m):
-            raise commands.BadArgument('You cannot do this action on this user due to role hierarchy.')
+            raise commands.BadArgument(
+                "You cannot do this action on this user due to role hierarchy."
+            )
         return m
+
 
 class EmbedListMenu(menus.ListPageSource):
     """

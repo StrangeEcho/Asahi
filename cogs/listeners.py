@@ -14,7 +14,9 @@ class Listeners(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
         """Handle errors caused by commands."""
         # Skips errors that were already handled locally.
         if getattr(ctx, "handled", False):
@@ -35,19 +37,23 @@ class Listeners(commands.Cog):
             await ctx.send(f"**{ctx.channel}** is not a NSFW channel")
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f"You are missing some required arguments\n`{error.param.name}`")
-        
-        elif isinstance(error, (
+            await ctx.send(
+                f"You are missing some required arguments\n`{error.param.name}`"
+            )
+
+        elif isinstance(
+            error,
+            (
                 commands.NotOwner,
                 commands.MissingPermissions,
                 commands.BotMissingAnyRole,
                 commands.MissingRole,
                 commands.BotMissingPermissions,
                 commands.CommandOnCooldown,
-                commands.CheckFailure
-        )):
+                commands.CheckFailure,
+            ),
+        ):
             await ctx.send(_(str(error)))
-
 
         elif isinstance(error, commands.DisabledCommand):  # SoonTM
             await ctx.send("This command is disabled")
