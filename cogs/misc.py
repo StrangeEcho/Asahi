@@ -6,6 +6,7 @@ from typing import Optional, Union, cast
 
 import aiohttp
 import discord
+import humanize
 from discord.ext import commands, menus
 
 from config import APPLICATION_ID
@@ -244,6 +245,17 @@ class Miscellaneous(commands.Cog):
         except Exception:
             return await ctx.reply("Does this emoji even exist?", mention_author=False)
         await ctx.send(file=discord.File(img, filename))
+
+    @commands.command()
+    async def uptime(self, ctx: commands.Context):
+        """Shows bot's uptime."""
+        since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
+        delta = datetime.utcnow() - self.bot.uptime
+        uptime_text = humanize.time.precisedelta(delta) or ("Less than one second.")
+        embed = discord.Embed(colour=0xD0B6D8)
+        embed.add_field(name=f"{self.bot.user.name} has been up for:", value=uptime_text)
+        embed.set_footer(text=f"Since: {since}")
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):
