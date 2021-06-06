@@ -32,12 +32,6 @@ class Bot(commands.AutoShardedBot):
         )
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.owner_ids = config.OWNER_IDS
-        
-        if "status" not in kwargs:
-            kwargs["status"] = discord.Status("idle")
-
-        if "activity" not in kwargs:
-            kwargs["activity"] = discord.Game("with your heart.")
 
     async def on_connect(self):
         print(Fore.GREEN, f"\rLogged in as {self.user.name}(ID: {self.user.id})")
