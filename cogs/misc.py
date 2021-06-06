@@ -7,7 +7,7 @@ from typing import Optional, Union, cast
 import aiohttp
 import discord
 import humanize
-from discord.ext import commands, menus
+from discord.ext import commands
 
 from config import APPLICATION_ID
 from utils.funcs import box
