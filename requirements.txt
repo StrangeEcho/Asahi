@@ -1,9 +1,10 @@
 jishaku
 psutil
-discord.py 
+git+https://github.com/Rapptz/discord.py
 tabulate 
 matplotlib
 git+https://github.com/Rapptz/discord-ext-menus
 babel
+hentai
 colorama 
 git+https://github.com/crazygmr101/button-utils
