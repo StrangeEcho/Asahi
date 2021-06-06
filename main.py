@@ -76,5 +76,6 @@ class Bot(commands.AutoShardedBot):
         if self._session:
             await self._session.close()
 
+
 bot = Bot()
 bot.run(config.TOKEN)
