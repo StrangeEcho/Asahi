@@ -10,7 +10,7 @@ import humanize
 from discord.ext import commands, menus
 
 from config import APPLICATION_ID
-from utils.funcs import box, time_notation
+from utils.funcs import box
 
 
 class Miscellaneous(commands.Cog):
