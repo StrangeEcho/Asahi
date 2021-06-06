@@ -1,9 +1,8 @@
 import datetime
-from typing import Optional
 
 import discord
 from discord.ext import commands, menus
-from hentai import Format, Hentai, Sort, Tag, Utils
+from hentai import Format, Hentai, Tag, Utils
 
 from utils.funcs import EmbedListMenu, box
 

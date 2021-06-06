@@ -1,4 +1,3 @@
-import json
 import platform
 import time
 from datetime import datetime
