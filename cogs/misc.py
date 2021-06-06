@@ -297,7 +297,7 @@ class Miscellaneous(commands.Cog):
             title=guild.name,
             color=discord.Color.random()
             )
-            .set_thumbnail(url=guild.icon_url)
+            .set_thumbnail(url=guild.icon.url)
             .add_field(name="Owner", value=f"{guild.owner}({guild.owner.id})", inline=True)
             .add_field(name="Server ID", value=guild.id, inline=True)
             .add_field(name="Region", value=str(guild.region).upper(), inline=True)
