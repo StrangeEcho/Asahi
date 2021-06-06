@@ -61,9 +61,7 @@ class Miscellaneous(commands.Cog):
     async def invite(self, ctx: commands.Context):
         """Invite the bot to your server."""
         embed = discord.Embed(color=discord.Color.random(), title="<3")
-        embed.description = (
-            f"Invite Link: https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot"
-        )
+        embed.description = f"Invite Link: https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot"
         embed.set_footer(
             text=f"Thank you for inviting {self.bot.user.name} <3",
             icon_url=self.bot.user.avatar.url,

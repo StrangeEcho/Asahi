@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, menus
 
 
 async def check_hierachy(ctx: commands.Context, member: discord.Member):
@@ -51,3 +51,21 @@ def box(text: str, lang: str = "") -> str:
     """
     ret = "```{}\n{}\n```".format(lang, text)
     return ret
+
+
+class EmbedListMenu(menus.ListPageSource):
+    """
+    Paginated embed menu.
+    """
+
+    def __init__(self, data):
+        """
+        Initializes the EmbedListMenu.
+        """
+        super().__init__(data, per_page=1)
+
+    async def format_page(self, menu, embeds):
+        """
+        Formats the page.
+        """
+        return embeds
