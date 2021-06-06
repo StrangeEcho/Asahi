@@ -70,6 +70,11 @@ class Bot(commands.AutoShardedBot):
         print(Fore.MAGENTA + "DONE", Style.RESET_ALL)
         print("-" * 15)
 
+    async def close(self):
+        """Logs out of Discord and closes all connections."""
+        await super().close()
+        if self._session:
+            await self._session.close()
 
 bot = Bot()
 bot.run(config.TOKEN)
