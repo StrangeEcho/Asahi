@@ -7,22 +7,15 @@
 
 - If you find any issues within the code please submit a issue via this Repo's [Issue Page](https://github.com/Yat-o/HimejiBot/issues)
 
-- HimejiBot Uses Python Version [3.7.5](https://www.python.org/downloads/release/python-375/) and [Discord.py](https://discordpy.readthedocs.io/en/latest/#) Version 1.6.0
-
-# TODO
-- C&C Cogs and perhaps bot.py
-- Add Leveling System(I'm not too sure about this tbh)
-- Currency System(meh)
-- Rewrite Error Handler
-
+- HimejiBot Uses Python Version [3.8.5](https://www.python.org/downloads/release/python-385/) and [Discord.py](https://discordpy.readthedocs.io/en/latest/#) Version 2.0.a
 
 # Notes
-- I've removed Fun commands using nekos.py. However, I will continue to use nekos.py for other commands. More than likely those commands will be NSFW
+- This branch is currently under rewrite, I expect things to break.
 
 # Sources
-- [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval Command)
+- [RoboDanny](https://github.com/Rapptz/RoboDanny)(Eval & REPL Commands)
 - [RedBot](https://github.com/Cog-Creators/Red-DiscordBot)(PR Template)
-- [@6days9weeks](https://www.github.com/6days9weeks/)(Help With The Fun Cog)
+- [@6days9weeks](https://www.github.com/6days9weeks/)(Help with code, few cogs and questions)
 - The rest is me and excerpts from bots I've wrote in the past.
 
 

@@ -30,11 +30,11 @@ class NhentaiLOL(commands.Cog):
     @commands.group()
     @commands.cooldown(1, 5, commands.BucketType.member)
     @commands.is_nsfw()
-    async def nhentai(self, ctx):
+    async def nhentai(self, ctx: commands.Context):
         """Some nhentai related commands."""
 
     @nhentai.command()
-    async def read(self, ctx, digits):
+    async def read(self, ctx: commands.Context, digits):
         """Read doujins."""
         if not digits.isdigit():
             return await ctx.send("Only digits allowed.")
@@ -53,7 +53,7 @@ class NhentaiLOL(commands.Cog):
         ).start(ctx=ctx, wait=False)
 
     @nhentai.command(aliases=["random"])
-    async def rnd(self, ctx):
+    async def rnd(self, ctx: commands.Context):
         """Random one"""
         doujin = Hentai(Utils.get_random_id())
         embed_list = []
@@ -68,7 +68,7 @@ class NhentaiLOL(commands.Cog):
         ).start(ctx=ctx, wait=False)
 
     @nhentai.command(aliases=["info"])
-    async def lookup(self, ctx, doujin):
+    async def lookup(self, ctx: commands.Context, doujin):
         """ Info about a doujin."""
         if not doujin.isdigit():
             return await ctx.send("Only digits allowed.")

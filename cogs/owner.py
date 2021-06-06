@@ -1,6 +1,7 @@
 import asyncio
 import inspect
 import io
+import re
 import textwrap
 import traceback
 from contextlib import redirect_stdout
@@ -12,7 +13,7 @@ from dpy_button_utils import ButtonConfirmation
 
 from utils.funcs import box
 
-
+START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 # most stuffs in this owner cog related to development is from https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/admin.py
 class BotOwner(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -20,11 +21,12 @@ class BotOwner(commands.Cog):
         self._last_result = None
         self.sessions = set()
 
-    def cleanup_code(self, content):
+    @staticmethod
+    def cleanup_code(content):
         """Automatically removes code blocks from the code."""
         # remove ```py\n```
         if content.startswith("```") and content.endswith("```"):
-            return "\n".join(content.split("\n")[1:-1])
+            return START_CODE_BLOCK_RE.sub("", content)[:-3]
 
         # remove `foo`
         return content.strip("` \n")
@@ -49,7 +51,7 @@ class BotOwner(commands.Cog):
 
     @commands.command(name="eval")
     @commands.is_owner()
-    async def _eval(self, ctx, *, body: str):
+    async def _eval(self, ctx: commands.Context, *, body: str):
         """Evaluates python code"""
 
         env = {
@@ -89,15 +91,15 @@ class BotOwner(commands.Cog):
                 pass
 
             if ret is None:
-                    try:
-                        await ctx.send(f"```py\n{value}\n```")
-                    except:
-                        paginated_text = self.paginate(value)
-                        for page in paginated_text:
-                            if page == paginated_text[-1]:
-                                await ctx.send(f"```py\n{page}\n```")
-                                break
+                try:
+                    await ctx.send(f"```py\n{value}\n```")
+                except:
+                    paginated_text = self.paginate(value)
+                    for page in paginated_text:
+                        if page == paginated_text[-1]:
                             await ctx.send(f"```py\n{page}\n```")
+                            break
+                        await ctx.send(f"```py\n{page}\n```")
             else:
                 self._last_result = ret
                 try:
@@ -170,7 +172,7 @@ class BotOwner(commands.Cog):
             await chan.send(msg)
 
     @commands.command(pass_context=True, hidden=True)
-    async def repl(self, ctx):
+    async def repl(self, ctx: commands.Context):
         """Launches an interactive REPL session."""
         variables = {
             "ctx": ctx,
@@ -266,5 +268,5 @@ class BotOwner(commands.Cog):
                 await ctx.send(f"Unexpected error: `{e}`")
 
 
-def setup(bot: commands.Bot):
+def setup(bot):
     bot.add_cog(BotOwner(bot))

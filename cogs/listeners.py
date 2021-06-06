@@ -79,18 +79,24 @@ class Listeners(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         if message.author.id == self.bot.user.id:
-            pass
-        elif not message.guild and FOWARD_DMS is True:
-            owner = self.bot.get_user(284102119408140289)
-            await owner.send(
-                embed=discord.Embed(
-                    title=f"{message.author} said ...",
-                    description=message.content,
-                    color=discord.Color.green(),
-                )
-            )
-        else:
-            pass
+            return
+        if message.author.bot:
+            return
+        if not message.guild and FOWARD_DMS is True:
+            for owner in self.bot.owner_ids:
+                try:
+                    await self.bot.get_user(owner).send(
+                        embed=discord.Embed(
+                            title=f"{message.author} said ... in dms",
+                            description=message.content,
+                            color=discord.Color.green(),
+                        ).set_footer(
+                            text=f"User ID: {message.author.id}",
+                            icon_url=message.author.avatar.url,
+                        )
+                    )
+                except discord.HTTPException as e:
+                    print(f"Failed to forward dms to the owner due to: {e}")
 
 
 def setup(bot):
