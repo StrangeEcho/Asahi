@@ -291,7 +291,10 @@ class Miscellaneous(commands.Cog):
         """Get information about a certain guild"""
         if guild is None:
             guild = ctx.guild
-        
+
+        guild_features = str(guild.features).replace("[", "").replace("]", "").replace("'", "").replace(",", "\r\n") or "None"
+
+
         try:
             await ctx.send(embed=discord.Embed(
             title=guild.name,
@@ -311,7 +314,7 @@ class Miscellaneous(commands.Cog):
             .add_field(name="Emoji Count", value=len(guild.emojis), inline=True)
             .add_field(
                     name="Features",
-                    value=str(guild.features).replace("[", "").replace("]", "").replace("'", "").replace(",", "\r\n"),
+                    value=guild_features,
                     inline=True
                 )
             )
