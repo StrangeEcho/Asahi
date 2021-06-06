@@ -157,7 +157,7 @@ class BotOwner(commands.Cog):
         except commands.ExtensionError as e:
             await ctx.send(e)
 
-    @commands.command()  # ill probably make this command public soon? say/embed once I filter out the default role mentions
+    @commands.command()
     @commands.is_owner()
     async def say(self, ctx, chan: Optional[discord.TextChannel] = None, *, msg):
         """Say something with the bot."""
