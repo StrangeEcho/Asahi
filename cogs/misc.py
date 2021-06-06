@@ -1,14 +1,16 @@
 import platform
 import time
 from datetime import datetime
+from io import BytesIO
+from typing import Optional, Union, cast
 
 import aiohttp
 import discord
+import humanize
 from discord.ext import commands
 
 from config import APPLICATION_ID
-from utils.funcs import box, time_notation
-from utils.vars import bot_start_time
+from utils.funcs import box
 
 
 class Miscellaneous(commands.Cog):
@@ -19,7 +21,7 @@ class Miscellaneous(commands.Cog):
     @commands.command()
     async def ping(
         self,
-        ctx,
+        ctx: commands.Context,
     ):
         """Just a ping command"""
         latency = self.bot.latency * 1000
@@ -102,7 +104,9 @@ class Miscellaneous(commands.Cog):
             inline=True,
         )
         embed.add_field(
-            name="Uptime:", value=f"{time_notation(datetime.now() - bot_start_time)}", inline=True
+            name="Uptime:",
+            value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
+            inline=True,
         )
         embed.add_field(
             name="Creation Date:", value=self.bot.user.created_at.strftime("%c"), inline=True
@@ -121,7 +125,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command(usage="(project name)")
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def pypi(self, ctx, project: str):
+    async def pypi(self, ctx: commands.Context, project: str):
         """Get information of a python project from pypi."""
         async with self.bot.session.get(f"https://pypi.org/pypi/{project}/json") as response:
             try:
@@ -159,6 +163,103 @@ class Miscellaneous(commands.Cog):
             e.add_field(name="License", value=info["license"] or "`Not specified.`")
             await ctx.reply(embed=e, mention_author=False)
 
+    @commands.command()
+    @commands.guild_only()
+    @commands.cooldown(1, 10, commands.BucketType.member)
+    @commands.bot_has_permissions(embed_links=True)
+    async def avatar(self, ctx: commands.Context, user: Optional[discord.Member]):
+        """Check your avatars."""
+        await ctx.channel.trigger_typing()
+        if user is None:
+            user = ctx.author
+        ext = "gif" if user.avatar.is_animated() else "png"
+        e = discord.Embed(title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url)
+        e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
+        e.set_footer(text=f"ID: {user.id}")
+        await ctx.send(
+            embed=e,
+            file=discord.File(
+                BytesIO(await user.avatar.with_size(4096).read()),
+                f"aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}",
+            ),
+        )
 
-def setup(bot: commands.Bot):
+    @commands.command()
+    @commands.bot_has_permissions(embed_links=True, attach_files=True)
+    @commands.max_concurrency(1, commands.BucketType.user)
+    async def osu(self, ctx: commands.Context, *, user):
+        """Get osu information about someone."""
+        try:
+            async with self.bot.session.get(
+                "https://api.martinebot.com/v1/imagesgen/osuprofile",
+                params={
+                    "player_username": user,
+                },
+                raise_for_status=True,
+            ) as r:
+                pic = BytesIO(await r.read())
+        except aiohttp.ClientResponseError as e:
+            emb = discord.Embed(
+                description=f"Cannot contact the api due to error: [{e.status}] {e.message}",
+                color=0xFFC2D2,
+            )
+            return await ctx.send(embed=emb)
+        e = discord.Embed(title=f"Here's the osu profile for {user}", color=discord.Color.random())
+        if isinstance(pic, BytesIO):
+            e.set_image(url="attachment://osu.png")
+        elif isinstance(pic, str):
+            e.set_footer(text="Api is currently down.")
+
+        await ctx.send(
+            embed=e,
+            file=discord.File(pic, filename="osu.png") if pic else None,
+        )
+        if isinstance(pic, BytesIO):
+            pic.close()
+
+    @commands.command(aliases=["se", "bigmoji", "jumbo"])
+    async def bigemoji(
+        self,
+        ctx: commands.Context,
+        emoji: Union[discord.Emoji, discord.PartialEmoji, str],
+    ) -> None:
+        """
+        Get a emoji in big size lol
+        """
+        await ctx.channel.trigger_typing()
+        if type(emoji) in [discord.PartialEmoji, discord.Emoji]:
+            aa_emoji = cast(discord.Emoji, emoji)
+            ext = "gif" if aa_emoji.animated else "png"
+            url = "https://cdn.discordapp.com/emojis/{id}.{ext}?v=1".format(
+                id=aa_emoji.id, ext=ext
+            )
+            filename = "{name}.{ext}".format(name=aa_emoji.name, ext=ext)
+        else:
+            try:
+                """https://github.com/glasnt/emojificate/blob/master/emojificate/filter.py"""
+                cdn_fmt = "https://twemoji.maxcdn.com/2/72x72/{codepoint:x}.png"
+                url = cdn_fmt.format(codepoint=ord(str(emoji)))
+                filename = "emoji.png"
+            except TypeError:
+                return await ctx.send("That doesn't appear to be a valid emoji")
+        try:
+            async with self.bot.session.get(url) as resp:
+                image = BytesIO(await resp.read())
+        except Exception:
+            return await ctx.send("That doesn't appear to be a valid emoji")
+        await ctx.send(file=discord.File(image, filename=filename))
+
+    @commands.command()
+    async def uptime(self, ctx: commands.Context):
+        """Shows bot's uptime."""
+        since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
+        delta = datetime.utcnow() - self.bot.uptime
+        uptime_text = humanize.time.precisedelta(delta) or ("Less than one second.")
+        embed = discord.Embed(colour=0xD0B6D8)
+        embed.add_field(name=f"{self.bot.user.name} has been up for:", value=uptime_text)
+        embed.set_footer(text=f"Since: {since}")
+        await ctx.reply(embed=embed, mention_author=False)
+
+
+def setup(bot):
     bot.add_cog(Miscellaneous(bot))

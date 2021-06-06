@@ -1,8 +1,9 @@
 import os
 import platform
+from datetime import datetime
 
-import aiohttp
 import discord
+from aiohttp import ClientSession
 from colorama import Fore, Style
 from discord.ext import commands
 
@@ -30,8 +31,15 @@ class Bot(commands.AutoShardedBot):
             *args,
             **kwargs,
         )
-        self.session = aiohttp.ClientSession(loop=self.loop)
         self.owner_ids = config.OWNER_IDS
+        self.uptime = None
+        self._session = None
+
+    @property
+    def session(self) -> ClientSession:
+        if self._session is None:
+            self._session = ClientSession(loop=self.loop)
+        return self._session
 
     async def on_connect(self):
         print(Fore.GREEN, f"\rLogged in as {self.user.name}(ID: {self.user.id})")
@@ -45,6 +53,9 @@ class Bot(commands.AutoShardedBot):
         print("-" * 15)
 
     async def on_ready(self):
+        if bot.uptime is not None:
+            return
+        bot.uptime = datetime.utcnow()
         print(Fore.MAGENTA + "STARTING COG LOADING PROCESS", Style.RESET_ALL)
         loaded_cogs = 0
         for cog in os.listdir("./cogs"):
@@ -58,6 +69,12 @@ class Bot(commands.AutoShardedBot):
         print(f"Total loaded cogs: {loaded_cogs}")
         print(Fore.MAGENTA + "DONE", Style.RESET_ALL)
         print("-" * 15)
+
+    async def close(self):
+        """Logs out of Discord and closes all connections."""
+        await super().close()
+        if self._session:
+            await self._session.close()
 
 
 bot = Bot()
