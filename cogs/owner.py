@@ -1,4 +1,8 @@
+import io
+import textwrap
+import traceback
 from typing import Optional
+from contextlib import redirect_stdout
 
 import discord
 from discord.ext import commands
@@ -88,8 +92,8 @@ class BotOwner(commands.Cog):
     async def load(self, ctx: commands.Context, extension):
         """Load bot extensions"""
         try:
-            await self.bot.load_extension(extension)
-            await ctx.send(f"Loaded cogs {extension}")
+            self.bot.load_extension(extension)
+            await ctx.send(f":inbox_tray: Loaded extension: `{extension}`")
         except commands.ExtensionError as e:
             await ctx.send(e)
 
@@ -98,8 +102,8 @@ class BotOwner(commands.Cog):
     async def unload(self, ctx: commands.Context, extension):
         """Unload bot extensions"""
         try:
-            await self.bot.unload_extension(extension)
-            await ctx.send(f"Unloaded cogs {extension}")
+            self.bot.unload_extension(extension)
+            await ctx.send(f":outbox_tray: Unloaded extension: `{extension}`")
         except commands.ExtensionError as e:
             await ctx.send(e)
 
@@ -108,8 +112,8 @@ class BotOwner(commands.Cog):
     async def reload(self, ctx: commands.Context, extension):
         """Reload bot extensions"""
         try:
-            await self.bot.reload_extension(extension)
-            await ctx.send(f"Reloaded cogs {extension}")
+            self.bot.reload_extension(extension)
+            await ctx.send(f"<a:cog_reload:850891346910773248> Reloaded extension: `{extension}`")
         except commands.ExtensionError as e:
             await ctx.send(e)
 
