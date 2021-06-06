@@ -230,8 +230,10 @@ class Miscellaneous(commands.Cog):
         if type(emoji) in [discord.PartialEmoji, discord.Emoji]:
             aa_emoji = cast(discord.Emoji, emoji)
             ext = "gif" if aa_emoji.animated else "png"
-            url = f"https://cdn.discordapp.com/emojis/{id}.{ext}?v=1"
-            filename = f"{aa_emoji.name}.{ext}"
+            url = "https://cdn.discordapp.com/emojis/{id}.{ext}?v=1".format(
+                id=aa_emoji.id, ext=ext
+            )
+            filename = "{name}.{ext}".format(name=aa_emoji.name, ext=ext)
         else:
             try:
                 """https://github.com/glasnt/emojificate/blob/master/emojificate/filter.py"""
@@ -239,13 +241,13 @@ class Miscellaneous(commands.Cog):
                 url = cdn_fmt.format(codepoint=ord(str(emoji)))
                 filename = "emoji.png"
             except TypeError:
-                return await ctx.reply("Does this emoji even exist?", mention_author=False)
+                return await ctx.send("That doesn't appear to be a valid emoji")
         try:
-            async with self.bot.session.get(url) as res:
-                img = BytesIO(await res.read())
+            async with self.bot.session.get(url) as resp:
+                image = BytesIO(await resp.read())
         except Exception:
-            return await ctx.reply("Does this emoji even exist?", mention_author=False)
-        await ctx.send(file=discord.File(img, filename))
+            return await ctx.send("That doesn't appear to be a valid emoji")
+        await ctx.send(file=discord.File(image, filename=filename))
 
     @commands.command()
     async def uptime(self, ctx: commands.Context):
