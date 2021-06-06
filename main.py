@@ -24,7 +24,7 @@ class Bot(commands.AutoShardedBot):
     def __init__(self, *args, **kwargs):
         print(Fore.GREEN, f"\rStarting the bot...")
         super().__init__(
-            command_prefix=config.BOT_PREFIX,
+            command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
             help_command=HimejiHelpCommand(no_category="Help"),
             allowed_mentions=discord.AllowedMentions(roles=False, everyone=False),
@@ -34,6 +34,38 @@ class Bot(commands.AutoShardedBot):
         self.owner_ids = config.OWNER_IDS
         self.uptime = None
         self._session = None
+
+    async def get_or_fetch_member(self, guild, member_id):
+        """Looks up a member in cache or fetches if not found.
+        Parameters
+        -----------
+        guild: Guild
+            The guild to look in.
+        member_id: int
+            The member ID to search for.
+        Returns
+        ---------
+        Optional[Member]
+            The member or None if not found.
+        """
+
+        member = guild.get_member(member_id)
+        if member is not None:
+            return member
+
+        shard = self.get_shard(guild.shard_id)
+        if shard.is_ws_ratelimited():
+            try:
+                member = await guild.fetch_member(member_id)
+            except discord.HTTPException:
+                return None
+            else:
+                return member
+
+        members = await guild.query_members(limit=1, user_ids=[member_id], cache=True)
+        if not members:
+            return None
+        return members[0]
 
     @property
     def session(self) -> ClientSession:
@@ -58,16 +90,18 @@ class Bot(commands.AutoShardedBot):
         bot.uptime = datetime.utcnow()
         print(Fore.MAGENTA + "STARTING COG LOADING PROCESS", Style.RESET_ALL)
         loaded_cogs = 0
+        unloaded_cogs = 0
         for cog in os.listdir("./cogs"):
             if cog.endswith(".py"):
                 try:
                     self.load_extension(f"cogs.{cog[:-3]}")
+                    print(Fore.YELLOW + f"Loaded {cog}", Style.RESET_ALL)
+                    loaded_cogs += 1
                 except Exception as e:
-                    print(Fore.RED + f"Failed to load the cog: {cog}", Style.RESET_ALL)
-                loaded_cogs += 1
-                print(Fore.YELLOW + f"Loaded {cog}", Style.RESET_ALL)
-        print(f"Total loaded cogs: {loaded_cogs}")
-        print(Fore.MAGENTA + "DONE", Style.RESET_ALL)
+                    unloaded_cogs += 1
+                    print(Fore.RED + f"Failed to load the cog: {cog}\n{e}", Style.RESET_ALL)
+        print(Fore.GREEN, f"\rTotal loaded cogs: {loaded_cogs}", Style.RESET_ALL)
+        print(Fore.RED, f"\rTotal unloaded cogs: {unloaded_cogs}", Style.RESET_ALL)
         print("-" * 15)
 
     async def close(self):
