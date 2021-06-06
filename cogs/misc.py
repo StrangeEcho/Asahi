@@ -11,7 +11,6 @@ from discord.ext import commands, menus
 
 from config import APPLICATION_ID
 from utils.funcs import box, time_notation
-from utils.vars import bot_start_time
 
 
 class Miscellaneous(commands.Cog):
@@ -105,7 +104,9 @@ class Miscellaneous(commands.Cog):
             inline=True,
         )
         embed.add_field(
-            name="Uptime:", value=f"{time_notation(datetime.now() - bot_start_time)}", inline=True
+            name="Uptime:",
+            value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
+            inline=True,
         )
         embed.add_field(
             name="Creation Date:", value=self.bot.user.created_at.strftime("%c"), inline=True

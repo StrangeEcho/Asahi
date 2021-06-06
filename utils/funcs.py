@@ -22,19 +22,6 @@ async def check_hierachy(ctx: commands.Context, member: discord.Member):
         pass
 
 
-# Credit for this goes to crazygmr101/https://github.com/aoi-bot/Aoi
-def time_notation(td: timedelta, sep="", full=False):
-    hours = td.seconds // 3600
-    minutes = (td.seconds % 3600) // 60
-    return sep.join(
-        [
-            f"{td.days}{'days' if full else 'd '}",
-            f"{hours}{'hours' if full else 'h '}",
-            f"{minutes}{'minutes' if full else 'm '}",
-        ]
-    )
-
-
 # Credits to https://github.com/Cog-Creators/Red-DiscordBot/blob/ded5aff08cfe443498770e7f27035db694e72c30/redbot/core/utils/chat_formatting.py#L86
 def box(text: str, lang: str = "") -> str:
     """Get the given text in a code block.

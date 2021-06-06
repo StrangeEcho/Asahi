@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands, menus
 from hentai import Format, Hentai, Tag, Utils
 
-from utils.funcs import EmbedListMenu, box
+from utils.funcs import EmbedListMenu
 
 
 class Embed(discord.Embed):
