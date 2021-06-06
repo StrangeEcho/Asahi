@@ -89,11 +89,26 @@ class BotOwner(commands.Cog):
                 pass
 
             if ret is None:
-                if value:
-                    await ctx.send(f"```py\n{value}\n```")
+                    try:
+                        await ctx.send(f"```py\n{value}\n```")
+                    except:
+                        paginated_text = self.paginate(value)
+                        for page in paginated_text:
+                            if page == paginated_text[-1]:
+                                await ctx.send(f"```py\n{page}\n```")
+                                break
+                            await ctx.send(f"```py\n{page}\n```")
             else:
                 self._last_result = ret
-                await ctx.send(f"```py\n{value}{ret}\n```")
+                try:
+                    await ctx.send(f"```py\n{value}{ret}\n```")
+                except:
+                    paginated_text = self.paginate(f"{value}{ret}")
+                    for page in paginated_text:
+                        if page == paginated_text[-1]:
+                            await ctx.send(f"```py\n{page}\n```")
+                            break
+                        await ctx.send(f"```py\n{page}\n```")
 
     @commands.command(aliases=["shutdown", "logout", "sleep"])
     @commands.is_owner()
