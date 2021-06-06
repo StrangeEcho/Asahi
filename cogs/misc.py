@@ -61,7 +61,7 @@ class Miscellaneous(commands.Cog):
         .add_field(name="\u200B", value="\u200B", inline=True)
         .add_field(name="Github Repository:", value="Find it [here](https://github.com/Yat-o/HimejiBot/tree/rewrite)", inline=True)
         .add_field(name="\u200B", value="\u200B", inline=True)
-        .set_footer(icon_url=ctx.author.avatar.url, text=f"{self.bot.user.name} was move with love. <3")
+        .set_footer(icon_url=ctx.author.avatar.url, text=f"{self.bot.user.name} was made with love. <3")
         )
 
 
