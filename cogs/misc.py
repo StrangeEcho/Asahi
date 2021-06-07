@@ -193,13 +193,9 @@ class Miscellaneous(commands.Cog):
         if user is None:
             user = ctx.author
         ext = "gif" if user.avatar.is_animated() else "png"
-<<<<<<< HEAD
-        e = discord.Embed(title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url)
-=======
         e = discord.Embed(
             title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url
         )
->>>>>>> eafaee82c8743bbf6ff31f4727c2e20b9a388614
         e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(
