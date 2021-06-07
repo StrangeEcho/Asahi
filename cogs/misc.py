@@ -308,7 +308,7 @@ class Miscellaneous(commands.Cog):
             .add_field(name="Role Count", value=len(guild.roles), inline=True)
             .add_field(
                 name="Channel Count",
-                value=f"Text: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}\nTotal: {len(guild.text_channels) + len(guild.voice_channels)}",
+                value=f"Categories: {len(guild.categories)}Text: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}\nTotal: {len(guild.text_channels) + len(guild.voice_channels)}",
                 inline=True
             )
             .add_field(name="Emoji Count", value=len(guild.emojis), inline=True)
@@ -317,6 +317,7 @@ class Miscellaneous(commands.Cog):
                     value=guild_features,
                     inline=True
                 )
+            .add_field(name="Creation Time", value=guild.created_at.strftime("%c"))
             )
         except discord.Forbidden:
             await ctx.send("Cannot pull up statistics for this server because its not in my cache.")
