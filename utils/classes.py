@@ -1,7 +1,8 @@
 import discord
-
 from discord.ext import commands, menus
+
 from utils.funcs import can_execute_action
+
 
 # Borrowed from RoboDanny
 class MemberID(commands.Converter):
