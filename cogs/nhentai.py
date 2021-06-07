@@ -22,7 +22,7 @@ class Embed(discord.Embed):
         return instance
 
 
-class NhentaiLOL(commands.Cog):
+class Nhentai(commands.Cog):
     """Something for perverts or something idk."""
 
     def __init__(self, bot):

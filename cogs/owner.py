@@ -273,6 +273,49 @@ class BotOwner(commands.Cog):
             except discord.HTTPException as e:
                 await ctx.send(f"Unexpected error: `{e}`")
 
+    @commands.command()
+    @commands.is_owner()
+    async def dm(self, ctx, id: int, *, msg):
+        try:
+            await self.bot.get_user(id).send(embed=discord.Embed(
+                title="You got mail",
+                description=msg,
+                color=discord.Color.random()
+            )
+            .set_footer(text=f"Message from {ctx.author}")
+            )
+            await ctx.send("Message Sent!")
+        except (discord.Forbidden, discord.NotFound) as e:
+            await ctx.send(e)
+
+    @commands.command(name="frick", aliases=["sho"], hidden=True)
+    @commands.is_owner()
+    @commands.guild_only
+    async def frick(self, ctx: commands.Context, limit: int = 50) -> None:
+        """
+        Cleans up the bots messages.
+        `limit`: The amount of messages to check back through. Defaults to 50.
+        """
+
+        prefix = config.BOT_PREFIX
+
+        if ctx.channel.permissions_for(ctx.me).manage_messages:
+            messages = await ctx.channel.purge(
+                check=lambda message: message.author == ctx.me
+                                      or message.content.startswith(prefix),
+                bulk=True,
+                limit=limit,
+            )
+        else:
+            messages = await ctx.channel.purge(
+                check=lambda message: message.author == ctx.me, bulk=False, limit=limit
+            )
+
+        await ctx.send(
+            f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
+            delete_after=3,
+        )
+
 
 def setup(bot):
     bot.add_cog(BotOwner(bot))
