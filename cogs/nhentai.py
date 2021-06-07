@@ -5,10 +5,11 @@ from discord.ext import commands, menus
 from hentai import Format, Hentai, Tag, Utils
 
 from utils.classes import EmbedListMenu
+from config import OK_COLOR
 
-
+embed_color = OK_COLOR.replace("#", "0x")
 class Embed(discord.Embed):
-    def __init__(self, colour=self.bot.ok_color, timestamp=None, **kwargs):
+    def __init__(self, colour=int(embed_color, base=16), timestamp=None, **kwargs):
         super(Embed, self).__init__(
             colour=colour, timestamp=timestamp or datetime.datetime.utcnow(), **kwargs
         )
