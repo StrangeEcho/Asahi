@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 import discord
-from discord.ext import commands, menus
+from discord.ext import commands
 
 
 async def check_hierachy(ctx: commands.Context, member: discord.Member):
@@ -13,13 +13,23 @@ async def check_hierachy(ctx: commands.Context, member: discord.Member):
         elif member.id == ctx.bot.user.id:
             return await ctx.send(f"You'd really {ctx.command.name} me? :animehmph:")
         elif member.id == ctx.guild.owner.id:
-            return await ctx.send("Even if I wanted to do this. It's literally impossible")
+            return await ctx.send(
+                "Even if I wanted to do this. It's literally impossible"
+            )
         elif ctx.author.top_role <= member.top_role:
             return await ctx.send(
                 f"You cant use {ctx.command.name} on someone whos equal or higher than you in the role hierarchy"
             )
     except Exception as e:
         pass
+
+
+def can_execute_action(ctx, user, target):
+    return (
+        user.id == ctx.bot.owner_id
+        or user == ctx.guild.owner
+        or user.top_role > target.top_role
+    )
 
 
 # Credits to https://github.com/Cog-Creators/Red-DiscordBot/blob/ded5aff08cfe443498770e7f27035db694e72c30/redbot/core/utils/chat_formatting.py#L86
@@ -38,21 +48,3 @@ def box(text: str, lang: str = "") -> str:
     """
     ret = "```{}\n{}\n```".format(lang, text)
     return ret
-
-
-class EmbedListMenu(menus.ListPageSource):
-    """
-    Paginated embed menu.
-    """
-
-    def __init__(self, data):
-        """
-        Initializes the EmbedListMenu.
-        """
-        super().__init__(data, per_page=1)
-
-    async def format_page(self, menu, embeds):
-        """
-        Formats the page.
-        """
-        return embeds

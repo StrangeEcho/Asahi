@@ -154,7 +154,9 @@ class BotOwner(commands.Cog):
         """Reload bot extensions"""
         try:
             self.bot.reload_extension(extension)
-            await ctx.send(f"<a:cog_reload:850891346910773248> Reloaded extension: `{extension}`")
+            await ctx.send(
+                f"<a:cog_reload:850891346910773248> Reloaded extension: `{extension}`"
+            )
         except commands.ExtensionError as e:
             await ctx.send(e)
 
@@ -185,7 +187,9 @@ class BotOwner(commands.Cog):
         }
 
         if ctx.channel.id in self.sessions:
-            await ctx.send("Already running a REPL session in this channel. Exit it with `quit`.")
+            await ctx.send(
+                "Already running a REPL session in this channel. Exit it with `quit`."
+            )
             return
 
         self.sessions.add(ctx.channel.id)
@@ -200,7 +204,9 @@ class BotOwner(commands.Cog):
 
         while True:
             try:
-                response = await self.bot.wait_for("message", check=check, timeout=10.0 * 60.0)
+                response = await self.bot.wait_for(
+                    "message", check=check, timeout=10.0 * 60.0
+                )
             except asyncio.TimeoutError:
                 await ctx.send("Exiting REPL session.")
                 self.sessions.remove(ctx.channel.id)
@@ -266,6 +272,49 @@ class BotOwner(commands.Cog):
                 pass
             except discord.HTTPException as e:
                 await ctx.send(f"Unexpected error: `{e}`")
+
+    @commands.command()
+    @commands.is_owner()
+    async def dm(self, ctx, id: int, *, msg):
+        try:
+            await self.bot.get_user(id).send(embed=discord.Embed(
+                title="You got mail",
+                description=msg,
+                color=discord.Color.random()
+            )
+            .set_footer(text=f"Message from {ctx.author}")
+            )
+            await ctx.send("Message Sent!")
+        except (discord.Forbidden, discord.NotFound) as e:
+            await ctx.send(e)
+
+    @commands.command(name="frick", aliases=["sho"])
+    @commands.is_owner()
+    @commands.guild_only()
+    async def frick(self, ctx: commands.Context, limit: int = 50) -> None:
+        """
+        Cleans up the bots messages.
+        `limit`: The amount of messages to check back through. Defaults to 50.
+        """
+
+        prefix = config.BOT_PREFIX
+
+        if ctx.channel.permissions_for(ctx.me).manage_messages:
+            messages = await ctx.channel.purge(
+                check=lambda message: message.author == ctx.me
+                                      or message.content.startswith(prefix),
+                bulk=True,
+                limit=limit,
+            )
+        else:
+            messages = await ctx.channel.purge(
+                check=lambda message: message.author == ctx.me, bulk=False, limit=limit
+            )
+
+        await ctx.send(
+            f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
+            delete_after=3,
+        )
 
 
 def setup(bot):

@@ -27,9 +27,13 @@ class Miscellaneous(commands.Cog):
         latency = self.bot.latency * 1000
         emb = discord.Embed(title="Please wait..", color=discord.Color.red())
         emb.add_field(
-            name="Discord WS:", value=box(str(round(latency)) + " ms", "nim"), inline=True
+            name="Discord WS:",
+            value=box(str(round(latency)) + " ms", "nim"),
+            inline=True,
         )
-        emb.add_field(name="Typing", value=box("calculating" + " ms", "nim"), inline=True)
+        emb.add_field(
+            name="Typing", value=box("calculating" + " ms", "nim"), inline=True
+        )
         emb.add_field(name="Message", value=box("…", "nim"), inline=True)
 
         before = time.monotonic()
@@ -47,7 +51,12 @@ class Miscellaneous(commands.Cog):
             1,
             name="Message:",
             value=box(
-                str(int((message.created_at - ctx.message.created_at).total_seconds() * 1000))
+                str(
+                    int(
+                        (message.created_at - ctx.message.created_at).total_seconds()
+                        * 1000
+                    )
+                )
                 + " ms",
                 "nim",
             ),
@@ -85,7 +94,9 @@ class Miscellaneous(commands.Cog):
                 text_channels += 1
             if isinstance(chan, discord.VoiceChannel):
                 voice_channels += 1
-        embed = discord.Embed(title=f"{self.bot.user.name} Stats", color=discord.Color.random())
+        embed = discord.Embed(
+            title=f"{self.bot.user.name} Stats", color=discord.Color.random()
+        )
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         embed.add_field(name="Author:", value="Tylerr#6979", inline=True)
         embed.add_field(
@@ -93,7 +104,9 @@ class Miscellaneous(commands.Cog):
             value=f"Python Version: {platform.python_version()}\nDiscord.py Version: {discord.__version__}",
             inline=True,
         )
-        embed.add_field(name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms")
+        embed.add_field(
+            name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms"
+        )
         embed.add_field(name="Shards", value=self.bot.shard_count)
         embed.add_field(name="Bot ID:", value=self.bot.user.id, inline=True)
         embed.add_field(name="Guild Count:", value=len(self.bot.guilds), inline=True)
@@ -109,7 +122,9 @@ class Miscellaneous(commands.Cog):
             inline=True,
         )
         embed.add_field(
-            name="Creation Date:", value=self.bot.user.created_at.strftime("%c"), inline=True
+            name="Creation Date:",
+            value=self.bot.user.created_at.strftime("%c"),
+            inline=True,
         )
         embed.add_field(name="\u200B", value="\u200B", inline=True)
         embed.add_field(
@@ -119,7 +134,8 @@ class Miscellaneous(commands.Cog):
         )
         embed.add_field(name="\u200B", value="\u200B", inline=True)
         embed.set_footer(
-            icon_url=ctx.author.avatar.url, text=f"{self.bot.user.name} was made with love. <3"
+            icon_url=ctx.author.avatar.url,
+            text=f"{self.bot.user.name} was made with love. <3",
         )
         await ctx.send(embed=embed)
 
@@ -127,7 +143,9 @@ class Miscellaneous(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pypi(self, ctx: commands.Context, project: str):
         """Get information of a python project from pypi."""
-        async with self.bot.session.get(f"https://pypi.org/pypi/{project}/json") as response:
+        async with self.bot.session.get(
+            f"https://pypi.org/pypi/{project}/json"
+        ) as response:
             try:
                 res = await response.json()
             except aiohttp.client_exceptions.ContentTypeError:
@@ -158,7 +176,9 @@ class Miscellaneous(commands.Cog):
             e.add_field(name="Version", value=info["version"])
             e.add_field(
                 name="Project Links",
-                value="\n".join([f"[{x}]({y})" for x, y in dict(info["project_urls"]).items()]),
+                value="\n".join(
+                    [f"[{x}]({y})" for x, y in dict(info["project_urls"]).items()]
+                ),
             )
             e.add_field(name="License", value=info["license"] or "`Not specified.`")
             await ctx.reply(embed=e, mention_author=False)
@@ -173,7 +193,13 @@ class Miscellaneous(commands.Cog):
         if user is None:
             user = ctx.author
         ext = "gif" if user.avatar.is_animated() else "png"
+<<<<<<< HEAD
         e = discord.Embed(title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url)
+=======
+        e = discord.Embed(
+            title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url
+        )
+>>>>>>> eafaee82c8743bbf6ff31f4727c2e20b9a388614
         e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(
@@ -204,7 +230,9 @@ class Miscellaneous(commands.Cog):
                 color=0xFFC2D2,
             )
             return await ctx.send(embed=emb)
-        e = discord.Embed(title=f"Here's the osu profile for {user}", color=discord.Color.random())
+        e = discord.Embed(
+            title=f"Here's the osu profile for {user}", color=discord.Color.random()
+        )
         if isinstance(pic, BytesIO):
             e.set_image(url="attachment://osu.png")
         elif isinstance(pic, str):
@@ -256,9 +284,48 @@ class Miscellaneous(commands.Cog):
         delta = datetime.utcnow() - self.bot.uptime
         uptime_text = humanize.time.precisedelta(delta) or ("Less than one second.")
         embed = discord.Embed(colour=0xD0B6D8)
-        embed.add_field(name=f"{self.bot.user.name} has been up for:", value=uptime_text)
+        embed.add_field(
+            name=f"{self.bot.user.name} has been up for:", value=uptime_text
+        )
         embed.set_footer(text=f"Since: {since}")
         await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.command(aliases=["sinfo", "ginfo", "guildinfo"])
+    async def serverinfo(self, ctx: commands.Context, guild: discord.Guild = None):
+        """Get information about a certain guild"""
+        if guild is None:
+            guild = ctx.guild
+
+        guild_features = str(guild.features).replace("[", "").replace("]", "").replace("'", "").replace(",", "\r\n") or "None"
+
+
+        try:
+            await ctx.send(embed=discord.Embed(
+            title=guild.name,
+            color=discord.Color.random()
+            )
+            .set_thumbnail(url=guild.icon.url)
+            .add_field(name="Owner", value=f"{guild.owner}\n{guild.owner.id}", inline=True)
+            .add_field(name="Server ID", value=guild.id, inline=True)
+            .add_field(name="Region", value=str(guild.region).upper(), inline=True)
+            .add_field(name="Member Count", value=guild.member_count, inline=True)
+            .add_field(name="Role Count", value=len(guild.roles), inline=True)
+            .add_field(
+                name="Channel Count",
+                value=f"Categories: {len(guild.categories)}\nText: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}\nTotal: {len(guild.text_channels) + len(guild.voice_channels)}",
+                inline=True
+            )
+            .add_field(name="Emoji Count", value=len(guild.emojis), inline=True)
+            .add_field(
+                    name="Features",
+                    value=guild_features,
+                    inline=True
+                )
+            .add_field(name="Creation Time", value=guild.created_at.strftime("%c"))
+            )
+        except discord.Forbidden:
+            await ctx.send("Cannot pull up statistics for this server because its not in my cache.")
+
 
 
 def setup(bot):
