@@ -288,9 +288,9 @@ class BotOwner(commands.Cog):
         except (discord.Forbidden, discord.NotFound) as e:
             await ctx.send(e)
 
-    @commands.command(name="frick", aliases=["sho"], hidden=True)
+    @commands.command(name="frick", aliases=["sho"])
     @commands.is_owner()
-    @commands.guild_only
+    @commands.guild_only()
     async def frick(self, ctx: commands.Context, limit: int = 50) -> None:
         """
         Cleans up the bots messages.

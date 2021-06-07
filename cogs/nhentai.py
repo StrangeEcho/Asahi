@@ -93,4 +93,4 @@ class Nhentai(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(NhentaiLOL(bot))
+    bot.add_cog(Nhentai(bot))
