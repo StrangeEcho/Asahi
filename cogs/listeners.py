@@ -49,7 +49,7 @@ class Listeners(commands.Cog):
                 commands.CheckFailure,
             ),
         ):
-            await ctx.send(_(str(error)))
+            await ctx.send(str(error))
 
         elif isinstance(error, commands.DisabledCommand):  # SoonTM
             await ctx.send("This command is disabled")
