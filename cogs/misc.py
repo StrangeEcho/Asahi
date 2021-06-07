@@ -301,14 +301,14 @@ class Miscellaneous(commands.Cog):
             color=discord.Color.random()
             )
             .set_thumbnail(url=guild.icon.url)
-            .add_field(name="Owner", value=f"{guild.owner}({guild.owner.id})", inline=True)
+            .add_field(name="Owner", value=f"{guild.owner}\n{guild.owner.id}", inline=True)
             .add_field(name="Server ID", value=guild.id, inline=True)
             .add_field(name="Region", value=str(guild.region).upper(), inline=True)
             .add_field(name="Member Count", value=guild.member_count, inline=True)
             .add_field(name="Role Count", value=len(guild.roles), inline=True)
             .add_field(
                 name="Channel Count",
-                value=f"Categories: {len(guild.categories)}Text: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}\nTotal: {len(guild.text_channels) + len(guild.voice_channels)}",
+                value=f"Categories: {len(guild.categories)}\nText: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}\nTotal: {len(guild.text_channels) + len(guild.voice_channels)}",
                 inline=True
             )
             .add_field(name="Emoji Count", value=len(guild.emojis), inline=True)
