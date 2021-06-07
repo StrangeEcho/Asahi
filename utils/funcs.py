@@ -13,7 +13,9 @@ async def check_hierachy(ctx: commands.Context, member: discord.Member):
         elif member.id == ctx.bot.user.id:
             return await ctx.send(f"You'd really {ctx.command.name} me? :animehmph:")
         elif member.id == ctx.guild.owner.id:
-            return await ctx.send("Even if I wanted to do this. It's literally impossible")
+            return await ctx.send(
+                "Even if I wanted to do this. It's literally impossible"
+            )
         elif ctx.author.top_role <= member.top_role:
             return await ctx.send(
                 f"You cant use {ctx.command.name} on someone whos equal or higher than you in the role hierarchy"
@@ -24,7 +26,9 @@ async def check_hierachy(ctx: commands.Context, member: discord.Member):
 
 def can_execute_action(ctx, user, target):
     return (
-        user.id == ctx.bot.owner_id or user == ctx.guild.owner or user.top_role > target.top_role
+        user.id == ctx.bot.owner_id
+        or user == ctx.guild.owner
+        or user.top_role > target.top_role
     )
 
 

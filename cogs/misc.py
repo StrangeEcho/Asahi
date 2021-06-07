@@ -25,13 +25,15 @@ class Miscellaneous(commands.Cog):
     ):
         """Just a ping command"""
         latency = self.bot.latency * 1000
-        emb = discord.Embed(title="Please wait..", color=discord.Color.red())
+        emb = discord.Embed(title="Please wait..", color=self.bot.ok_color)
         emb.add_field(
             name="Discord WS:",
             value=box(str(round(latency)) + " ms", "nim"),
             inline=True,
         )
-        emb.add_field(name="Typing", value=box("calculating" + " ms", "nim"), inline=True)
+        emb.add_field(
+            name="Typing", value=box("calculating" + " ms", "nim"), inline=True
+        )
         emb.add_field(name="Message", value=box("…", "nim"), inline=True)
 
         before = time.monotonic()
@@ -39,7 +41,7 @@ class Miscellaneous(commands.Cog):
         ping = (time.monotonic() - before) * 1000
 
         emb.title = "Pong! 🏓"
-        emb.color = 0xD0B2D8
+        emb.color = self.bot.ok_color
         shards = [
             f"Shard {shard + 1}/{self.bot.shard_count}: {round(pingt * 1000)}ms\n"
             for shard, pingt in self.bot.latencies
@@ -49,7 +51,12 @@ class Miscellaneous(commands.Cog):
             1,
             name="Message:",
             value=box(
-                str(int((message.created_at - ctx.message.created_at).total_seconds() * 1000))
+                str(
+                    int(
+                        (message.created_at - ctx.message.created_at).total_seconds()
+                        * 1000
+                    )
+                )
                 + " ms",
                 "nim",
             ),
@@ -64,7 +71,7 @@ class Miscellaneous(commands.Cog):
     @commands.cooldown(1, 10, commands.BucketType.member)
     async def invite(self, ctx: commands.Context):
         """Invite the bot to your server."""
-        embed = discord.Embed(color=discord.Color.random(), title="<3")
+        embed = discord.Embed(color=self.bot.ok_color, title="<3")
         embed.description = f"Invite Link: https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot"
         embed.set_footer(
             text=f"Thank you for inviting {self.bot.user.name} <3",
@@ -87,7 +94,9 @@ class Miscellaneous(commands.Cog):
                 text_channels += 1
             if isinstance(chan, discord.VoiceChannel):
                 voice_channels += 1
-        embed = discord.Embed(title=f"{self.bot.user.name} Stats", color=discord.Color.random())
+        embed = discord.Embed(
+            title=f"{self.bot.user.name} Stats", color=self.bot.ok_color
+        )
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         embed.add_field(name="Author:", value="Tylerr#6979", inline=True)
         embed.add_field(
@@ -95,7 +104,9 @@ class Miscellaneous(commands.Cog):
             value=f"Python Version: {platform.python_version()}\nDiscord.py Version: {discord.__version__}",
             inline=True,
         )
-        embed.add_field(name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms")
+        embed.add_field(
+            name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms"
+        )
         embed.add_field(name="Shards", value=self.bot.shard_count)
         embed.add_field(name="Bot ID:", value=self.bot.user.id, inline=True)
         embed.add_field(name="Guild Count:", value=len(self.bot.guilds), inline=True)
@@ -132,14 +143,16 @@ class Miscellaneous(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pypi(self, ctx: commands.Context, project: str):
         """Get information of a python project from pypi."""
-        async with self.bot.session.get(f"https://pypi.org/pypi/{project}/json") as response:
+        async with self.bot.session.get(
+            f"https://pypi.org/pypi/{project}/json"
+        ) as response:
             try:
                 res = await response.json()
             except aiohttp.client_exceptions.ContentTypeError:
                 e = discord.Embed(
                     title="404 - Page Not Found",
                     description="We looked everywhere but couldn't find that project",
-                    colour=0x0073B7,
+                    colour=self.bot.ok_color,
                 )
                 e.set_thumbnail(
                     url="https://cdn-images-1.medium.com/max/1200/1%2A2FrV8q6rPdz6w2ShV6y7bw.png"
@@ -163,7 +176,9 @@ class Miscellaneous(commands.Cog):
             e.add_field(name="Version", value=info["version"])
             e.add_field(
                 name="Project Links",
-                value="\n".join([f"[{x}]({y})" for x, y in dict(info["project_urls"]).items()]),
+                value="\n".join(
+                    [f"[{x}]({y})" for x, y in dict(info["project_urls"]).items()]
+                ),
             )
             e.add_field(name="License", value=info["license"] or "`Not specified.`")
             await ctx.reply(embed=e, mention_author=False)
@@ -178,7 +193,9 @@ class Miscellaneous(commands.Cog):
         if user is None:
             user = ctx.author
         ext = "gif" if user.avatar.is_animated() else "png"
-        e = discord.Embed(title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url)
+        e = discord.Embed(
+            title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url
+        )
         e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(
@@ -206,10 +223,12 @@ class Miscellaneous(commands.Cog):
         except aiohttp.ClientResponseError as e:
             emb = discord.Embed(
                 description=f"Cannot contact the api due to error: [{e.status}] {e.message}",
-                color=0xFFC2D2,
+                color=self.bot.ok_color,
             )
             return await ctx.send(embed=emb)
-        e = discord.Embed(title=f"Here's the osu profile for {user}", color=discord.Color.random())
+        e = discord.Embed(
+            title=f"Here's the osu profile for {user}", color=self.bot.ok_color
+        )
         if isinstance(pic, BytesIO):
             e.set_image(url="attachment://osu.png")
         elif isinstance(pic, str):
@@ -260,8 +279,10 @@ class Miscellaneous(commands.Cog):
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
         delta = datetime.utcnow() - self.bot.uptime
         uptime_text = humanize.time.precisedelta(delta) or ("Less than one second.")
-        embed = discord.Embed(colour=0xD0B6D8)
-        embed.add_field(name=f"{self.bot.user.name} has been up for:", value=uptime_text)
+        embed = discord.Embed(colour=self.bot.ok_color)
+        embed.add_field(
+            name=f"{self.bot.user.name} has been up for:", value=uptime_text
+        )
         embed.set_footer(text=f"Since: {since}")
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -276,15 +297,17 @@ class Miscellaneous(commands.Cog):
             .replace("[", "")
             .replace("]", "")
             .replace("'", "")
-            .replace(",", "\r\n")
+            .replace(",", "\n")
             or "None"
         )
 
         try:
             await ctx.send(
-                embed=discord.Embed(title=guild.name, color=discord.Color.random())
+                embed=discord.Embed(title=guild.name, color=self.bot.ok_color)
                 .set_thumbnail(url=guild.icon.url)
-                .add_field(name="Owner", value=f"{guild.owner}\n{guild.owner.id}", inline=True)
+                .add_field(
+                    name="Owner", value=f"{guild.owner}\n{guild.owner.id}", inline=True
+                )
                 .add_field(name="Server ID", value=guild.id, inline=True)
                 .add_field(name="Region", value=str(guild.region).upper(), inline=True)
                 .add_field(name="Member Count", value=guild.member_count, inline=True)

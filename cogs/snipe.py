@@ -18,6 +18,7 @@ edit_snipe = {"author": None, "content": None, "guild": None, "channel": None}
 
 class Snipe(commands.Cog):
     """Some snipe related commands xd"""
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -81,7 +82,7 @@ class Snipe(commands.Cog):
             or snipe["content"] == None
         ):
             emb = discord.Embed(
-                color=0xFFCDCD,
+                color=self.bot.ok_color,
                 description="There's nothing to snipe!",
             )
             return await ctx.send(embed=emb, delete_after=5)
@@ -116,7 +117,7 @@ class Snipe(commands.Cog):
             or edit_snipe["content"] == None
         ):
             emb = discord.Embed(
-                color=0xFFCDCD,
+                color=self.bot.ok_color,
                 description="There's nothing to esnipe!",
             )
             return await ctx.send(embed=emb, delete_after=5)

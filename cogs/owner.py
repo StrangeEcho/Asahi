@@ -135,9 +135,16 @@ class BotOwner(commands.Cog):
         """Load bot extensions"""
         try:
             self.bot.load_extension(extension)
-            await ctx.send(f":inbox_tray: Loaded extension: `{extension}`")
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f":inbox_tray: Loaded `{extension}`",
+                    color=self.bot.ok_color,
+                )
+            )
         except commands.ExtensionError as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command()
     @commands.is_owner()
@@ -145,9 +152,16 @@ class BotOwner(commands.Cog):
         """Unload bot extensions"""
         try:
             self.bot.unload_extension(extension)
-            await ctx.send(f":outbox_tray: Unloaded extension: `{extension}`")
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f":outbox_tray: Unloaded `{extension}`",
+                    color=self.bot.ok_color,
+                )
+            )
         except commands.ExtensionError as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command()
     @commands.is_owner()
@@ -155,9 +169,16 @@ class BotOwner(commands.Cog):
         """Reload bot extensions"""
         try:
             self.bot.reload_extension(extension)
-            await ctx.send(f"<a:cog_reload:850891346910773248> Reloaded extension: `{extension}`")
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"<a:checkmark:851584158342053939> Reloaded `{extension}`",
+                    color=self.bot.ok_color,
+                )
+            )
         except commands.ExtensionError as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command()
     @commands.is_owner()
@@ -186,7 +207,9 @@ class BotOwner(commands.Cog):
         }
 
         if ctx.channel.id in self.sessions:
-            await ctx.send("Already running a REPL session in this channel. Exit it with `quit`.")
+            await ctx.send(
+                "Already running a REPL session in this channel. Exit it with `quit`."
+            )
             return
 
         self.sessions.add(ctx.channel.id)
@@ -201,7 +224,9 @@ class BotOwner(commands.Cog):
 
         while True:
             try:
-                response = await self.bot.wait_for("message", check=check, timeout=10.0 * 60.0)
+                response = await self.bot.wait_for(
+                    "message", check=check, timeout=10.0 * 60.0
+                )
             except asyncio.TimeoutError:
                 await ctx.send("Exiting REPL session.")
                 self.sessions.remove(ctx.channel.id)
@@ -270,16 +295,25 @@ class BotOwner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def dm(self, ctx, id: int, *, msg):
+    async def dm(self, ctx: commands.Context, user: discord.User, *, msg):
         try:
-            await self.bot.get_user(id).send(
+            await user.send(
                 embed=discord.Embed(
-                    title="You got mail", description=msg, color=discord.Color.random()
-                ).set_footer(text=f"Message from {ctx.author}")
+                    title=f"Message from {ctx.author}",
+                    description=msg,
+                    color=self.bot.ok_color,
+                )
             )
-            await ctx.send("Message Sent!")
-        except (discord.Forbidden, discord.NotFound) as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"Direct Message sent to {user}",
+                    color=self.bot.ok_color,
+                )
+            )
+        except (discord.HTTPException, discord.Forbidden) as e:
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command(name="frick", aliases=["sho"])
     @commands.is_owner()
@@ -305,8 +339,10 @@ class BotOwner(commands.Cog):
             )
 
         await ctx.send(
-            f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
-            delete_after=3,
+            embed=discord.Embed(
+                description=f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
+                color=self.bot.ok_color,
+            )
         )
 
 

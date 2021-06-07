@@ -37,7 +37,7 @@ class Fun(commands.Cog):
             embed=discord.Embed(
                 title="🎱The Magic 8ball🎱",
                 description=f"Question: `{question}`\nAnswer: `{choice(answers)}`",
-                color=discord.Color.random(),
+                color=self.bot.ok_color,
             ).set_footer(text=f"Question asked by {ctx.author}")
         )
 

@@ -32,22 +32,13 @@ class Bot(commands.AutoShardedBot):
             **kwargs,
         )
         self.owner_ids = config.OWNER_IDS
+        self.ok_color = int(str(f"0x{config.OK_COLOR}").replace("#", ""), base=16)
+        self.error_color = int(str(f"0x{config.ERROR_COLOR}").replace("#", ""), base=16)
         self.uptime = None
         self._session = None
 
     async def get_or_fetch_member(self, guild, member_id):
-        """Looks up a member in cache or fetches if not found.
-        Parameters
-        -----------
-        guild: Guild
-            The guild to look in.
-        member_id: int
-            The member ID to search for.
-        Returns
-        ---------
-        Optional[Member]
-            The member or None if not found.
-        """
+        """Looks up a member in cache. If not found, fetches making an api call."""
 
         member = guild.get_member(member_id)
         if member is not None:
@@ -104,7 +95,7 @@ class Bot(commands.AutoShardedBot):
                         Style.RESET_ALL,
                     )
                     print(Back.RED, Fore.WHITE, f"\r{e}", Style.RESET_ALL)
-        print(Fore.MAGENTA, "\rDONE", Style.RESET_ALL)
+        print(Fore.MAGENTA, "DONE", Style.RESET_ALL)
         print(Fore.GREEN, f"\rTotal loaded cogs: {loaded_cogs}", Style.RESET_ALL)
         print(Fore.RED, f"\rTotal unloaded cogs: {unloaded_cogs}", Style.RESET_ALL)
         print("-" * 15)

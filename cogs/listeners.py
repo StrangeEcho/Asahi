@@ -14,7 +14,9 @@ class Listeners(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
         """Handle errors caused by commands."""
         # Skips errors that were already handled locally.
         if getattr(ctx, "handled", False):
@@ -26,16 +28,30 @@ class Listeners(commands.Cog):
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            await ctx.send("This Command Cannot Be Used In Private DMS")
+            await ctx.send(
+                embed=discord.Embed(
+                    description="This command cannot be used in Private Messages",
+                    color=self.bot.error_color,
+                )
+            )
 
         elif isinstance(error, commands.TooManyArguments):
-            await ctx.send("You Passed In Too Many Arguments")
+            await ctx.send(
+                embed=discord.Embed(
+                    description="You passed in a couple uneeded arguments. Please get rid of them and try again",
+                    color=self.error_color,
+                )
+            )
 
         elif isinstance(error, commands.NSFWChannelRequired):
-            await ctx.send(f"**{ctx.channel}** is not a NSFW channel")
-
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f"You are missing some required arguments\n`{error.param.name}`")
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"{ctx.channel.name} is not a NSFW channel.",
+                    color=self.bot.error_color,
+                ).set_thumbnail(
+                    url="https://media1.tenor.com/images/8b78fe252e0fdb748f25a5618da61baa/tenor.gif?itemid=9601429"
+                )
+            )
 
         elif isinstance(
             error,
@@ -47,18 +63,30 @@ class Listeners(commands.Cog):
                 commands.BotMissingPermissions,
                 commands.CommandOnCooldown,
                 commands.CheckFailure,
+                commands.MissingRequiredArgument,
             ),
         ):
-            await ctx.send(str(error))
-
-        elif isinstance(error, commands.DisabledCommand):  # SoonTM
-            await ctx.send("This command is disabled")
+            await ctx.send(
+                embed=discord.Embed(description=str(error), color=self.bot.error_color)
+            )
 
         elif isinstance(error, commands.BadArgument):
-            await ctx.send(f"You passed in a bad argument\n{error}")
+            await ctx.send(
+                embed=discord.Embed(
+                    title="You passed in a bad argument",
+                    description=error,
+                    color=self.bot.error_color,
+                )
+            )
 
         elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send(f"```py\n{error}\n```")
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Tylerr you fucked up some code",
+                    description=f"```py\n{error}\n```",
+                    color=self.bot.error_color,
+                )
+            )
             log.error(
                 Fore.RED + f"**{ctx.command.qualified_name} failed to execute**",
                 exc_info=error.original,
