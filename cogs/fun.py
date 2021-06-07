@@ -1,13 +1,13 @@
 from random import choice
 
 import discord
-
 from discord.ext import commands
+
 
 class Fun(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-    
+
     @commands.command(name="8ball")
     async def _8ball(self, ctx: commands.Context, *, question):
         answers = [
@@ -31,15 +31,16 @@ class Fun(commands.Cog):
             "Yes.",
             "No",
             "Yes – definitely.",
-            "You may rely on it."
+            "You may rely on it.",
         ]
-        await ctx.send(embed=discord.Embed(
-            title="🎱The Magic 8ball🎱",
-            description=f"Question: `{question}`\nAnswer: `{choice(answers)}`",
-            color=discord.Color.random()
+        await ctx.send(
+            embed=discord.Embed(
+                title="🎱The Magic 8ball🎱",
+                description=f"Question: `{question}`\nAnswer: `{choice(answers)}`",
+                color=discord.Color.random(),
+            ).set_footer(text=f"Question asked by {ctx.author}")
         )
-        .set_footer(text=f"Question asked by {ctx.author}")
-        )
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

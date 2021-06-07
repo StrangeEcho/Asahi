@@ -4,7 +4,7 @@ from datetime import datetime
 
 import discord
 from aiohttp import ClientSession
-from colorama import Fore, Style, Back
+from colorama import Back, Fore, Style
 from discord.ext import commands
 
 import config

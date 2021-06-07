@@ -11,6 +11,7 @@ import discord
 from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
 
+import config
 from utils.funcs import box
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
@@ -154,9 +155,7 @@ class BotOwner(commands.Cog):
         """Reload bot extensions"""
         try:
             self.bot.reload_extension(extension)
-            await ctx.send(
-                f"<a:cog_reload:850891346910773248> Reloaded extension: `{extension}`"
-            )
+            await ctx.send(f"<a:cog_reload:850891346910773248> Reloaded extension: `{extension}`")
         except commands.ExtensionError as e:
             await ctx.send(e)
 
@@ -187,9 +186,7 @@ class BotOwner(commands.Cog):
         }
 
         if ctx.channel.id in self.sessions:
-            await ctx.send(
-                "Already running a REPL session in this channel. Exit it with `quit`."
-            )
+            await ctx.send("Already running a REPL session in this channel. Exit it with `quit`.")
             return
 
         self.sessions.add(ctx.channel.id)
@@ -204,9 +201,7 @@ class BotOwner(commands.Cog):
 
         while True:
             try:
-                response = await self.bot.wait_for(
-                    "message", check=check, timeout=10.0 * 60.0
-                )
+                response = await self.bot.wait_for("message", check=check, timeout=10.0 * 60.0)
             except asyncio.TimeoutError:
                 await ctx.send("Exiting REPL session.")
                 self.sessions.remove(ctx.channel.id)
@@ -277,12 +272,10 @@ class BotOwner(commands.Cog):
     @commands.is_owner()
     async def dm(self, ctx, id: int, *, msg):
         try:
-            await self.bot.get_user(id).send(embed=discord.Embed(
-                title="You got mail",
-                description=msg,
-                color=discord.Color.random()
-            )
-            .set_footer(text=f"Message from {ctx.author}")
+            await self.bot.get_user(id).send(
+                embed=discord.Embed(
+                    title="You got mail", description=msg, color=discord.Color.random()
+                ).set_footer(text=f"Message from {ctx.author}")
             )
             await ctx.send("Message Sent!")
         except (discord.Forbidden, discord.NotFound) as e:
@@ -302,7 +295,7 @@ class BotOwner(commands.Cog):
         if ctx.channel.permissions_for(ctx.me).manage_messages:
             messages = await ctx.channel.purge(
                 check=lambda message: message.author == ctx.me
-                                      or message.content.startswith(prefix),
+                or message.content.startswith(prefix),
                 bulk=True,
                 limit=limit,
             )

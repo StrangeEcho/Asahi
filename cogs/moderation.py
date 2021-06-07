@@ -1,9 +1,10 @@
 import discord
-
 from discord.ext import commands
 from discord.utils import get
+
 from utils.classes import MemberID
 from utils.funcs import check_hierachy
+
 
 class Moderation(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -28,9 +29,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions()
     @commands.cooldown(1, 3, commands.BucketType.guild)
-    async def kick(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str = None
-    ):
+    async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         """Kick members from the current server"""
         if await check_hierachy(ctx, member):
             return
@@ -65,9 +64,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     @commands.bot_has_permissions(manage_roles=True)
     @commands.cooldown(1, 3, commands.BucketType.guild)
-    async def mute(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str = None
-    ):
+    async def mute(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         """Mute a member"""
         if await check_hierachy(ctx, member):
             return
@@ -98,7 +95,7 @@ class Moderation(commands.Cog):
         elif get(ctx.guild.roles, name="Himeji-Mute") in member.roles:
             await member.remove_roles(get(ctx.guild.roles, name="Himeji-Mute"))
             await ctx.send(f"`{member}` is now unmuted")
-    
+
     @commands.command(aliases=["clear", "remove"])
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
@@ -112,8 +109,6 @@ class Moderation(commands.Cog):
             await ctx.message.delete()
             await ctx.channel.purge(limit=amount)
             await ctx.send(f"Purged {amount} messages.")
-    
-
 
 
 def setup(bot):
