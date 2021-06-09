@@ -1,10 +1,10 @@
 import asyncio
 
+from discord.ext import commands, tasks
 import discord
-from discord.ext import tasks, commands
 
-import config
 from utils.classes import HimejiBot
+import config
 
 
 class Tasks(commands.Cog):
@@ -16,9 +16,7 @@ class Tasks(commands.Cog):
     async def status_handler(self):
         await self.bot.wait_until_ready()
         await self.bot.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.competing, name="your love"
-            )
+            activity=discord.Activity(type=discord.ActivityType.competing, name="your love")
         )
         await asyncio.sleep(60)
         await self.bot.change_presence(activity=discord.Game("with you :D"))
@@ -35,9 +33,7 @@ class Tasks(commands.Cog):
             activity=discord.Game(f"with {len(self.bot.users)} humans!")
         )
         await asyncio.sleep(60)
-        await self.bot.change_presence(
-            activity=discord.Game(f"in {len(self.bot.guilds)} guilds")
-        )
+        await self.bot.change_presence(activity=discord.Game(f"in {len(self.bot.guilds)} guilds"))
         await asyncio.sleep(60)
 
 

@@ -1,7 +1,7 @@
 from random import choice
 
-import discord
 from discord.ext import commands
+import discord
 
 from utils.classes import HimejiBot
 

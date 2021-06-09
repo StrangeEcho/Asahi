@@ -1,19 +1,19 @@
+from contextlib import redirect_stdout
+from typing import Optional
 import asyncio
 import inspect
 import io
 import re
 import textwrap
 import traceback
-from contextlib import redirect_stdout
-from typing import Optional
 
-import discord
 from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
+import discord
 
-import config
 from utils.classes import HimejiBot
 from utils.funcs import box
+import config
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
@@ -121,11 +121,11 @@ class BotOwner(commands.Cog):
     async def die(self, ctx: commands.Context):
         """Log out the bot"""
         if await ButtonConfirmation(
-                ctx,
-                "Are you sure you want me to shutdown?",
-                destructive=True,
-                confirm="Yes",
-                cancel="No",
+            ctx,
+            "Are you sure you want me to shutdown?",
+            destructive=True,
+            confirm="Yes",
+            cancel="No",
         ).run():
             await ctx.send("Goodbye then :wave:")
             await self.bot.close()
@@ -145,9 +145,7 @@ class BotOwner(commands.Cog):
                 )
             )
         except commands.ExtensionError as e:
-            await ctx.send(
-                embed=discord.Embed(description=e, color=self.bot.error_color)
-            )
+            await ctx.send(embed=discord.Embed(description=e, color=self.bot.error_color))
 
     @commands.command()
     @commands.is_owner()
@@ -162,9 +160,7 @@ class BotOwner(commands.Cog):
                 )
             )
         except commands.ExtensionError as e:
-            await ctx.send(
-                embed=discord.Embed(description=e, color=self.bot.error_color)
-            )
+            await ctx.send(embed=discord.Embed(description=e, color=self.bot.error_color))
 
     @commands.command()
     @commands.is_owner()
@@ -179,9 +175,7 @@ class BotOwner(commands.Cog):
                 )
             )
         except commands.ExtensionError as e:
-            await ctx.send(
-                embed=discord.Embed(description=e, color=self.bot.error_color)
-            )
+            await ctx.send(embed=discord.Embed(description=e, color=self.bot.error_color))
 
     @commands.command()
     @commands.is_owner()
@@ -218,9 +212,9 @@ class BotOwner(commands.Cog):
 
         def check(m):
             return (
-                    m.author.id == ctx.author.id
-                    and m.channel.id == ctx.channel.id
-                    and m.content.startswith("`")
+                m.author.id == ctx.author.id
+                and m.channel.id == ctx.channel.id
+                and m.content.startswith("`")
             )
 
         while True:
@@ -310,9 +304,7 @@ class BotOwner(commands.Cog):
                 )
             )
         except (discord.HTTPException, discord.Forbidden) as e:
-            await ctx.send(
-                embed=discord.Embed(description=e, color=self.bot.error_color)
-            )
+            await ctx.send(embed=discord.Embed(description=e, color=self.bot.error_color))
 
     @commands.command(name="frick", aliases=["sho"])
     @commands.is_owner()

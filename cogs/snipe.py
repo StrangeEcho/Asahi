@@ -1,8 +1,8 @@
-import asyncio
 from io import BytesIO
+import asyncio
 
-import discord
 from discord.ext import commands
+import discord
 
 from utils.classes import HimejiBot
 
@@ -20,6 +20,7 @@ edit_snipe = {"author": None, "content": None, "guild": None, "channel": None}
 
 class Snipe(commands.Cog):
     """Some snipe related commands xd"""
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -81,9 +82,9 @@ class Snipe(commands.Cog):
         global snipe
 
         if (
-                snipe["guild"] != ctx.guild
-                or snipe["channel"] != ctx.channel
-                or snipe["content"] == None
+            snipe["guild"] != ctx.guild
+            or snipe["channel"] != ctx.channel
+            or snipe["content"] == None
         ):
             emb = discord.Embed(
                 color=self.bot.ok_color,
@@ -116,9 +117,9 @@ class Snipe(commands.Cog):
         """ Sneaky Sneaky snipe the edited message """
 
         if (
-                edit_snipe["guild"] != ctx.guild
-                or edit_snipe["channel"] != ctx.channel
-                or edit_snipe["content"] == None
+            edit_snipe["guild"] != ctx.guild
+            or edit_snipe["channel"] != ctx.channel
+            or edit_snipe["content"] == None
         ):
             emb = discord.Embed(
                 color=self.bot.ok_color,

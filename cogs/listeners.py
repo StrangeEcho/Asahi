@@ -1,8 +1,8 @@
 import logging
 
-import discord
 from colorama import Fore, Style
 from discord.ext import commands
+import discord
 
 from config import FORWARD_DMS
 from utils.classes import HimejiBot
@@ -15,9 +15,7 @@ class Listeners(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(
-            self, ctx: commands.Context, error: commands.CommandError
-    ):
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
         """Handle errors caused by commands."""
         # Skips errors that were already handled locally.
         if getattr(ctx, "handled", False):
@@ -55,21 +53,19 @@ class Listeners(commands.Cog):
             )
 
         elif isinstance(
-                error,
-                (
-                        commands.NotOwner,
-                        commands.MissingPermissions,
-                        commands.BotMissingAnyRole,
-                        commands.MissingRole,
-                        commands.BotMissingPermissions,
-                        commands.CommandOnCooldown,
-                        commands.CheckFailure,
-                        commands.MissingRequiredArgument,
-                ),
+            error,
+            (
+                commands.NotOwner,
+                commands.MissingPermissions,
+                commands.BotMissingAnyRole,
+                commands.MissingRole,
+                commands.BotMissingPermissions,
+                commands.CommandOnCooldown,
+                commands.CheckFailure,
+                commands.MissingRequiredArgument,
+            ),
         ):
-            await ctx.send(
-                embed=discord.Embed(description=str(error), color=self.bot.error_color)
-            )
+            await ctx.send(embed=discord.Embed(description=str(error), color=self.bot.error_color))
 
         elif isinstance(error, commands.BadArgument):
             await ctx.send(
