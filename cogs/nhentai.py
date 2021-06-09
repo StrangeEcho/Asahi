@@ -1,8 +1,8 @@
 import datetime
 
-import discord
 from discord.ext import commands, menus
 from hentai import Format, Hentai, Tag, Utils
+import discord
 
 from config import OK_COLOR
 from utils.classes import EmbedListMenu, HimejiBot
@@ -19,9 +19,7 @@ class Embed(discord.Embed):
     @classmethod
     def default(cls, ctx, **kwargs):
         instance = cls(**kwargs)
-        instance.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url
-        )
+        instance.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
         return instance
 
 
@@ -82,13 +80,9 @@ class Nhentai(commands.Cog):
         embed = Embed.default(ctx)
         embed.title = doujin.title(Format.Pretty)
         embed.add_field(name="Holy Digits", value=doujin.id, inline=True)
-        embed.add_field(
-            name="Languages", value=Tag.get(doujin.language, "name"), inline=True
-        )
+        embed.add_field(name="Languages", value=Tag.get(doujin.language, "name"), inline=True)
         embed.add_field(name="Uploaded", value=doujin.upload_date, inline=True)
-        embed.add_field(
-            name="Number of times liked", value=doujin.num_favorites, inline=True
-        )
+        embed.add_field(name="Number of times liked", value=doujin.num_favorites, inline=True)
         embed.add_field(name="Tags", value=Tag.get(doujin.tag, "name"))
         embed.add_field(name="Number of pages", value=doujin.num_pages)
         embed.set_thumbnail(url=doujin.thumbnail)

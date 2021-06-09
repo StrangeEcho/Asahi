@@ -1,14 +1,14 @@
+from datetime import datetime
 import os
 import platform
-from datetime import datetime
 
-import discord
 from aiohttp import ClientSession
-from colorama import Fore, Style, Back
+from colorama import Back, Fore, Style
 from discord.ext import commands, menus
+import discord
 
-import config
 from utils.funcs import can_execute_action
+import config
 
 embed_color = config.OK_COLOR.replace("#", "0x")
 
