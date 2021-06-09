@@ -3,9 +3,11 @@ from random import choice
 import discord
 from discord.ext import commands
 
+from utils.classes import HimejiBot
+
 
 class Fun(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
 
     @commands.command(name="8ball")

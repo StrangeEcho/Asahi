@@ -3,9 +3,12 @@ import asyncio
 import discord
 from discord.ext import tasks, commands
 
+import config
+from utils.classes import HimejiBot
+
 
 class Tasks(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
         self.status_handler.start()
 

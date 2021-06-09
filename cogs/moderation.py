@@ -2,12 +2,12 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 
-from utils.classes import MemberID
+from utils.classes import MemberID, HimejiBot
 from utils.funcs import check_hierachy
 
 
 class Moderation(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
 
     @commands.command()
@@ -35,7 +35,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions()
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def kick(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str = None
+            self, ctx: commands.Context, member: discord.Member, *, reason: str = None
     ):
         """Kick members from the current server"""
         if await check_hierachy(ctx, member):
@@ -85,7 +85,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def mute(
-        self, ctx: commands.Context, member: discord.Member, *, reason: str = None
+            self, ctx: commands.Context, member: discord.Member, *, reason: str = None
     ):
         """Mute a member"""
         if await check_hierachy(ctx, member):

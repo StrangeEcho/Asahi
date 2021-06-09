@@ -4,18 +4,19 @@ import discord
 from colorama import Fore, Style
 from discord.ext import commands
 
-from config import FOWARD_DMS
+from config import FORWARD_DMS
+from utils.classes import HimejiBot
 
 log = logging.getLogger(__name__)
 
 
 class Listeners(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError
+            self, ctx: commands.Context, error: commands.CommandError
     ):
         """Handle errors caused by commands."""
         # Skips errors that were already handled locally.
@@ -54,17 +55,17 @@ class Listeners(commands.Cog):
             )
 
         elif isinstance(
-            error,
-            (
-                commands.NotOwner,
-                commands.MissingPermissions,
-                commands.BotMissingAnyRole,
-                commands.MissingRole,
-                commands.BotMissingPermissions,
-                commands.CommandOnCooldown,
-                commands.CheckFailure,
-                commands.MissingRequiredArgument,
-            ),
+                error,
+                (
+                        commands.NotOwner,
+                        commands.MissingPermissions,
+                        commands.BotMissingAnyRole,
+                        commands.MissingRole,
+                        commands.BotMissingPermissions,
+                        commands.CommandOnCooldown,
+                        commands.CheckFailure,
+                        commands.MissingRequiredArgument,
+                ),
         ):
             await ctx.send(
                 embed=discord.Embed(description=str(error), color=self.bot.error_color)
@@ -111,7 +112,7 @@ class Listeners(commands.Cog):
             return
         if message.author.bot:
             return
-        if not message.guild and FOWARD_DMS is True:
+        if not message.guild and FORWARD_DMS is True:
             for owner in self.bot.owner_ids:
                 try:
                     await self.bot.get_user(owner).send(

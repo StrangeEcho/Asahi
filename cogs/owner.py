@@ -12,12 +12,15 @@ from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
 
 import config
+from utils.classes import HimejiBot
 from utils.funcs import box
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
+
+
 # most stuffs in this owner cog related to development is from https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/admin.py
 class BotOwner(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
         self._last_result = None
         self.sessions = set()
@@ -118,11 +121,11 @@ class BotOwner(commands.Cog):
     async def die(self, ctx: commands.Context):
         """Log out the bot"""
         if await ButtonConfirmation(
-            ctx,
-            "Are you sure you want me to shutdown?",
-            destructive=True,
-            confirm="Yes",
-            cancel="No",
+                ctx,
+                "Are you sure you want me to shutdown?",
+                destructive=True,
+                confirm="Yes",
+                cancel="No",
         ).run():
             await ctx.send("Goodbye then :wave:")
             await self.bot.close()
@@ -217,9 +220,9 @@ class BotOwner(commands.Cog):
 
         def check(m):
             return (
-                m.author.id == ctx.author.id
-                and m.channel.id == ctx.channel.id
-                and m.content.startswith("`")
+                    m.author.id == ctx.author.id
+                    and m.channel.id == ctx.channel.id
+                    and m.content.startswith("`")
             )
 
         while True:
@@ -329,7 +332,7 @@ class BotOwner(commands.Cog):
         if ctx.channel.permissions_for(ctx.me).manage_messages:
             messages = await ctx.channel.purge(
                 check=lambda message: message.author == ctx.me
-                or message.content.startswith(prefix),
+                                      or message.content.startswith(prefix),
                 bulk=True,
                 limit=limit,
             )
