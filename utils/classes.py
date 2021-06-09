@@ -63,7 +63,7 @@ class HimejiHelpCommand(commands.MinimalHelpCommand):
     async def send_pages(self):
         destination = self.get_destination()
         for page in self.paginator.pages:
-            embed = discord.Embed(description=page, color=embed_color)
+            embed = discord.Embed(description=page, color=int(embed_color, base=16))
             await destination.send(embed=embed)
 
 
