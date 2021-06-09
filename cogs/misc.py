@@ -272,37 +272,50 @@ class Miscellaneous(commands.Cog):
         if guild is None:
             guild = ctx.guild
 
-        guild_features = (
-            str(guild.features)
-            .replace("[", "")
-            .replace("]", "")
-            .replace("'", "")
-            .replace(",", "\n")
-            or "None"
+        weird_stuff = {
+            "ANIMATED_ICON": ("Animated Icon"),
+            "BANNER": ("Banner Image"),
+            "COMMERCE": ("Commerce"),
+            "COMMUNITY": ("Community"),
+            "DISCOVERABLE": ("Server Discovery"),
+            "FEATURABLE": ("Featurable"),
+            "INVITE_SPLASH": ("Splash Invite"),
+            "MEMBER_LIST_DISABLED": ("Member list disabled"),
+            "MEMBER_VERIFICATION_GATE_ENABLED": ("Membership Screening enabled"),
+            "MORE_EMOJI": ("More Emojis"),
+            "NEWS": ("News Channels"),
+            "PARTNERED": ("Partnered"),
+            "PREVIEW_ENABLED": ("Preview enabled"),
+            "PUBLIC_DISABLED": ("Public disabled"),
+            "VANITY_URL": ("Vanity URL"),
+            "VERIFIED": ("Verified"),
+            "VIP_REGIONS": ("VIP Voice Servers"),
+            "WELCOME_SCREEN_ENABLED": ("Welcome Screen enabled"),
+        }
+        guild_features = [
+            f"✅ {name}\n"
+            for weird_stuff, name in weird_stuff.items()
+            if weird_stuff in guild.features
+        ]
+        embed = discord.Embed(title=guild.name, color=self.bot.ok_color)
+        embed.set_thumbnail(url=guild.icon.url)
+        embed.add_field(
+            name="Owner", value=f"Name: **{guild.owner}**\nID: **{guild.owner.id}**", inline=True
         )
-
-        try:
-            await ctx.send(
-                embed=discord.Embed(title=guild.name, color=self.bot.ok_color)
-                .set_thumbnail(url=guild.icon.url)
-                .add_field(name="Owner", value=f"{guild.owner}\n{guild.owner.id}", inline=True)
-                .add_field(name="Server ID", value=guild.id, inline=True)
-                .add_field(name="Region", value=str(guild.region).upper(), inline=True)
-                .add_field(name="Member Count", value=guild.member_count, inline=True)
-                .add_field(name="Role Count", value=len(guild.roles), inline=True)
-                .add_field(
-                    name="Channel Count",
-                    value=f"Categories: {len(guild.categories)}\nText: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}\nTotal: {len(guild.text_channels) + len(guild.voice_channels)}",
-                    inline=True,
-                )
-                .add_field(name="Emoji Count", value=len(guild.emojis), inline=True)
-                .add_field(name="Features", value=guild_features, inline=True)
-                .add_field(name="Creation Time", value=guild.created_at.strftime("%c"))
-            )
-        except discord.Forbidden:
-            await ctx.send(
-                "Cannot pull up statistics for this server because its not in my cache."
-            )
+        embed.add_field(name="Server ID", value=f"**{guild.id}**", inline=True)
+        embed.add_field(name="Creation Time", value=guild.created_at.strftime("%c"), inline=False)
+        embed.add_field(name="Region", value=str(guild.region).upper(), inline=True)
+        embed.add_field(name="Member Count", value=f"**{guild.member_count}**", inline=True)
+        embed.add_field(name="Role Count", value="**{}**".format(len(guild.roles)), inline=False)
+        embed.add_field(
+            name="Channel Count",
+            value=f"Categories: **{len(guild.categories)}**\nText: **{len(guild.text_channels)}**\nVoice: **{len(guild.voice_channels)}**\nTotal: **{len(guild.text_channels) + len(guild.voice_channels)}**",
+            inline=True,
+        )
+        embed.add_field(name="Emoji Count", value="**{}**".format(len(guild.emojis)), inline=True)
+        if guild_features:
+            embed.add_field(name="Features", value="".join(guild_features), inline=False)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=["uinfo", "memberinfo", "minfo"])
     @commands.guild_only()
@@ -311,43 +324,28 @@ class Miscellaneous(commands.Cog):
         if user is None:
             user = ctx.author
 
-        flags = [f.name for f in ctx.author.public_flags.all()]
-
-        user_flags = (
-            str(flags).replace("[", "").replace("]", "").replace("'", "").replace(",", "\n")
-            or "None"
+        user_flags = "\n".join(i.replace("_", " ").title() for i, v in user.public_flags if v)
+        roles = user.roles[-1:0:-1]
+        embed = discord.Embed(color=user.color or self.bot.ok_color)
+        embed.set_thumbnail(url=user.avatar.url)
+        embed.add_field(name="Name", value=user)
+        embed.add_field(name="ID", value=user.id)
+        embed.add_field(
+            name="Account Creation",
+            value=user.created_at.strftime("%c"),
         )
-
-        roles = [r.name for r in user.roles]
-
-        user_roles = (
-            str(roles)
-            .replace("[", "")
-            .replace("]", "")
-            .replace("'", "")
-            .replace(",", "\n")
-            .replace("@everyone", "")
-            or "None"
+        embed.add_field(
+            name=f"{ctx.guild} Join Date", value=user.joined_at.strftime("%c"), inline=False
         )
-
-        await ctx.send(
-            embed=discord.Embed(color=user.color or self.bot.ok_color)
-            .set_thumbnail(url=user.avatar.url)
-            .add_field(name="Name", value=user, inline=True)
-            .add_field(name="ID", value=user.id, inline=True)
-            .add_field(
-                name="Account Creation",
-                value=user.created_at.strftime("%c"),
-                inline=True,
+        if roles:
+            embed.add_field(
+                name=f"Roles **{len(user.roles) - 1}**",
+                value=", ".join([x.mention for x in roles]),
+                inline=False,
             )
-            .add_field(
-                name=f"{ctx.guild} Join Date",
-                value=user.joined_at.strftime("%c"),
-                inline=True,
-            )
-            .add_field(name=f"Roles **{len(user.roles) - 1}**", value=user_roles, inline=True)
-            .add_field(name="Public User Flags", value=user_flags.upper(), inline=True)
-        )
+        if user_flags:
+            embed.add_field(name="Public User Flags", value=user_flags.upper(), inline=False)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
