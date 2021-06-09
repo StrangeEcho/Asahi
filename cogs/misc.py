@@ -347,6 +347,23 @@ class Miscellaneous(commands.Cog):
             embed.add_field(name="Public User Flags", value=user_flags.upper(), inline=False)
         await ctx.send(embed=embed)
 
+    @commands.command(aliases = ["rinfo"])
+    async def roleinfo(self, ctx: commands.Context, role: discord.Role):
+        await ctx.send(embed=discord.Embed(
+            title=f"Role info for {role.name}",
+            color=self.bot.ok_color
+        )
+        .add_field(name="ID", value=role.id, inline=True)
+        .add_field(name="Creation Time", value=role.created_at.strftime("c%"), inline=True)
+        .add_field(name="Members", value=len(role.members), inline=True)
+        .add_field(name="Hoisted", value=role.hoist, inline=True)
+        .add_field(name="Position", value=role.position, inline=True)
+        .add_field(
+            name="Permissions",
+            value=f"Click [Here](https://cogs.fixator10.ru/permissions-calculator/?v={role.permissions})",
+            inline=True
+        )
+        )
 
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))

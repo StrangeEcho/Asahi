@@ -1,4 +1,4 @@
-from random import choice
+from random import choice, randint
 
 from discord.ext import commands
 import discord
@@ -42,6 +42,61 @@ class Fun(commands.Cog):
                 color=self.bot.ok_color,
             ).set_footer(text=f"Question asked by {ctx.author}")
         )
+
+    @commands.command()
+    async def compliment(self, ctx: commands.Context, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+
+        compliments = [
+            "Your positivity is infectious.",
+            "You should be so proud of yourself.",
+            "You’re amazing!",
+            "You’re a true gift to the people in your life.",
+            "You’re an incredible friend.",
+            "I really appreciate everything that you do.",
+            "You inspire me to be a better person.",
+            "Your passion always motivates me.",
+            "Your smile makes me smile.",
+            "Thank you for being such a great person.",
+            "The way you carry yourself is truly admirable.",
+            "You are such a good listener.",
+            "You have a remarkable sense of humor.",
+            "Thanks for being you!",
+            "You set a great example for everyone around you.",
+            "I love your perspective on life.",
+            "Being around you makes everything better.",
+            "You always know the right thing to say.",
+            "The world would be a better place if more people were like you!",
+            "You are one of a kind.",
+            "You make me want to be the best version of myself.",
+            "You always have the best ideas.",
+            "I’m so lucky to have you in my life.",
+            "Your capacity for generosity knows no bounds.",
+            "I wish I were more like you.",
+            "You are so strong.",
+            "I’ve never met someone as kind as you are.",
+            "You have such a great heart.",
+            "Simply knowing you has made me a better person.",
+            "You are beautiful inside and out.",
+        ]
+        await ctx.send(embed=discord.Embed(
+            description=f"{member.mention} {choice(compliments)}",
+            color=self.bot.ok_color
+        )
+        .set_footer(text=f"Compliment from {ctx.author}")
+        )
+
+    @commands.command(aliases=["rng"])
+    async def randomnumber(self, ctx, int1: int, int2: int):
+        try:
+            await ctx.send(embed=discord.Embed(
+                title="Your number has been chosen",
+                description=f"Your number: {randint(int1, int2)}",
+                color=self.bot.ok_color
+            ))
+        except ValueError:
+            await ctx.send(embed=discord.Embed(description="Please input a number that follows base 10 numeric system", color=self.bot.error_color))
 
 
 def setup(bot):
