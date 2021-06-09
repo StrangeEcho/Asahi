@@ -10,6 +10,7 @@ from discord.ext import commands, menus
 import config
 from utils.funcs import can_execute_action
 
+embed_color = config.OK_COLOR.replace("#", "0x")
 
 # Borrowed from RoboDanny
 class MemberID(commands.Converter):
@@ -62,7 +63,7 @@ class HimejiHelpCommand(commands.MinimalHelpCommand):
     async def send_pages(self):
         destination = self.get_destination()
         for page in self.paginator.pages:
-            embed = discord.Embed(description=page, color=discord.Color.random())
+            embed = discord.Embed(description=page, color=embed_color)
             await destination.send(embed=embed)
 
 
