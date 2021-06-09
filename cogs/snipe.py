@@ -4,6 +4,8 @@ from io import BytesIO
 import discord
 from discord.ext import commands
 
+from utils.classes import HimejiBot
+
 snipe = {
     "id": None,
     "content": None,
@@ -19,6 +21,9 @@ edit_snipe = {"author": None, "content": None, "guild": None, "channel": None}
 class Snipe(commands.Cog):
     """Some snipe related commands xd"""
     def __init__(self, bot):
+        self.bot = bot
+
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -76,12 +81,12 @@ class Snipe(commands.Cog):
         global snipe
 
         if (
-            snipe["guild"] != ctx.guild
-            or snipe["channel"] != ctx.channel
-            or snipe["content"] == None
+                snipe["guild"] != ctx.guild
+                or snipe["channel"] != ctx.channel
+                or snipe["content"] == None
         ):
             emb = discord.Embed(
-                color=0xFFCDCD,
+                color=self.bot.ok_color,
                 description="There's nothing to snipe!",
             )
             return await ctx.send(embed=emb, delete_after=5)
@@ -111,12 +116,12 @@ class Snipe(commands.Cog):
         """ Sneaky Sneaky snipe the edited message """
 
         if (
-            edit_snipe["guild"] != ctx.guild
-            or edit_snipe["channel"] != ctx.channel
-            or edit_snipe["content"] == None
+                edit_snipe["guild"] != ctx.guild
+                or edit_snipe["channel"] != ctx.channel
+                or edit_snipe["content"] == None
         ):
             emb = discord.Embed(
-                color=0xFFCDCD,
+                color=self.bot.ok_color,
                 description="There's nothing to esnipe!",
             )
             return await ctx.send(embed=emb, delete_after=5)

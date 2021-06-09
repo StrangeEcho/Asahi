@@ -3,9 +3,11 @@ from random import choice
 import discord
 from discord.ext import commands
 
+from utils.classes import HimejiBot
+
 
 class Fun(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
 
     @commands.command(name="8ball")
@@ -37,7 +39,7 @@ class Fun(commands.Cog):
             embed=discord.Embed(
                 title="🎱The Magic 8ball🎱",
                 description=f"Question: `{question}`\nAnswer: `{choice(answers)}`",
-                color=discord.Color.random(),
+                color=self.bot.ok_color,
             ).set_footer(text=f"Question asked by {ctx.author}")
         )
 

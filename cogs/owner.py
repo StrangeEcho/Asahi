@@ -12,12 +12,15 @@ from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
 
 import config
+from utils.classes import HimejiBot
 from utils.funcs import box
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
+
+
 # most stuffs in this owner cog related to development is from https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/admin.py
 class BotOwner(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: HimejiBot):
         self.bot = bot
         self._last_result = None
         self.sessions = set()
@@ -118,11 +121,11 @@ class BotOwner(commands.Cog):
     async def die(self, ctx: commands.Context):
         """Log out the bot"""
         if await ButtonConfirmation(
-            ctx,
-            "Are you sure you want me to shutdown?",
-            destructive=True,
-            confirm="Yes",
-            cancel="No",
+                ctx,
+                "Are you sure you want me to shutdown?",
+                destructive=True,
+                confirm="Yes",
+                cancel="No",
         ).run():
             await ctx.send("Goodbye then :wave:")
             await self.bot.close()
@@ -135,9 +138,16 @@ class BotOwner(commands.Cog):
         """Load bot extensions"""
         try:
             self.bot.load_extension(extension)
-            await ctx.send(f":inbox_tray: Loaded extension: `{extension}`")
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f":inbox_tray: Loaded `{extension}`",
+                    color=self.bot.ok_color,
+                )
+            )
         except commands.ExtensionError as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command()
     @commands.is_owner()
@@ -145,9 +155,16 @@ class BotOwner(commands.Cog):
         """Unload bot extensions"""
         try:
             self.bot.unload_extension(extension)
-            await ctx.send(f":outbox_tray: Unloaded extension: `{extension}`")
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f":outbox_tray: Unloaded `{extension}`",
+                    color=self.bot.ok_color,
+                )
+            )
         except commands.ExtensionError as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command()
     @commands.is_owner()
@@ -155,9 +172,16 @@ class BotOwner(commands.Cog):
         """Reload bot extensions"""
         try:
             self.bot.reload_extension(extension)
-            await ctx.send(f"<a:cog_reload:850891346910773248> Reloaded extension: `{extension}`")
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"<a:checkmark:851584158342053939> Reloaded `{extension}`",
+                    color=self.bot.ok_color,
+                )
+            )
         except commands.ExtensionError as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command()
     @commands.is_owner()
@@ -194,9 +218,9 @@ class BotOwner(commands.Cog):
 
         def check(m):
             return (
-                m.author.id == ctx.author.id
-                and m.channel.id == ctx.channel.id
-                and m.content.startswith("`")
+                    m.author.id == ctx.author.id
+                    and m.channel.id == ctx.channel.id
+                    and m.content.startswith("`")
             )
 
         while True:
@@ -270,16 +294,25 @@ class BotOwner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def dm(self, ctx, id: int, *, msg):
+    async def dm(self, ctx: commands.Context, user: discord.User, *, msg):
         try:
-            await self.bot.get_user(id).send(
+            await user.send(
                 embed=discord.Embed(
-                    title="You got mail", description=msg, color=discord.Color.random()
-                ).set_footer(text=f"Message from {ctx.author}")
+                    title=f"Message from {ctx.author}",
+                    description=msg,
+                    color=self.bot.ok_color,
+                )
             )
-            await ctx.send("Message Sent!")
-        except (discord.Forbidden, discord.NotFound) as e:
-            await ctx.send(e)
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"Direct Message sent to {user}",
+                    color=self.bot.ok_color,
+                )
+            )
+        except (discord.HTTPException, discord.Forbidden) as e:
+            await ctx.send(
+                embed=discord.Embed(description=e, color=self.bot.error_color)
+            )
 
     @commands.command(name="frick", aliases=["sho"])
     @commands.is_owner()
@@ -305,8 +338,10 @@ class BotOwner(commands.Cog):
             )
 
         await ctx.send(
-            f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
-            delete_after=3,
+            embed=discord.Embed(
+                description=f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
+                color=self.bot.ok_color,
+            )
         )
 
 
