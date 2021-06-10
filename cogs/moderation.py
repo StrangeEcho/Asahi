@@ -158,16 +158,21 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_channels=True)
     @commands.bot_has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def slowmode(self, ctx: commands.Context, chan: Optional[discord.TextChannel] = None, time: int = 0):
+    async def slowmode(
+        self, ctx: commands.Context, chan: Optional[discord.TextChannel] = None, time: int = 0
+    ):
         if chan is None:
             chan = ctx.channel
         if time > 21600:
-            await ctx.send("Slowmode delay cannot go longer than 21600 seconds")
+            await ctx.send(
+                embed=discord.Embed(
+                    description="Slowmode delay cannot go longer than 21600 seconds",
+                    color=self.bot.ok_color,
+                )
+            )
         else:
             await chan.edit(slowmode_delay=time)
             await ctx.send(f"{chan.name} now has a slowmode delay of {time} seconds")
-
-
 
 
 def setup(bot):

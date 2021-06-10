@@ -80,23 +80,29 @@ class Fun(commands.Cog):
             "Simply knowing you has made me a better person.",
             "You are beautiful inside and out.",
         ]
-        await ctx.send(embed=discord.Embed(
-            description=f"{member.mention} {choice(compliments)}",
-            color=self.bot.ok_color
-        )
-        .set_footer(text=f"Compliment from {ctx.author}")
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"{member.mention} {choice(compliments)}", color=self.bot.ok_color
+            ).set_footer(text=f"Compliment from {ctx.author}")
         )
 
     @commands.command(aliases=["rng"])
     async def randomnumber(self, ctx, int1: int, int2: int):
         try:
-            await ctx.send(embed=discord.Embed(
-                title="Your number has been chosen",
-                description=f"Your number: {randint(int1, int2)}",
-                color=self.bot.ok_color
-            ))
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Your number has been chosen",
+                    description=f"Your number: {randint(int1, int2)}",
+                    color=self.bot.ok_color,
+                )
+            )
         except ValueError:
-            await ctx.send(embed=discord.Embed(description="Please input a number that follows base 10 numeric system", color=self.bot.error_color))
+            await ctx.send(
+                embed=discord.Embed(
+                    description="Please input a number that follows base 10 numeric system",
+                    color=self.bot.error_color,
+                )
+            )
 
 
 def setup(bot):
