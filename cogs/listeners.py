@@ -13,6 +13,7 @@ log = logging.getLogger(__name__)
 class Listeners(commands.Cog):
     def __init__(self, bot: HimejiBot):
         self.bot = bot
+        self.timeout = 60
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
@@ -123,6 +124,22 @@ class Listeners(commands.Cog):
                     )
                 except discord.HTTPException as e:
                     print(f"Failed to forward dms to the owner due to: {e}")
+
+    async def edit_process_commands(self, message: discord.Message):
+        """Same as Airi's method (Airi.process_commands), but dont dispatch message_without_command."""
+        if not message.author.bot:
+            ctx = await self.bot.get_context(message)
+            await self.bot.invoke(ctx)
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        if not after.edited_at:
+            return
+        if before.content == after.content:
+            return
+        if (after.edited_at - after.created_at).total_seconds() > self.timeout:
+            return
+        await self.edit_process_commands(after)
 
 
 def setup(bot):

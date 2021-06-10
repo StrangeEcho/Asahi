@@ -321,6 +321,7 @@ class Miscellaneous(commands.Cog):
     @commands.guild_only()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def userinfo(self, ctx: commands.context, user: discord.Member = None):
+        """Returns info about a user"""
         if user is None:
             user = ctx.author
 
@@ -349,12 +350,15 @@ class Miscellaneous(commands.Cog):
 
     @commands.command(aliases=["rinfo"])
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role):
+        """Returns info about a roloe"""
         await ctx.send(
             embed=discord.Embed(title=f"Role info for {role.name}", color=role.color)
             .add_field(name="ID", value=role.id, inline=True)
+            .add_field(name="Color", value=role.color, inline=True)
             .add_field(name="Creation Time", value=role.created_at.strftime("%c"), inline=True)
             .add_field(name="Members", value=len(role.members), inline=True)
             .add_field(name="Hoisted", value=role.hoist, inline=True)
+            .add_field(name="Mentionable", value=role.mentionable, inline=True)
             .add_field(name="Position", value=role.position, inline=True)
             .add_field(
                 name="Permissions",

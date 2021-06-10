@@ -12,6 +12,7 @@ class Fun(commands.Cog):
 
     @commands.command(name="8ball")
     async def _8ball(self, ctx: commands.Context, *, question):
+        """Ask the mystical 8 ball anything. """
         answers = [
             "As I see it, yes.",
             "Ask again later.",
@@ -45,6 +46,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def compliment(self, ctx: commands.Context, member: discord.Member = None):
+        """Compliment someone or yourself"""
         if member is None:
             member = ctx.author
 
@@ -88,6 +90,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=["rng"])
     async def randomnumber(self, ctx, int1: int, int2: int):
+        """Generate a random number between the two given fields"""
         try:
             await ctx.send(
                 embed=discord.Embed(

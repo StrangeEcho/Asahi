@@ -161,6 +161,7 @@ class Moderation(commands.Cog):
     async def slowmode(
         self, ctx: commands.Context, chan: Optional[discord.TextChannel] = None, time: int = 0
     ):
+        """Turn a slowmode delay on a specified channel"""
         if chan is None:
             chan = ctx.channel
         if time > 21600:
