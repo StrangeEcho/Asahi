@@ -170,7 +170,7 @@ class BotOwner(commands.Cog):
             self.bot.reload_extension(extension)
             await ctx.send(
                 embed=discord.Embed(
-                    description=f"<a:checkmark:851584158342053939> Reloaded `{extension}`",
+                    description=f":repeat: Reloaded `{extension}`",
                     color=self.bot.ok_color,
                 )
             )
