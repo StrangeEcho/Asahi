@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import platform
+import traceback
 
 from aiohttp import ClientSession
 from colorama import Back, Fore, Style
@@ -144,9 +145,17 @@ class HimejiBot(commands.AutoShardedBot):
                         Style.RESET_ALL,
                     )
                     print(Back.RED, Fore.WHITE, f"\r{e}", Style.RESET_ALL)
-        print(Fore.MAGENTA, "DONE", Style.RESET_ALL)
+        print(Fore.MAGENTA, "\rDONE", Style.RESET_ALL)
         print(Fore.GREEN, f"\rTotal loaded cogs: {loaded_cogs}", Style.RESET_ALL)
         print(Fore.RED, f"\rTotal unloaded cogs: {unloaded_cogs}", Style.RESET_ALL)
+        print("-" * 15)
+
+    async def on_shard_connect(self, shard_id):
+        print(Fore.GREEN, f"\rShard {shard_id} Logged Into Discord.", Style.RESET_ALL)
+        print("-" * 15)
+
+    async def on_shard_disconnect(self, shard_id):
+        print(Fore.RED, f"\rSHARD {shard_id} IS NOW IN A DISCONNECTED STATE FROM DISCORD", Style.RESET_ALL)
         print("-" * 15)
 
     async def close(self):

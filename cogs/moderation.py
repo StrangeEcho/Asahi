@@ -24,6 +24,8 @@ class Moderation(commands.Cog):
             reason = "No reason passed"
 
         await ctx.guild.ban(member, reason=f"{reason} | Moderator: {ctx.author}")
+        if str(member).startswith("Member ID"):
+            member = await self.bot.fetch_user(int(str(member).replace("Member ID", "")))
         await ctx.send(
             embed=discord.Embed(
                 description=f":red_circle: Successfully banned {member} from this guild.",
