@@ -370,14 +370,12 @@ class Miscellaneous(commands.Cog):
     @commands.command(aliases=["einfo", "emoteinfo"])
     async def emojiinfo(self, ctx: commands.Context, emoji: discord.Emoji):
         """Returns information about a emoji/emote(Within the current guild)"""
-        await ctx.send(embed=discord.Embed(
-            title="Emoji Information",
-            color=self.bot.ok_color
-        )
-        .add_field(name="ID", value=emoji.id, inline=False)
-        .add_field(name="Animated", value=emoji.animated, inline=False)
-        .add_field(name="Link", value=emoji.url, inline=False)
-        .set_image(url=emoji.url)
+        await ctx.send(
+            embed=discord.Embed(title="Emoji Information", color=self.bot.ok_color)
+            .add_field(name="ID", value=emoji.id, inline=False)
+            .add_field(name="Animated", value=emoji.animated, inline=False)
+            .add_field(name="Link", value=emoji.url, inline=False)
+            .set_image(url=emoji.url)
         )
 
 

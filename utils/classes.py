@@ -155,7 +155,11 @@ class HimejiBot(commands.AutoShardedBot):
         print("-" * 15)
 
     async def on_shard_disconnect(self, shard_id):
-        print(Fore.RED, f"\rSHARD {shard_id} IS NOW IN A DISCONNECTED STATE FROM DISCORD", Style.RESET_ALL)
+        print(
+            Fore.RED,
+            f"\rSHARD {shard_id} IS NOW IN A DISCONNECTED STATE FROM DISCORD",
+            Style.RESET_ALL,
+        )
         print("-" * 15)
 
     async def close(self):

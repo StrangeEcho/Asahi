@@ -36,7 +36,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
-    @commands.bot_has_permissions()
+    @commands.bot_has_permissions(kick_members=True)
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         """Kick members from the current server"""

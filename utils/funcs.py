@@ -3,22 +3,16 @@ import discord
 
 
 async def check_hierachy(ctx: commands.Context, member: discord.Member):
-    try:
-        if ctx.author.id == ctx.guild.owner.id:
-            return False
-        elif member == ctx.author:
-            return await ctx.send(f"You cant {ctx.command.name} yourself.")
-        elif member.id == ctx.bot.user.id:
-            return await ctx.send(f"You'd really {ctx.command.name} me? :animehmph:")
-        elif member.id == ctx.guild.owner.id:
-            return await ctx.send("Even if I wanted to do this. It's literally impossible")
-        elif ctx.author.top_role <= member.top_role:
-            return await ctx.send(
-                f"You cant use {ctx.command.name} on someone whos equal or higher than you in the role hierarchy"
-            )
-    except Exception as e:
-        pass
-
+    if ctx.me.top_role <= member.top_role:
+        return await ctx.send(f"I can't {ctx.command.name} someone who is equal to me on the role hierarchy.")
+    if ctx.author.id == ctx.guild.owner.id:
+        return False
+    if member.id == ctx.bot.user.id:
+        return await ctx.send(f"I can't do this either and you'd really use my own moderation commands on me? >:C")
+    if member.id == ctx.guild.owner.id:
+        return await ctx.send(f"Even if I wanted to {ctx.command.name} the owner. I can't.")
+    if ctx.author.top_role <= member.top_role:
+        return await ctx.send(f"You can't {ctx.command.name} someone who is equal in power to you on the role hierarchy")
 
 def can_execute_action(ctx, user, target):
     return (
