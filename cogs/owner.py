@@ -96,7 +96,7 @@ class BotOwner(commands.Cog):
 
             if ret is None:
                 try:
-                    await ctx.send(f"```py\n{value}\n```")
+                    return
                 except:
                     paginated_text = self.paginate(value)
                     for page in paginated_text:

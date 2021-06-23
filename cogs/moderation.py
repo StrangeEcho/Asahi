@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.utils import get
 import discord
 
-from utils.classes import HimejiBot, MemberID
+from utils.classes import HimejiBot
 from utils.funcs import check_hierachy
 
 
@@ -17,41 +17,45 @@ class Moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.cooldown(1, 3, commands.BucketType.guild)
-    async def ban(self, ctx: commands.Context, member: Union[discord.Member, int] = None, *, reason: str = None):
+    async def ban(
+        self,
+        ctx: commands.Context,
+        member: Union[discord.Member, int] = None,
+        *,
+        reason: str = None,
+    ):
         """Ban users from the current server"""
 
         if reason is None:
             reason = "No reason passed"
 
         actionembed = discord.Embed(
-            description=f" :red_circle: Banned {member} for {reason}",
-            color=self.bot.ok_color
+            description=f" :red_circle: Banned {member} for {reason}", color=self.bot.ok_color
         )
         actionembed.set_footer(text=f"Moderator: {ctx.author}")
 
         if isinstance(member, discord.Member):
-            if await check_hierachy(ctx, member):
+            if await check_hierarchy(ctx, member):
                 return
             try:
-                await member.send(embed=discord.Embed(
-                    title=f"You were banned from {ctx.guild}",
-                    description=f"Reason: {reason}",
-                    color=self.bot.ok_color
-                )
-                .set_footer(text=f"Moderator: {ctx.author}")
+                await member.send(
+                    embed=discord.Embed(
+                        title=f"You were banned from {ctx.guild}",
+                        description=f"Reason: {reason}",
+                        color=self.bot.ok_color,
+                    ).set_footer(text=f"Moderator: {ctx.author}")
                 )
                 await member.ban(reason=f"{reason} | Moderator: {ctx.author}")
                 embed = discord.Embed(
-                    description=f"Banned {member} for {reason}",
-                    color=self.bot.ok_color
+                    description=f"Banned {member} for {reason}", color=self.bot.ok_color
                 )
                 embed.set_footer(text=f"Moderator: {ctx.author}")
                 await ctx.send(embed=actionembed)
             except discord.Forbidden:
                 await ctx.send(
                     embed=discord.Embed(
-                        description=f"Failed sending DM to {member}\n**Proceeding with ban regardless.**",
-                        color=self.bot.error_color
+                        description=f":warning: Failed sending DM to {member}\n**Proceeding with ban regardless.**",
+                        color=self.bot.error_color,
                     )
                 )
                 await member.ban(reason=f"{reason} | Moderator: {ctx.author}")
@@ -59,14 +63,11 @@ class Moderation(commands.Cog):
         if isinstance(member, int):
             user = await self.bot.fetch_user(member)
             await ctx.guild.ban(user, reason=f"{reason} | Moderator: {ctx.author}")
-            await ctx.send(embed=discord.Embed(
-            description=f":red_circle: Banned {user} for {reason}",
-            color=self.bot.ok_color
-        )
-        .set_footer(text=f"Moderator: {ctx.author}")
-        )
-
-
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f":red_circle: Banned {user} for {reason}", color=self.bot.ok_color
+                ).set_footer(text=f"Moderator: {ctx.author}")
+            )
 
     @commands.command()
     @commands.guild_only()
@@ -75,7 +76,7 @@ class Moderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         """Kick members from the current server"""
-        if await check_hierachy(ctx, member):
+        if await check_hierarchy(ctx, member):
             return
 
         if reason is None:
@@ -123,7 +124,7 @@ class Moderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def mute(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         """Mute a member"""
-        if await check_hierachy(ctx, member):
+        if await check_hierarchy(ctx, member):
             return
         if reason is None:
             reason = "No reason added"
@@ -198,7 +199,7 @@ class Moderation(commands.Cog):
     async def slowmode(
         self, ctx: commands.Context, chan: Optional[discord.TextChannel] = None, time: int = 0
     ):
-        """Turn a slowmode delay on a specified channel"""
+        """Turn a slowmode delay on a specified channel in SECONDS"""
         if chan is None:
             chan = ctx.channel
         if time > 21600:

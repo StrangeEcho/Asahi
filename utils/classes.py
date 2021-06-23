@@ -13,34 +13,6 @@ import config
 
 embed_color = config.OK_COLOR.replace("#", "0x")
 
-# Borrowed from RoboDanny
-class MemberID(commands.Converter):
-    async def convert(self, ctx, argument):
-        try:
-            m = await commands.MemberConverter().convert(ctx, argument)
-        except commands.BadArgument:
-            try:
-                member_id = int(argument, base=10)
-            except ValueError:
-                raise commands.BadArgument(
-                    f"{argument} is not a valid member or member ID."
-                ) from None
-            else:
-                m = await ctx.bot.get_or_fetch_member(ctx.guild, member_id)
-                if m is None:
-                    # hackban case
-                    return type(
-                        "_Hackban",
-                        (),
-                        {"id": member_id, "__str__": lambda s: f"Member ID {s.id}"},
-                    )()
-
-        if not can_execute_action(ctx, ctx.author, m):
-            raise commands.BadArgument(
-                "You cannot do this action on this user due to role hierarchy."
-            )
-        return m
-
 
 class EmbedListMenu(menus.ListPageSource):
     """
@@ -86,27 +58,6 @@ class HimejiBot(commands.AutoShardedBot):
         self.error_color = int(str(f"0x{config.ERROR_COLOR}").replace("#", ""), base=16)
         self.uptime = None
         self._session = None
-
-    async def get_or_fetch_member(self, guild, member_id):
-        """Looks up a member in cache. If not found, fetches making an api call."""
-
-        member = guild.get_member(member_id)
-        if member is not None:
-            return member
-
-        shard = self.get_shard(guild.shard_id)
-        if shard.is_ws_ratelimited():
-            try:
-                member = await guild.fetch_member(member_id)
-            except discord.HTTPException:
-                return None
-            else:
-                return member
-
-        members = await guild.query_members(limit=1, user_ids=[member_id], cache=True)
-        if not members:
-            return None
-        return members[0]
 
     @property
     def session(self) -> ClientSession:

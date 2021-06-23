@@ -340,8 +340,8 @@ class Miscellaneous(commands.Cog):
         )
         if roles:
             embed.add_field(
-                name=f"Roles **{len(user.roles) - 1}**",
-                value=", ".join([x.mention for x in roles]),
+                name=f"Roles **{(len(user.roles) - 1)}**",
+                value=", ".join([x.mention for x in roles[:10]]),
                 inline=False,
             )
         if user_flags:
@@ -350,7 +350,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command(aliases=["rinfo"])
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role):
-        """Returns info about a roloe"""
+        """Returns info about a role"""
         await ctx.send(
             embed=discord.Embed(title=f"Role info for {role.name}", color=role.color)
             .add_field(name="ID", value=role.id, inline=True)
