@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 
 
-async def check_hierachy(ctx: commands.Context, member: discord.Member):
+async def check_hierarchy(ctx: commands.Context, member: discord.Member):
     if ctx.me.top_role <= member.top_role:
         return await ctx.send(
             f"I can't {ctx.command.name} someone who higher or equal to me on the role hierarchy."
