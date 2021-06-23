@@ -43,7 +43,9 @@ class HimejiBot(commands.AutoShardedBot):
     """Idk"""
 
     def __init__(self, *args, **kwargs):
-        print(Fore.GREEN, f"\rStarting the bot...", Style.RESET_ALL)
+        print(Fore.GREEN, f"\rStarting the bot...")
+        current_time = datetime.now().strftime("%c")
+        print(f"Current Time: {current_time}")
         super().__init__(
             command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
@@ -66,7 +68,7 @@ class HimejiBot(commands.AutoShardedBot):
         return self._session
 
     async def on_connect(self):
-        print(Fore.GREEN, f"Logged in as {self.user.name}(ID: {self.user.id})")
+        print(Fore.GREEN, f"\rLogged in as {self.user.name}(ID: {self.user.id})")
         print(
             f"Using Python version *{platform.python_version()}* and using Discord.py version *{discord.__version__}*"
         )

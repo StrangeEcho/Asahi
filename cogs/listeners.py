@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 from colorama import Fore, Style
 from discord.ext import commands
@@ -28,7 +29,7 @@ class Listeners(commands.Cog):
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(
+            await ctx.author.send(
                 embed=discord.Embed(
                     description="This command cannot be used in Private Messages",
                     color=self.bot.error_color,
@@ -108,8 +109,10 @@ class Listeners(commands.Cog):
         print(Fore.CYAN, f"\rCommand Logger")
         print(f"Usage: {ctx.message.content}")
         print(f"Executed In: {location}({locationID})")
-        print(f"Executed By {ctx.author}", Style.RESET_ALL)
+        print(f"Executed By {ctx.author}")
+        print(f"Time: {datetime.datetime.utcnow()}", Style.RESET_ALL)
         print("-" * 15)
+
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
