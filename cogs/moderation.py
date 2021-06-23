@@ -35,7 +35,7 @@ class Moderation(commands.Cog):
         actionembed.set_footer(text=f"Moderator: {ctx.author}")
 
         if isinstance(member, discord.Member):
-            if await check_hierarchy(ctx, member):
+            if await check_hierachy(ctx, member):
                 return
             try:
                 await member.send(
@@ -76,7 +76,7 @@ class Moderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         """Kick members from the current server"""
-        if await check_hierarchy(ctx, member):
+        if await check_hierachy(ctx, member):
             return
 
         if reason is None:
@@ -124,7 +124,7 @@ class Moderation(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def mute(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         """Mute a member"""
-        if await check_hierarchy(ctx, member):
+        if await check_hierachy(ctx, member):
             return
         if reason is None:
             reason = "No reason added"

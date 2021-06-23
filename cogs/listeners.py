@@ -98,7 +98,8 @@ class Listeners(commands.Cog):
         if ctx.guild:
             location = ctx.guild.name
             locationID = ctx.guild.id
-        print(Fore.CYAN, f"\rUsage: {ctx.message.content}")
+        print(Fore.CYAN, f"\rCommand Logger")
+        print(f"Usage: {ctx.message.content}")
         print(f"Executed In: {location}({locationID})")
         print(f"Executed By {ctx.author}", Style.RESET_ALL)
         print("-" * 15)
