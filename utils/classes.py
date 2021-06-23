@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 import platform
-import traceback
+import asyncio
 
 from aiohttp import ClientSession
 from colorama import Back, Fore, Style
@@ -58,6 +58,7 @@ class HimejiBot(commands.AutoShardedBot):
         self.error_color = int(str(f"0x{config.ERROR_COLOR}").replace("#", ""), base=16)
         self.uptime = None
         self._session = None
+        self.startup_time = datetime.now()
 
     @property
     def session(self) -> ClientSession:
@@ -66,15 +67,13 @@ class HimejiBot(commands.AutoShardedBot):
         return self._session
 
     async def on_connect(self):
-        print(Fore.GREEN, f"\rLogged in as {self.user.name}(ID: {self.user.id})")
+        print(f"Logged in as {self.user.name}(ID: {self.user.id})")
         print(
             f"Using Python version *{platform.python_version()}* and using Discord.py version *{discord.__version__}*"
         )
         print(
-            f"Running on: {platform.system()} {platform.release()} ({os.name})",
-            Style.RESET_ALL,
-        )
-        print("-" * 15)
+            f"Running on: {platform.system()} {platform.release()} ({os.name})")
+        print("Proceeding To Cog Loading Process.", Style.RESET_ALL)
 
     async def on_ready(self):
         if bot.uptime is not None:
@@ -100,8 +99,17 @@ class HimejiBot(commands.AutoShardedBot):
         print(Fore.GREEN, f"\rTotal loaded cogs: {loaded_cogs}", Style.RESET_ALL)
         print(Fore.RED, f"\rTotal unloaded cogs: {unloaded_cogs}", Style.RESET_ALL)
         print("-" * 15)
+        print(Fore.GREEN, f"\rRegistered Shard Count: {len(self.shards)}")
+        owners = str(self.owner_ids).replace("{", "").replace("}", "")
+        print(f"Recognized Owner ID(s): {owners}")
+        time_difference = ((self.startup_time - datetime.now()) * 1000).total_seconds()
+        formatted_time_difference = str(time_difference).replace("-", "")
+        print(f"Elapsed Time Since Startup: {formatted_time_difference} Ms")
+        print("STARTUP COMPLETE. READY TO GO.", Style.RESET_ALL)
+        print("-" * 15)
 
     async def on_shard_connect(self, shard_id):
+        print("-" * 15)
         print(Fore.GREEN, f"\rShard {shard_id} Logged Into Discord.", Style.RESET_ALL)
         print("-" * 15)
 
