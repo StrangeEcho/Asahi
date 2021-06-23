@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
 import platform
-import asyncio
 
 from aiohttp import ClientSession
 from colorama import Back, Fore, Style
@@ -44,7 +43,7 @@ class HimejiBot(commands.AutoShardedBot):
     """Idk"""
 
     def __init__(self, *args, **kwargs):
-        print(Fore.GREEN, f"\rStarting the bot...")
+        print(Fore.GREEN, f"\rStarting the bot...", Style.RESET_ALL)
         super().__init__(
             command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
@@ -67,7 +66,7 @@ class HimejiBot(commands.AutoShardedBot):
         return self._session
 
     async def on_connect(self):
-        print(f"Logged in as {self.user.name}(ID: {self.user.id})")
+        print(Fore.GREEN, f"Logged in as {self.user.name}(ID: {self.user.id})")
         print(
             f"Using Python version *{platform.python_version()}* and using Discord.py version *{discord.__version__}*"
         )
@@ -95,7 +94,7 @@ class HimejiBot(commands.AutoShardedBot):
                         Style.RESET_ALL,
                     )
                     print(Back.RED, Fore.WHITE, f"\r{e}", Style.RESET_ALL)
-        print(Fore.MAGENTA, "\rDONE", Style.RESET_ALL)
+        print(Fore.MAGENTA, "DONE", Style.RESET_ALL)
         print(Fore.GREEN, f"\rTotal loaded cogs: {loaded_cogs}", Style.RESET_ALL)
         print(Fore.RED, f"\rTotal unloaded cogs: {unloaded_cogs}", Style.RESET_ALL)
         print("-" * 15)
