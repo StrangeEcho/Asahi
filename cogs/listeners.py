@@ -39,7 +39,7 @@ class Listeners(commands.Cog):
         elif isinstance(error, commands.TooManyArguments):
             await ctx.send(
                 embed=discord.Embed(
-                    description="You passed in a couple uneeded arguments. Please get rid of them and try again",
+                    description="You passed in a couple unneeded arguments. Please get rid of them and try again",
                     color=self.error_color,
                 )
             )
@@ -137,7 +137,7 @@ class Listeners(commands.Cog):
                     print(f"Failed to forward dms to the owner due to: {e}")
 
     async def edit_process_commands(self, message: discord.Message):
-        """Same as Airi's method (Airi.process_commands), but dont dispatch message_without_command."""
+        """Same as Airi's method (Airi.process_commands), but don't dispatch message_without_command."""
         if not message.author.bot:
             ctx = await self.bot.get_context(message)
             await self.bot.invoke(ctx)

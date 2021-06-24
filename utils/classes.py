@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 import os
 import platform
@@ -7,7 +8,6 @@ from colorama import Back, Fore, Style
 from discord.ext import commands, menus
 import discord
 
-from utils.funcs import can_execute_action
 import config
 
 embed_color = config.OK_COLOR.replace("#", "0x")
@@ -73,13 +73,21 @@ class HimejiBot(commands.AutoShardedBot):
             f"Using Python version *{platform.python_version()}* and using Discord.py version *{discord.__version__}*"
         )
         print(
-            f"Running on: {platform.system()} {platform.release()} ({os.name})")
-        print("Proceeding To Cog Loading Process.", Style.RESET_ALL)
+            f"Running on: {platform.system()} {platform.release()} ({os.name})", Style.RESET_ALL)
 
     async def on_ready(self):
         if bot.uptime is not None:
             return
         bot.uptime = datetime.utcnow()
+        print(Fore.GREEN, f"\rFINISHED CHUNKING {len(self.guilds)} GUILDS AND CACHING {len(self.users)} USERS")
+        print(f"Registered Shard Count: {len(self.shards)}")
+        owners = ",".join(map(str, self.owner_ids))
+        print(f"Recognized Owner ID(s): {owners}")
+        time_difference = ((self.startup_time - datetime.now()) * 1000).total_seconds()
+        formatted_time_difference = str(time_difference).replace("-", "")
+        print(f"Elapsed Time Since Startup: {formatted_time_difference} Ms")
+        print("PROCEEDING TO COG LOADING PROCESS", Style.RESET_ALL)
+        print("-" * 15)
         print(Fore.MAGENTA + "STARTING COG LOADING PROCESS", Style.RESET_ALL)
         loaded_cogs = 0
         unloaded_cogs = 0
@@ -96,24 +104,21 @@ class HimejiBot(commands.AutoShardedBot):
                         Style.RESET_ALL,
                     )
                     print(Back.RED, Fore.WHITE, f"\r{e}", Style.RESET_ALL)
-        print(Fore.MAGENTA, "DONE", Style.RESET_ALL)
+        print(Fore.MAGENTA, "\rDONE", Style.RESET_ALL)
         print(Fore.GREEN, f"\rTotal loaded cogs: {loaded_cogs}", Style.RESET_ALL)
         print(Fore.RED, f"\rTotal unloaded cogs: {unloaded_cogs}", Style.RESET_ALL)
         print("-" * 15)
-        print(Fore.GREEN, f"\rRegistered Shard Count: {len(self.shards)}")
-        owners = str(self.owner_ids).replace("{", "").replace("}", "")
-        print(f"Recognized Owner ID(s): {owners}")
-        time_difference = ((self.startup_time - datetime.now()) * 1000).total_seconds()
-        formatted_time_difference = str(time_difference).replace("-", "")
-        print(f"Elapsed Time Since Startup: {formatted_time_difference} Ms")
-        print("STARTUP COMPLETE. READY TO GO.", Style.RESET_ALL)
+        print(Fore.GREEN, "\rSTARTUP COMPLETE. READY!", Style.RESET_ALL)
         print("-" * 15)
 
+
+    # noinspection PyMethodMayBeStatic
     async def on_shard_connect(self, shard_id):
         print("-" * 15)
         print(Fore.GREEN, f"\rShard {shard_id} Logged Into Discord.", Style.RESET_ALL)
         print("-" * 15)
 
+    # noinspection PyMethodMayBeStatic
     async def on_shard_disconnect(self, shard_id):
         print(
             Fore.RED,

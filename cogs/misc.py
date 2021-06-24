@@ -331,6 +331,7 @@ class Miscellaneous(commands.Cog):
         embed.set_thumbnail(url=user.avatar.url)
         embed.add_field(name="Name", value=user)
         embed.add_field(name="ID", value=user.id)
+        embed.add_field(name="Status & Activity", value=f"Status:{user.status}\nActivity: {user.activity}")
         embed.add_field(
             name="Account Creation",
             value=user.created_at.strftime("%c"),
