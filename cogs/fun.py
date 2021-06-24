@@ -109,18 +109,24 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def owoify(self, ctx: commands.Context, *, txt):
+        """Owoify some text"""
         async with self.bot.session.get(f"https://nekos.life/api/v2/owoify?text={txt}") as resp:
-
-            tup = (await resp.json())["owo"]
-            formatted_tuple = (
-                str(tup).replace("(", "").replace(")", "").replace("'", "").replace(",", "")
-            )
-
-            await ctx.send(
-                embed=discord.Embed(
-                    title="OwO here you go.", description=formatted_tuple, color=self.bot.ok_color
+            if resp.status != 200:
+                await ctx.send(embed=discord.Embed(
+                    description=(await resp.json())["msg"],
+                    color=self.bot.error_color
+                ))
+            else:
+                tup = (await resp.json())["owo"]
+                formatted_tuple = (
+                    str(tup).replace("(", "").replace(")", "").replace("'", "").replace(",", "")
                 )
-            )
+
+                await ctx.send(
+                    embed=discord.Embed(
+                        title="OwO here you go.", description=formatted_tuple, color=self.bot.ok_color
+                    )
+                )
 
 
 def setup(bot):
