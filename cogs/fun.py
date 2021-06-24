@@ -108,7 +108,7 @@ class Fun(commands.Cog):
             )
 
     @commands.command(aliases=["owo"])
-    async def owoify(self, ctx: commands.Context, *, txt):
+    async def owoify(self, ctx: commands.Context, *txt):
         async with self.bot.session.get(f"https://nekos.life/api/v2/owoify?text={txt}") as resp:
 
             tup = (await resp.json())["owo"]
