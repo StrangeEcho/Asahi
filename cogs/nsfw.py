@@ -65,7 +65,7 @@ class NSFW(commands.Cog):
             "cum_jpg",
             "gasm"
         ]
-        async with self.bot.session.get(f"https://nekos.life/api/v2/{choice(endpoints)}") as resp:
+        async with self.bot.session.get(f"https://nekos.life/api/v2/img/{choice(endpoints)}") as resp:
             if resp.status == 200:
                 await ctx.send(embed=discord.Embed(color=self.bot.ok_color).set_image(url=(await resp.json())["url"]))
             else:
