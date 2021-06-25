@@ -39,7 +39,7 @@ class Miscellaneous(commands.Cog):
         message = await ctx.reply(embed=emb, mention_author=False)
         ping = (time.monotonic() - before) * 1000
 
-        emb.title = "Pong! 🏓"
+        emb.title = "Pong! :ping_pong:"
         emb.color = self.bot.ok_color
         shards = [
             f"Shard {shard + 1}/{self.bot.shard_count}: {round(pingt * 1000)}ms\n"

@@ -1,3 +1,4 @@
+#main
 /config.py
 /cogs/test.py
 /colors.txt
@@ -7,3 +8,7 @@ __pycache__
 .idea
 venv
 /cogs/testing.py
+
+# personal
+run.sh
+reformat.bat

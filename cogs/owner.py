@@ -119,33 +119,32 @@ class BotOwner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def restart(self, ctx: commands.Context):
-        """Log out the bot"""
-        if await ButtonConfirmation(
-            ctx,
-            "Are you sure you want me to restart?",
-            destructive=True,
-            confirm="Yes",
-            cancel="No",
-        ).run():
-            await ctx.send("Goodbye then :wave:")
-            await self.bot.close()
-        else:
-            await ctx.send("I guess I will stay then.")
-
-    @commands.command(aliases=["shutdown", "logout", "sleep"])
-    @commands.is_owner()
-    async def die(self, ctx: commands.Context):
+        """Restarts out the bot"""
         if await ButtonConfirmation(
             ctx,
             "Are you sure you want me to shutdown?",
             destructive=True,
             confirm="Yes",
             cancel="No",
+            confirm_message="Goodbye then :wave:",
+            cancel_message="I guess I will stay then",
         ).run():
-            await ctx.send("Goodbye then :wave:")
+            await self.bot.close()
+
+    @commands.command(aliases=["shutdown", "logout", "sleep"])
+    @commands.is_owner()
+    async def die(self, ctx: commands.Context):
+        """Kills the bot process"""
+        if await ButtonConfirmation(
+            ctx,
+            "Are you sure you want me to shutdown?",
+            destructive=True,
+            confirm="Yes",
+            cancel="No",
+            confirm_message="Goodbye then :wave:",
+            cancel_message="I guess I will stay then",
+        ).run():
             exit(code=26)
-        else:
-            await ctx.send("I guess I will stay then.")
 
     @commands.command()
     @commands.is_owner()
