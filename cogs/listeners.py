@@ -1,14 +1,13 @@
 import datetime
 import logging
 
-from colorama import Fore, Style
 from discord.ext import commands
 import discord
 
 from config import FORWARD_DMS
 from utils.classes import HimejiBot
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("Listeners")
 
 
 class Listeners(commands.Cog):
@@ -40,7 +39,7 @@ class Listeners(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description="You passed in a couple unneeded arguments. Please get rid of them and try again",
-                    color=self.error_color,
+                    color=self.bot.error_color,
                 )
             )
 
@@ -93,15 +92,13 @@ class Listeners(commands.Cog):
                 await owner.send(
                     embed=discord.Embed(
                         title="You Baka!",
-                        description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error.original}\n```",
+                        description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error}\n```",
                         color=self.bot.error_color,
                     )
                 )
-            log.error(
-                Fore.RED + f"**{ctx.command.qualified_name} failed to execute**",
-                exc_info=error.original,
+            self.bot.logger.error(
+                f"**{ctx.command.qualified_name} failed to execute**", exc_info=error.original
             )
-            print(Style.RESET_ALL + "-" * 15)
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):
@@ -110,12 +107,12 @@ class Listeners(commands.Cog):
         if ctx.guild:
             location = ctx.guild.name
             locationID = ctx.guild.id
-        print(Fore.CYAN, f"\rCommand Logger")
-        print(f"Usage: {ctx.message.content}")
-        print(f"Executed In: {location}({locationID})")
-        print(f"Executed By {ctx.author}")
-        print(f"Time: {datetime.datetime.utcnow()}", Style.RESET_ALL)
-        print("-" * 15)
+        self.bot.logger.info(
+            f"Command Logger\n"
+            f"Usage: {ctx.message.content}\n"
+            f"Executed In: {location}({locationID})\n"
+            f"Executed By {ctx.author}"
+        )
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -137,7 +134,7 @@ class Listeners(commands.Cog):
                         )
                     )
                 except discord.HTTPException as e:
-                    print(f"Failed to forward dms to the owner due to: {e}")
+                    self.bot.logger.info(f"Failed to forward dms to the owner due to: {e}")
 
     async def edit_process_commands(self, message: discord.Message):
         """Same as Airi's method (Airi.process_commands), but don't dispatch message_without_command."""
