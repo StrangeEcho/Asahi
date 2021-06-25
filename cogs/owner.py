@@ -116,10 +116,25 @@ class BotOwner(commands.Cog):
                             break
                         await ctx.send(f"```py\n{page}\n```")
 
+    @commands.command()
+    @commands.is_owner()
+    async def restart(self, ctx: commands.Context):
+        """Log out the bot"""
+        if await ButtonConfirmation(
+            ctx,
+            "Are you sure you want me to restart?",
+            destructive=True,
+            confirm="Yes",
+            cancel="No",
+        ).run():
+            await ctx.send("Goodbye then :wave:")
+            await self.bot.close()
+        else:
+            await ctx.send("I guess I will stay then.")
+
     @commands.command(aliases=["shutdown", "logout", "sleep"])
     @commands.is_owner()
     async def die(self, ctx: commands.Context):
-        """Log out the bot"""
         if await ButtonConfirmation(
             ctx,
             "Are you sure you want me to shutdown?",
@@ -128,7 +143,7 @@ class BotOwner(commands.Cog):
             cancel="No",
         ).run():
             await ctx.send("Goodbye then :wave:")
-            await self.bot.close()
+            exit(code=26)
         else:
             await ctx.send("I guess I will stay then.")
 
