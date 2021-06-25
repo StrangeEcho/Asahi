@@ -1,5 +1,5 @@
-import logging
 import datetime
+import logging
 
 from colorama import Fore, Style
 from discord.ext import commands
@@ -84,15 +84,19 @@ class Listeners(commands.Cog):
                     title="Oops!",
                     description=f"It looks like my owner may have messed up some code for this command. ```py\n{error}\n```",
                     color=self.bot.error_color,
-                ).set_footer(icon_url=ctx.author.avatar.url, text="This incident was reported to my master.")
+                ).set_footer(
+                    icon_url=ctx.author.avatar.url, text="This incident was reported to my master."
+                )
             )
             for owner in self.bot.owner_ids:
                 owner = self.bot.get_user(owner)
-                await owner.send(embed=discord.Embed(
-                    title="You Baka!",
-                    description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error.original}\n```",
-                    color=self.bot.error_color
-                ))
+                await owner.send(
+                    embed=discord.Embed(
+                        title="You Baka!",
+                        description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error.original}\n```",
+                        color=self.bot.error_color,
+                    )
+                )
             log.error(
                 Fore.RED + f"**{ctx.command.qualified_name} failed to execute**",
                 exc_info=error.original,
@@ -112,7 +116,6 @@ class Listeners(commands.Cog):
         print(f"Executed By {ctx.author}")
         print(f"Time: {datetime.datetime.utcnow()}", Style.RESET_ALL)
         print("-" * 15)
-
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):

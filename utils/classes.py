@@ -1,5 +1,5 @@
-import asyncio
 from datetime import datetime
+import asyncio
 import os
 import platform
 
@@ -72,14 +72,16 @@ class HimejiBot(commands.AutoShardedBot):
         print(
             f"Using Python version *{platform.python_version()}* and using Discord.py version *{discord.__version__}*"
         )
-        print(
-            f"Running on: {platform.system()} {platform.release()} ({os.name})", Style.RESET_ALL)
+        print(f"Running on: {platform.system()} {platform.release()} ({os.name})", Style.RESET_ALL)
 
     async def on_ready(self):
         if bot.uptime is not None:
             return
         bot.uptime = datetime.utcnow()
-        print(Fore.GREEN, f"\rFINISHED CHUNKING {len(self.guilds)} GUILDS AND CACHING {len(self.users)} USERS")
+        print(
+            Fore.GREEN,
+            f"\rFINISHED CHUNKING {len(self.guilds)} GUILDS AND CACHING {len(self.users)} USERS",
+        )
         print(f"Registered Shard Count: {len(self.shards)}")
         owners = ",".join(map(str, self.owner_ids))
         print(f"Recognized Owner ID(s): {owners}")
@@ -110,7 +112,6 @@ class HimejiBot(commands.AutoShardedBot):
         print("-" * 15)
         print(Fore.GREEN, "\rSTARTUP COMPLETE. READY!", Style.RESET_ALL)
         print("-" * 15)
-
 
     # noinspection PyMethodMayBeStatic
     async def on_shard_connect(self, shard_id):

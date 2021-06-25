@@ -1,14 +1,15 @@
-import datetime
 from random import choice
+import datetime
 
-import discord
 from discord.ext import commands, menus
 from hentai import Format, Hentai, Tag, Utils
+import discord
 
-from utils.classes import HimejiBot, EmbedListMenu
 from config import OK_COLOR
+from utils.classes import EmbedListMenu, HimejiBot
 
 embed_color = OK_COLOR.replace("#", "0x")
+
 
 class Embed(discord.Embed):
     def __init__(self, colour=int(embed_color, base=16), timestamp=None, **kwargs):
@@ -22,10 +23,10 @@ class Embed(discord.Embed):
         instance.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
         return instance
 
+
 class NSFW(commands.Cog):
     def __init__(self, bot: HimejiBot):
         self.bot = bot
-
 
     @commands.command()
     async def hentai(self, ctx: commands.Context):
@@ -63,16 +64,24 @@ class NSFW(commands.Cog):
             "erok",
             "erokemo",
             "cum_jpg",
-            "gasm"
+            "gasm",
         ]
-        async with self.bot.session.get(f"https://nekos.life/api/v2/img/{choice(endpoints)}") as resp:
+        async with self.bot.session.get(
+            f"https://nekos.life/api/v2/img/{choice(endpoints)}"
+        ) as resp:
             if resp.status == 200:
-                await ctx.send(embed=discord.Embed(color=self.bot.ok_color).set_image(url=(await resp.json())["url"]))
+                await ctx.send(
+                    embed=discord.Embed(color=self.bot.ok_color).set_image(
+                        url=(await resp.json())["url"]
+                    )
+                )
             else:
-                await ctx.send(embed=discord.Embed(
-                    description=f"API returned a {resp.status} status. Try again...",
-                    color=self.bot.error_color
-                ))
+                await ctx.send(
+                    embed=discord.Embed(
+                        description=f"API returned a {resp.status} status. Try again...",
+                        color=self.bot.error_color,
+                    )
+                )
 
     @commands.group()
     @commands.cooldown(1, 5, commands.BucketType.member)

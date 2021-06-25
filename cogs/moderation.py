@@ -189,7 +189,8 @@ class Moderation(commands.Cog):
                 embed=discord.Embed(
                     description=f":put_litter_in_its_place: Successfully purged `{amount}` from this channel",
                     color=self.bot.ok_color,
-                )
+                ),
+                delete_after=5,
             )
 
     @commands.command(aliases=["sm"])
