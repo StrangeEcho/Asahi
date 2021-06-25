@@ -205,6 +205,7 @@ class BotOwner(commands.Cog):
             await chan.send(msg)
 
     @commands.command(pass_context=True, hidden=True)
+    @commands.is_owner()
     async def repl(self, ctx: commands.Context):
         """Launches an interactive REPL session."""
         variables = {
