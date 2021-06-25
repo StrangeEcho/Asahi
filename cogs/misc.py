@@ -91,6 +91,7 @@ class Miscellaneous(commands.Cog):
         embed = discord.Embed(
             title=f"{self.bot.user.name} Stats",
             description=f"Invite me [here](https://discord.com/api/oauth2/authorize?client_id=784474257832804372&scope=bot) and join my Support Server [here](https://discord.gg/Cs5RdJF9pb)",
+            color=self.bot.ok_color
         )
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         embed.add_field(name="Author:", value="Tylerr#6979", inline=True)
