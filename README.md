@@ -89,7 +89,7 @@ Run `service himeji enable && journalctl -u himeji.service -f -n 30 --output cat
 `systemctl start himeji && journalctl -u himeji.service -f -n 30`\
   Just replace `start` with whatever action you are trying to perform
 
-**If you have any problems with any setup and need help join the support server [here](https://discord.gg/Cs5RdJF9pb)
+**If you have any problems with any setup and need help join the support server [here](https://discord.gg/Cs5RdJF9pb)**
 # Supporters 
 [![Stargazers repo roster for @Yat-o/HimejiBot](https://reporoster.com/stars/Yat-o/HimejiBot)](https://github.com/Yat-o/HimejiBot/stargazers)
 
