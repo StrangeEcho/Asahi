@@ -126,7 +126,7 @@ class BotOwner(commands.Cog):
             destructive=True,
             confirm="Yes",
             cancel="No",
-            confirm_message="Goodbye then :wave:",
+            confirm_message="Attempting to restart. See you in a bit. :wave:",
             cancel_message="I guess I will stay then",
         ).run():
             await self.bot.close()
