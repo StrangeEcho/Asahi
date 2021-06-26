@@ -56,7 +56,7 @@ Alright so this process if also fairly easy. Just do all the steps in the Basic 
 ### Systemd Setup
 Alright this setup is for people who want to run the bot as a Systemd service. Just do everything in the Basic Setup excep the last step.
 * First off make sure you have root or sudo access
-* Create and edit the service file(This step can very if you are root or a another user)\
+* Create and edit the service file\
   `sudo nano /etc/systemd/system/himeji.service`
 * Next you will arrive onto an empty file. Copy and paste this into it
 ```
