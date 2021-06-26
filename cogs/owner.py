@@ -204,7 +204,7 @@ class BotOwner(commands.Cog):
         else:
             await chan.send(msg)
 
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command()
     @commands.is_owner()
     async def repl(self, ctx: commands.Context):
         """Launches an interactive REPL session."""
@@ -304,6 +304,7 @@ class BotOwner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def dm(self, ctx: commands.Context, user: discord.User, *, msg):
+        """Direct Message A User"""
         try:
             await user.send(
                 embed=discord.Embed(
