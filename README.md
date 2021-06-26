@@ -46,9 +46,9 @@ Its as simple as `python3 main.py`
 * Congrats you have the bot running 🥳
 ### Pm2 Setup
 Alright so this process if also fairly easy. Just do all the steps in the Basic Setup but dont run the last step
-* Make sure you have the one base requirement: **npm**
+* Make sure you have the one of these: **npm or yarn**
 * Install PM2 if you don't already have it\
-`npm install pm2 -g`
+`npm install pm2 -g` or `yarn global add pm2`
 * After installing PM2 you are ready to run the bot\
 `pm2 start pm2.json`
 * After that you can check on the bot with\
