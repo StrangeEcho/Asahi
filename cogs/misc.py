@@ -78,6 +78,14 @@ class Miscellaneous(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command()
+    async def support(self, ctx: commands.Context):
+        await ctx.send(embed=discord.Embed(
+            description=f"Come see me and my master and the rest of my robotic brothers and sisters [here](https://discord.gg/Cs5RdJF9pb)",
+            color=self.bot.ok_color
+        ).set_thumbnail(url=self.bot.user.avatar.url)
+    )
+
+    @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.member)
     async def stats(self, ctx: commands.Context):
         """Some stats about me."""
