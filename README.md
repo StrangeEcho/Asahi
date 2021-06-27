@@ -34,14 +34,19 @@ python3 -m pip install venv #install venv
 python3 -m venv venv #initialize the venv for this project
 source venv/bin/activate #activate it
 ```
-* After setting up your Venv you are set to now install the bot's requirements\
+* Next it is time to get install setuptools and wheel so packages dont fail to build
+  ```shell
+  pip3 install setuptools
+  pip3 install wheel 
+  ```
+* After that you are set to now install the bot's requirements\
 `pip3 install -r requirements.txt -U`
 * Now rename the configexample.py and fill it out as needed
 ```shell
 mv configexample.py config.py #CASE SENSITIVE
 nano config.py #After filling it out. Save and exit with ctrl+x
 ```
-* Now then if you did eveything right you should now be able to run the bot\
+* Now then if you did everything right you should now be able to run the bot\
 Its as simple as `python3 main.py`
 * Congrats you have the bot running 🥳
 ### Pm2 Setup
