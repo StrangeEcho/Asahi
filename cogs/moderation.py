@@ -20,7 +20,7 @@ class Moderation(commands.Cog):
     async def ban(
         self,
         ctx: commands.Context,
-        member: Union[discord.Member, int] = None,
+        member: Union[discord.Member, int],
         *,
         reason: str = None,
     ):

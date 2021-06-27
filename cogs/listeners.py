@@ -28,14 +28,17 @@ class Listeners(commands.Cog):
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            await ctx.author.send(
-                embed=discord.Embed(
-                    description="This command cannot be used in Private Messages",
-                    color=self.bot.error_color,
+            try:
+                await ctx.send(
+                    embed=discord.Embed(
+                        description="This command cannot be used in Private Messages",
+                        color=self.bot.error_color,
+                    )
                 )
-            )
+            except discord.HTTPException:
+                pass
 
-        elif isinstance(error, commands.TooManyArguments):
+        elif isinstance(error, commands.TooManyArguments): #Not really needed but yeah.
             await ctx.send(
                 embed=discord.Embed(
                     description="You passed in a couple unneeded arguments. Please get rid of them and try again",
@@ -81,7 +84,7 @@ class Listeners(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     title="Oops!",
-                    description=f"It looks like my owner may have messed up some code for this command. ```py\n{error}\n```",
+                    description=f"It looks like my owner may have messed up some code for this command.\n```py\n{error}\n```",
                     color=self.bot.error_color,
                 ).set_footer(
                     icon_url=ctx.author.avatar.url, text="This incident was reported to my master."
@@ -127,7 +130,7 @@ class Listeners(commands.Cog):
                         embed=discord.Embed(
                             title=f"{message.author} said ... in dms",
                             description=message.content,
-                            color=discord.Color.green(),
+                            color=self.bot.ok_color,
                         ).set_footer(
                             text=f"User ID: {message.author.id}",
                             icon_url=message.author.avatar.url,
