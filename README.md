@@ -15,7 +15,7 @@
   
 # Sources
 ***
-- [RoboDanny](https://github.com/Rapptz/RoboDanny) (REPL Commands & Some funcs)
+- [RoboDanny](https://github.com/Rapptz/RoboDanny) (REPL Command)
 - [RedBot](https://github.com/Cog-Creators/Red-DiscordBot) (PR Template)
 - [@6days9weeks](https://www.github.com/6days9weeks/) (Help with code, few cogs and questions)
 - The rest is me and excerpts from bots I've wrote in the past.
