@@ -12,7 +12,7 @@ class Help(commands.Cog):
 
     @commands.command() # Command made by zedchance modified by Tylerr
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def help(self, ctx, *commands: str):
+    async def help(self, ctx: commands.Context, *, commands: str):
         """ Shows this message """
         embed = discord.Embed(title=f"{self.bot.user}", color=self.bot.ok_color)
 
@@ -96,10 +96,12 @@ class Help(commands.Cog):
 
         try:
             await ctx.author.send(f"{ctx.author.mention}", embed=embed)
+            await ctx.message.add_reaction("\u2705")
         except discord.HTTPException:
             await ctx.send(
                 "Failed sending help DM. Please open your DMS and run the command again"
             )
+            await ctx.message.add_reaction("\u2049")
         return
 
 
