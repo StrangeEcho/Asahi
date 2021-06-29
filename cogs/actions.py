@@ -11,6 +11,7 @@ class Actions(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def hug(self, ctx: commands.Context, *, target=np):
         """Hug someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/hug") as resp:
@@ -20,8 +21,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def kiss(self, ctx: commands.Context, *, target=np):
         """Kiss someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/hug") as resp:
@@ -31,8 +32,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def pat(self, ctx: commands.Context, *, target=np):
         """Pat someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/pat") as resp:
@@ -42,8 +43,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def cuddle(self, ctx: commands.Context, *, target=np):
         """Cuddle with someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/cuddle") as resp:
@@ -53,8 +54,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def lick(self, ctx: commands.Context, *, target=np):
         """Lick someone"""
         async with self.bot.session.get("https://api.waifu.pics/sfw/lick") as resp:
@@ -64,8 +65,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command(aliases=["bulli"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def bully(self, ctx: commands.Context, *, target=np):
         """Bully someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/bully") as resp:
@@ -75,8 +76,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def poke(self, ctx: commands.Context, *, target=np):
         """Poke someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/poke") as resp:
@@ -86,8 +87,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def slap(self, ctx: commands.Context, *, target=np):
         """Slap someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/slap") as resp:
@@ -99,8 +100,8 @@ class Actions(commands.Cog):
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text="ouch")
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def smug(self, ctx: commands.Context):
         """Smugly look at someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/smug") as resp:
@@ -110,8 +111,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def baka(self, ctx: commands.Context, *, target=np):
         """Call someone an idiot"""
         async with self.bot.session.get(url="https://nekos.life/api/v2/img/baka") as resp:
@@ -123,8 +124,8 @@ class Actions(commands.Cog):
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text=f"{ctx.author.name} says so themselves")
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def feed(self, ctx: commands.Context, *, target=np):
         """Feed someone"""
         async with self.bot.session.get(url="https://nekos.life/api/v2/img/feed") as resp:
@@ -134,8 +135,8 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
-
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def tickle(self, ctx: commands.Context, *, target=np):
         """Tickle someone"""
         async with self.bot.session.get("https://nekos.life/api/v2/img/tickle") as resp:

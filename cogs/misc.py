@@ -20,6 +20,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.has_permissions(embed_links=True)
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def ping(
         self,
         ctx: commands.Context,
@@ -62,7 +63,7 @@ class Miscellaneous(commands.Cog):
         await message.edit(embed=emb)
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.member)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def invite(self, ctx: commands.Context):
         """Invite the bot to your server."""
         embed = discord.Embed(color=self.bot.ok_color, title="<3")
@@ -78,6 +79,7 @@ class Miscellaneous(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def support(self, ctx: commands.Context):
         await ctx.send(
             embed=discord.Embed(
@@ -87,7 +89,7 @@ class Miscellaneous(commands.Cog):
         )
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.member)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def stats(self, ctx: commands.Context):
         """Some stats about me."""
         text_channels = 0
@@ -183,8 +185,8 @@ class Miscellaneous(commands.Cog):
             await ctx.reply(embed=e, mention_author=False)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
-    @commands.cooldown(1, 10, commands.BucketType.member)
     @commands.bot_has_permissions(embed_links=True)
     async def avatar(self, ctx: commands.Context, user: Optional[discord.Member]):
         """Check your avatars."""
@@ -204,6 +206,7 @@ class Miscellaneous(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @commands.max_concurrency(1, commands.BucketType.user)
     async def osu(self, ctx: commands.Context, *, user):
@@ -237,6 +240,7 @@ class Miscellaneous(commands.Cog):
             pic.close()
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def uptime(self, ctx: commands.Context):
         """Shows bot's uptime."""
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")

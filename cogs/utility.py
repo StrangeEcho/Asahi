@@ -12,6 +12,7 @@ class Utility(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["sinfo", "ginfo", "guildinfo"])
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def serverinfo(self, ctx: commands.Context, guild: discord.Guild = None):
         """Get information about a certain guild"""
         if guild is None:
@@ -97,6 +98,7 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["rinfo"])
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role):
         """Returns info about a role"""
         await ctx.send(
@@ -116,6 +118,7 @@ class Utility(commands.Cog):
         )
 
     @commands.command(aliases=["einfo", "emoteinfo"])
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def emojiinfo(self, ctx: commands.Context, emoji: discord.Emoji):
         """Returns information about a emoji/emote(Within the current guild)"""
         await ctx.send(
@@ -127,6 +130,7 @@ class Utility(commands.Cog):
         )
 
     @commands.command(aliases=["se", "bigmoji", "jumbo"])
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def bigemoji(
         self,
         ctx: commands.Context,

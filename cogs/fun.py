@@ -11,6 +11,7 @@ class Fun(commands.Cog):
         self.bot = bot
 
     @commands.command(name="8ball")
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def _8ball(self, ctx: commands.Context, *, question):
         """Ask the mystical 8 ball anything. """
         answers = [
@@ -45,6 +46,7 @@ class Fun(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def compliment(self, ctx: commands.Context, member: discord.Member = None):
         """Compliment someone or yourself"""
         if member is None:
@@ -89,6 +91,7 @@ class Fun(commands.Cog):
         )
 
     @commands.command(aliases=["rng"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def randomnumber(self, ctx, int1: int, int2: int):
         """Generate a random number between the two given fields"""
         try:
@@ -108,6 +111,7 @@ class Fun(commands.Cog):
             )
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def owoify(self, ctx: commands.Context, *, txt):
         """Owoify some text"""
         if len(txt) > 200:

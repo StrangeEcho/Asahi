@@ -29,6 +29,7 @@ class NSFW(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     @commands.is_nsfw()
     async def hentai(self, ctx: commands.Context):
         """Retrieves a hentai gif/image from nekos.life api endpoint"""
