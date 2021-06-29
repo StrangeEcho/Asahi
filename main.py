@@ -1,4 +1,6 @@
-from utils.classes import bot
-import config
+from utils.classes import HimejiBot
+from config import TOKEN
 
-bot.run(config.TOKEN)
+bot = HimejiBot()
+
+bot.run(TOKEN)

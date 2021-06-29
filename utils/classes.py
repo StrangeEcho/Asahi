@@ -57,9 +57,15 @@ class HimejiBot(commands.AutoShardedBot):
             )
             logging.getLogger(logger).addHandler(LoggingHandler())
         self.logger = logging.getLogger("himeji")
-        self.logger.info(f"Starting the bot...")
-        current_time = datetime.now().strftime("%c")
-        self.logger.info(f"Current Time: {current_time}")
+        self.supported_dpy_versions = ["2.0.0a"]
+        self.logger.info(f"Current Time: {datetime.now().strftime('%c')}")
+        self.logger.info(f"Detected System: {platform.system()} {platform.release()} ({os.name})")
+        self.logger.info(f"Python: {platform.python_version()} | D.py: {discord.__version__}")
+        if discord.__version__ not in self.supported_dpy_versions:
+            self.logger.critical("DISCORD.PY VERSION 2.0.0a NOT DETECTED. EXITING!")
+            exit(code=1)
+        else:
+            self.logger.info("Starting the bot...")
         super().__init__(
             command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
@@ -83,11 +89,6 @@ class HimejiBot(commands.AutoShardedBot):
 
     async def on_connect(self):
         self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
-        self.logger.info(
-            f"Using Python version *{platform.python_version()}* and using Discord.py version *{discord.__version__}*"
-        )
-        self.logger.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
-
     async def on_ready(self):
         if bot.uptime is not None:
             return
@@ -97,10 +98,6 @@ class HimejiBot(commands.AutoShardedBot):
         )
         self.logger.info(f"Registered Shard Count: {len(self.shards)}")
         self.logger.info(f"Recognized Owner ID(s): {', '.join(map(str, self.owner_ids))}")
-        time_difference = ((self.startup_time - datetime.now()) * 1000).total_seconds()
-        formatted_time_difference = str(time_difference).replace("-", "")
-        self.logger.info(f"Elapsed Time Since Startup: {formatted_time_difference} Ms")
-        self.logger.info("PROCEEDING TO COG LOADING PROCESS")
         self.logger.info("STARTING COG LOADING PROCESS")
         loaded_cogs = 0
         unloaded_cogs = 0
@@ -116,12 +113,12 @@ class HimejiBot(commands.AutoShardedBot):
                     self.logger.warning(f"{e}")
         self.logger.info("DONE")
         self.logger.info(f"Total loaded cogs: {loaded_cogs}")
-        self.logger.info(f"Total unloaded cogs: {unloaded_cogs}")
+        msg = f"Total unloaded cogs: {unloaded_cogs}"
+        self.logger.info(msg) if unloaded_cogs == 0 else self.logger.warning(msg)
+        time_difference = ((self.startup_time - datetime.now()) * 1000).total_seconds()
+        formatted_time_difference = str(time_difference).replace("-", "")
+        self.logger.info(f"Elapsed Time Since Startup: {formatted_time_difference} Ms")
         self.logger.info("STARTUP COMPLETE. READY!")
-
-    # noinspection PyMethodMayBeStatic
-    async def on_shard_connect(self, shard_id):
-        self.logger.info(f"Shard {shard_id} Logged Into Discord.")
 
     # noinspection PyMethodMayBeStatic
     async def on_shard_disconnect(self, shard_id):

@@ -61,7 +61,7 @@ Alright so this process if also fairly easy. Just do all the steps in the Basic 
 ### Systemd Setup
 Alright this setup is for people who want to run the bot as a Systemd service. Just do everything in the Basic Setup excep the last step.
 * First off make sure you have root or sudo access
-* Create and edit the service file\
+* Create and edit the service's unit file\
   `sudo nano /etc/systemd/system/himeji.service`
 * Next you will arrive onto an empty file. Copy and paste this into it
 ```
@@ -82,17 +82,16 @@ WorkingDirectory=/path/to/HimejiBot
 [Install]
 WantedBy=multi-user.target
 ```
-**It is crucial to change the file paths to what whichever path you have your clone on!**
+**It is crucial to change the file paths to whichever path you have your clone on!**
 * Now save and exit
 * After that run\
 `sudo systemctl daemon-reload`
   
-* Then if you have done everything right you should be good to enable the service\
-Run `service himeji enable && journalctl -u himeji.service -f -n 30 --output cat`
-* If all went well you are now running Himeji with Systemd
-* Now that the service is enabled you are able to use this command from now on to start, stop, or restart\
-`systemctl start himeji && journalctl -u himeji.service -f -n 30`\
-  Just replace `start` with whatever action you are trying to perform
+* Now if all is done. You can now run this to start the service\
+`systemctl start himeji && journalctl -u himeji.service -f -n 30`
+  
+* OPTIONAL: If you want the service to start on system restart. You can run this command.\
+`systemctl enable himeji`
 
 **If you have any problems with any setup and need help join the support server [here](https://discord.gg/Cs5RdJF9pb)**
 # Supporters 
