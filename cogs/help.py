@@ -10,7 +10,7 @@ class Help(commands.Cog):
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command() # Command made by zedchance modified by Tylerr
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def help(self, ctx, *commands: str):
         """ Shows this message """
