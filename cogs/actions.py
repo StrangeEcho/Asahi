@@ -90,7 +90,7 @@ class Actions(commands.Cog):
                 )
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text="ouch")
-                )
+            )
 
     @commands.command()
     async def smug(self, ctx: commands.Context):
@@ -112,7 +112,7 @@ class Actions(commands.Cog):
                 )
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text=f"{ctx.author.name} says so themselves")
-                )
+            )
 
     @commands.command()
     async def feed(self, ctx: commands.Context, *, target=np):
@@ -124,16 +124,16 @@ class Actions(commands.Cog):
                 ).set_image(url=(await resp.json())["url"])
             )
 
-
     @commands.command()
     async def tickle(self, ctx: commands.Context, *, target=np):
         async with self.bot.session.get("https://nekos.life/api/v2/img/tickle") as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} tickles {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color
+                    color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
 
 def setup(bot):
     bot.add_cog(Actions(bot))

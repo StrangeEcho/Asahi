@@ -7,7 +7,7 @@ import discord
 from config import FORWARD_DMS
 from utils.classes import HimejiBot
 
-log = logging.getLogger("Listeners")
+log = logging.getLogger("listeners")
 
 
 class Listeners(commands.Cog):
@@ -38,7 +38,7 @@ class Listeners(commands.Cog):
             except discord.HTTPException:
                 pass
 
-        elif isinstance(error, commands.TooManyArguments): #Not really needed but yeah.
+        elif isinstance(error, commands.TooManyArguments):  # Not really needed but yeah.
             await ctx.send(
                 embed=discord.Embed(
                     description="You passed in a couple unneeded arguments. Please get rid of them and try again",

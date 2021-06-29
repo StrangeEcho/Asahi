@@ -50,22 +50,14 @@ class HimejiBot(commands.AutoShardedBot):
             "discord.gateway",
             "discord.http",
             "discord.ext.commands.core",
-            "Listeners",
+            "listeners",
+            "main"
         ]:
             logging.getLogger(logger).setLevel(
                 logging.DEBUG if logger == "himeji" else logging.INFO
             )
             logging.getLogger(logger).addHandler(LoggingHandler())
         self.logger = logging.getLogger("himeji")
-        self.supported_dpy_versions = ["2.0.0a"]
-        self.logger.info(f"Current Time: {datetime.now().strftime('%c')}")
-        self.logger.info(f"Detected System: {platform.system()} {platform.release()} ({os.name})")
-        self.logger.info(f"Python: {platform.python_version()} | D.py: {discord.__version__}")
-        if discord.__version__ not in self.supported_dpy_versions:
-            self.logger.critical("DISCORD.PY VERSION 2.0.0a NOT DETECTED. EXITING!")
-            exit(code=1)
-        else:
-            self.logger.info("Starting the bot...")
         super().__init__(
             command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
@@ -90,9 +82,9 @@ class HimejiBot(commands.AutoShardedBot):
     async def on_connect(self):
         self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
     async def on_ready(self):
-        if bot.uptime is not None:
+        if self.uptime is not None:
             return
-        bot.uptime = datetime.utcnow()
+        self.uptime = datetime.utcnow()
         self.logger.info(
             f"FINISHED CHUNKING {len(self.guilds)} GUILDS AND CACHING {len(self.users)} USERS",
         )
@@ -131,4 +123,3 @@ class HimejiBot(commands.AutoShardedBot):
             await self._session.close()
 
 
-bot = HimejiBot()
