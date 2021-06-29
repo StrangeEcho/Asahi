@@ -134,7 +134,7 @@ class BotOwner(commands.Cog):
     @commands.command(aliases=["shutdown", "logout", "sleep"])
     @commands.is_owner()
     async def die(self, ctx: commands.Context):
-        """Kills the bot process"""
+        """Kills the bot process. IF BOT IS RUNNING WITH PM2 IT WILL RESTART REGARDLESS."""
         if await ButtonConfirmation(
             ctx,
             "Are you sure you want me to shutdown?",

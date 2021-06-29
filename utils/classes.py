@@ -11,8 +11,6 @@ import config
 
 from .log import LoggingHandler
 
-embed_color = config.OK_COLOR.replace("#", "0x")
-
 
 class EmbedListMenu(menus.ListPageSource):
     """
@@ -30,14 +28,6 @@ class EmbedListMenu(menus.ListPageSource):
         Formats the page.
         """
         return embeds
-
-
-class HimejiHelpCommand(commands.MinimalHelpCommand):
-    async def send_pages(self):
-        destination = self.get_destination()
-        for page in self.paginator.pages:
-            embed = discord.Embed(description=page, color=int(embed_color, base=16))
-            await destination.send(embed=embed)
 
 
 class HimejiBot(commands.AutoShardedBot):
@@ -61,7 +51,7 @@ class HimejiBot(commands.AutoShardedBot):
         super().__init__(
             command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
-            help_command=HimejiHelpCommand(no_category="Help"),
+            help_command=None,
             allowed_mentions=discord.AllowedMentions(roles=False, everyone=False),
             *args,
             **kwargs,

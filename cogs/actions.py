@@ -12,6 +12,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def hug(self, ctx: commands.Context, *, target=np):
+        """Hug someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/hug") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -22,6 +23,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def kiss(self, ctx: commands.Context, *, target=np):
+        """Kiss someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/hug") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -32,6 +34,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def pat(self, ctx: commands.Context, *, target=np):
+        """Pat someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/pat") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -42,6 +45,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def cuddle(self, ctx: commands.Context, *, target=np):
+        """Cuddle with someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/cuddle") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -52,6 +56,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def lick(self, ctx: commands.Context, *, target=np):
+        """Lick someone"""
         async with self.bot.session.get("https://api.waifu.pics/sfw/lick") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -62,6 +67,7 @@ class Actions(commands.Cog):
 
     @commands.command(aliases=["bulli"])
     async def bully(self, ctx: commands.Context, *, target=np):
+        """Bully someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/bully") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -72,6 +78,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def poke(self, ctx: commands.Context, *, target=np):
+        """Poke someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/poke") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -82,6 +89,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def slap(self, ctx: commands.Context, *, target=np):
+        """Slap someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/slap") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -94,6 +102,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def smug(self, ctx: commands.Context):
+        """Smugly look at someone"""
         async with self.bot.session.get(url="https://api.waifu.pics/sfw/smug") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -104,6 +113,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def baka(self, ctx: commands.Context, *, target=np):
+        """Call someone an idiot"""
         async with self.bot.session.get(url="https://nekos.life/api/v2/img/baka") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -116,6 +126,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def feed(self, ctx: commands.Context, *, target=np):
+        """Feed someone"""
         async with self.bot.session.get(url="https://nekos.life/api/v2/img/feed") as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -126,6 +137,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     async def tickle(self, ctx: commands.Context, *, target=np):
+        """Tickle someone"""
         async with self.bot.session.get("https://nekos.life/api/v2/img/tickle") as resp:
             await ctx.send(
                 embed=discord.Embed(
