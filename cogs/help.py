@@ -12,7 +12,7 @@ class Help(commands.Cog):
 
     @commands.command() # Command made by zedchance modified by Tylerr
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def help(self, ctx: commands.Context, *, commands: str):
+    async def help(self, ctx: commands.Context, *commands: str):
         """ Shows this message """
         embed = discord.Embed(title=f"{self.bot.user}", color=self.bot.ok_color)
 
