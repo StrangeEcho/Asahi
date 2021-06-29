@@ -51,7 +51,7 @@ class HimejiBot(commands.AutoShardedBot):
             "discord.http",
             "discord.ext.commands.core",
             "listeners",
-            "main"
+            "main",
         ]:
             logging.getLogger(logger).setLevel(
                 logging.DEBUG if logger == "himeji" else logging.INFO
@@ -81,6 +81,7 @@ class HimejiBot(commands.AutoShardedBot):
 
     async def on_connect(self):
         self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
+
     async def on_ready(self):
         if self.uptime is not None:
             return
@@ -121,5 +122,3 @@ class HimejiBot(commands.AutoShardedBot):
         await super().close()
         if self._session:
             await self._session.close()
-
-
