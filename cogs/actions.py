@@ -7,6 +7,8 @@ np = ""
 
 
 class Actions(commands.Cog):
+    """Commands related to Roleplay"""
+
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 
@@ -21,6 +23,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def kiss(self, ctx: commands.Context, *, target=np):
@@ -32,6 +35,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pat(self, ctx: commands.Context, *, target=np):
@@ -43,6 +47,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def cuddle(self, ctx: commands.Context, *, target=np):
@@ -54,6 +59,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def lick(self, ctx: commands.Context, *, target=np):
@@ -65,6 +71,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command(aliases=["bulli"])
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def bully(self, ctx: commands.Context, *, target=np):
@@ -76,6 +83,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def poke(self, ctx: commands.Context, *, target=np):
@@ -87,6 +95,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slap(self, ctx: commands.Context, *, target=np):
@@ -100,6 +109,7 @@ class Actions(commands.Cog):
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text="ouch")
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def smug(self, ctx: commands.Context):
@@ -111,6 +121,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def baka(self, ctx: commands.Context, *, target=np):
@@ -124,6 +135,7 @@ class Actions(commands.Cog):
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text=f"{ctx.author.name} says so themselves")
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def feed(self, ctx: commands.Context, *, target=np):
@@ -135,6 +147,7 @@ class Actions(commands.Cog):
                     color=ctx.author.top_role.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
+
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def tickle(self, ctx: commands.Context, *, target=np):

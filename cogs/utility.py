@@ -8,6 +8,8 @@ from utils.classes import HimejiBot
 
 
 class Utility(commands.Cog):
+    """Some utility commands"""
+
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 

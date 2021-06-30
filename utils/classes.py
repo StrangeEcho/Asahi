@@ -11,6 +11,7 @@ import config
 
 from .log import LoggingHandler
 
+
 class EmbedListMenu(menus.ListPageSource):
     """
     Paginated embed menu.
@@ -27,6 +28,7 @@ class EmbedListMenu(menus.ListPageSource):
         Formats the page.
         """
         return embeds
+
 
 class HimejiBot(commands.AutoShardedBot):
     """Idk"""
@@ -110,5 +112,6 @@ class HimejiBot(commands.AutoShardedBot):
         await super().close()
         if self._session:
             await self._session.close()
+
 
 bot = HimejiBot()

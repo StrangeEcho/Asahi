@@ -7,6 +7,8 @@ from utils.classes import HimejiBot
 
 
 class Fun(commands.Cog):
+    """Fun related commands"""
+
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 

@@ -25,6 +25,8 @@ class Embed(discord.Embed):
 
 
 class NSFW(commands.Cog):
+    """NSFW related commands"""
+
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 

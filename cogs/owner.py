@@ -20,6 +20,8 @@ START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
 # most stuffs in this owner cog related to development is from https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/admin.py
 class BotOwner(commands.Cog):
+    """Bot Owner only commands"""
+
     def __init__(self, bot: HimejiBot):
         self.bot = bot
         self._last_result = None

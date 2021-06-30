@@ -15,6 +15,8 @@ from utils.funcs import box
 
 
 class Miscellaneous(commands.Cog):
+    """Miscellaneous commands"""
+
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 
@@ -251,42 +253,57 @@ class Miscellaneous(commands.Cog):
         embed.set_footer(text=f"Since: {since}")
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.command(aliases=["modules"])
+    @commands.cooldown(1, 4, commands.BucketType.user)
+    async def cogs(self, ctx: commands.Context):
+        await ctx.send(
+            embed=discord.Embed(
+                title=f"{self.bot.user.name}'s available modules/cogs",
+                description="\n".join(sorted(map(str, self.bot.cogs))),
+                color=self.bot.ok_color,
+            ).set_footer(text=f"use [p]help [module] to get info about a module/cog")
+        )
+
     @commands.command()
-    async def help(self, ctx: commands.Context, target: str):
+    @commands.cooldown(1, 4, commands.BucketType.user)
+    async def help(self, ctx: commands.Context, target: str = None):
         """Retrieve info a about a cog or a command"""
+        if not target:
+            return await self.cogs(ctx)
+
         cmd: commands.Command = self.bot.get_command(target.lower())
+
         if cmd:
-            return await ctx.send(embed=discord.Embed(
-                title=cmd.name,
-                description=cmd.help,
-                color=self.bot.ok_color
-            )
-                .add_field(name="Usage", value=cmd.signature or "None")
-            )
-
-        # finds cogs good
-        found = []
-        for c in self.bot.cogs:
-            if c.lower().startswith(target.lower()):
-                found.append(c)
-            if c.lower() == target.lower():
-                found = [c]
-                break
-        if found:
-            cog = self.bot.get_cog(found[0])
-
-            cog_commands = "\n".join(sorted(map(str, cog.get_commands()))) or None
             return await ctx.send(
                 embed=discord.Embed(
-                    title=cog.qualified_name or target,
-                    description=f"`Description`: {cog.description or None}\n`Commands`:\n{cog_commands}",
-                    color=self.bot.ok_color
-                )
+                    title=cmd.name, description=cmd.help, color=self.bot.ok_color
+                ).add_field(name="Usage", value=cmd.signature or "None")
             )
+        else:
+            # finds cogs good
+            found = []
+            for c in self.bot.cogs:
+                if c.lower().startswith(target.lower()):
+                    found.append(c)
+                if c.lower() == target.lower():
+                    found = [c]
+                    break
+            if found:
+                cog = self.bot.get_cog(found[0])
 
-        return await ctx.send(embed=discord.Embed(
-            description=f"Module/Command {target} not found.",
-            color=self.bot.error_color,
+                cog_commands = "\n".join(sorted(map(str, cog.get_commands()))) or None
+                return await ctx.send(
+                    embed=discord.Embed(
+                        title=cog.qualified_name or target,
+                        description=f"`Description`: {cog.description or None}\n`Commands`:\n{cog_commands}",
+                        color=self.bot.ok_color,
+                    ).set_footer(text="Use [p]help [command] to get info about any command")
+                )
+
+        return await ctx.send(
+            embed=discord.Embed(
+                description=f"Module/Command {target} not found.",
+                color=self.bot.error_color,
             )
         )
 

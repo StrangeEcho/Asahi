@@ -9,6 +9,8 @@ from utils.funcs import check_hierarchy
 
 
 class Moderation(commands.Cog):
+    """Moderation related commands"""
+
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 
