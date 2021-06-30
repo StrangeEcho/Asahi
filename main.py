@@ -3,11 +3,11 @@ import logging
 import discord
 
 from config import TOKEN
-from utils.classes import HimejiBot
+from utils.classes import bot
 
 logging.getLogger("main")
 
-bot = HimejiBot()
+
 
 if discord.__version__ != "2.0.0a":
     bot.logger.critical(
