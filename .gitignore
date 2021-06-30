@@ -1,12 +1,14 @@
+#main
 /config.py
-/__pycache__
-/cogs/__pycache__
 /cogs/test.py
-/utils/__pycache__/
 /colors.txt
 /utils/helpstrings.py/
-/.theia
-/cogs/testing.txt
-/cogs/testing.py
 /.vscode
-/cogs/wss/__pycache__
+__pycache__
+.idea
+venv
+/cogs/testing.py
+
+# personal
+run.sh
+reformat.bat

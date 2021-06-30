@@ -1,0 +1,16 @@
+[tool.black]
+    line-length = 99
+    target-version = ['py38']
+    include = '\.py$'
+[tool.isort]
+    profile = "black"
+    line_length = 99
+    combine_as_imports = true
+    atomic = true
+    combine_star = true
+    from_first = true
+    force_alphabetical_sort_within_sections = true
+    virtual_env = true
+    case_sensitive = true
+    remove_redundant_aliases = true
+    dedup_headings = true

@@ -1,9 +1,9 @@
 {
   "apps": [
     {
-      "name": "HimejiBot",
-      "script": "bot.py",
-      "interpreter": "python3.6",
+      "name": "Himeji",
+      "script": "main.py",
+      "interpreter": "./venv/bin/python3",
       "interpreter_args": "-u"
     }
   ]

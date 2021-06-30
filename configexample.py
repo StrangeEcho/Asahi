@@ -1,16 +1,7 @@
 BOT_PREFIX = ""
 TOKEN = ""
-APPLICATION_ID = ""
-OWNERS = []  # feel free to change to remove the brackets[] if only one owner. This isnt really needed since @commands.is_owner() exist
-BLACKLIST = []  # Blacklisting is a bit weird. F
-STARTUP_COGS = [
-    "cogs.general",
-    "cogs.moderation",
-    "cogs.owner",
-    "cogs.errorhandler",
-    "cogs.jishaku",
-    "cogs.fun",
-    "cogs.stats",
-    "cogs.misc",
-    "cogs.anime",
-]
+APPLICATION_ID = 123
+OWNER_IDS = {}
+FORWARD_DMS = True
+ERROR_COLOR = "#b22222"  # firebrick red hex
+OK_COLOR = "#ffb6c1"  # light pink hex
