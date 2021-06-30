@@ -47,6 +47,7 @@ class HimejiBot(commands.AutoShardedBot):
             logging.getLogger(logger).addHandler(LoggingHandler())
         self.logger = logging.getLogger("himeji")
         super().__init__(
+            help_command=None,
             command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions(roles=False, everyone=False),
@@ -111,15 +112,3 @@ class HimejiBot(commands.AutoShardedBot):
             await self._session.close()
 
 bot = HimejiBot()
-
-
-class HimejiHelpCommand(commands.MinimalHelpCommand):
-    async def send_pages(self):
-        destination = self.get_destination()
-        for page in self.paginator.pages:
-            embed = discord.Embed(description=page, color=bot.ok_color)
-            await destination.send(embed=embed)
-
-
-
-bot.help_command = HimejiHelpCommand()
