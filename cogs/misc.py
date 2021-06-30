@@ -251,6 +251,45 @@ class Miscellaneous(commands.Cog):
         embed.set_footer(text=f"Since: {since}")
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.command()
+    async def help(self, ctx: commands.Context, target: str):
+        """Retrieve info a about a cog or a command"""
+        cmd: commands.Command = self.bot.get_command(target.lower())
+        if cmd:
+            return await ctx.send(embed=discord.Embed(
+                title=cmd.name,
+                description=cmd.help,
+                color=self.bot.ok_color
+            )
+                .add_field(name="Usage", value=cmd.signature or "None")
+            )
+
+        # finds cogs good
+        found = []
+        for c in self.bot.cogs:
+            if c.lower().startswith(target.lower()):
+                found.append(c)
+            if c.lower() == target.lower():
+                found = [c]
+                break
+        if found:
+            cog = self.bot.get_cog(found[0])
+
+            cog_commands = "\n".join(sorted(map(str, cog.get_commands()))) or None
+            return await ctx.send(
+                embed=discord.Embed(
+                    title=cog.qualified_name or target,
+                    description=f"`Description`: {cog.description or None}\n`Commands`:\n{cog_commands}",
+                    color=self.bot.ok_color
+                )
+            )
+
+        return await ctx.send(embed=discord.Embed(
+            description=f"Module/Command {target} not found.",
+            color=self.bot.error_color,
+            )
+        )
+
 
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))
