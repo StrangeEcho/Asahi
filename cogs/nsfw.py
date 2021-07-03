@@ -34,7 +34,7 @@ class NSFW(commands.Cog):
     @commands.is_nsfw()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def hentai(self, ctx: commands.Context, *, tag: str = None):
-        f"""Obligatory Hentai command. `Run {ctx.clean_prefix}hentai list` for a list of available tags"""
+        f"""Obligatory help command. Run `{ctx.clean_prefix}hentai list` to get all available tags."""
         endpoints = {
             "random hentai gif": "Random_hentai_gif",
             "pussy": "pussy",
@@ -67,7 +67,7 @@ class NSFW(commands.Cog):
             "ero": "ero",
             "erok": "erok",
             "erokemo": "erokemo",
-            "cum_jpg": "cum_jpg",
+            "cum jpg": "cum_jpg",
             "gasm": "gasm",
         }
 
