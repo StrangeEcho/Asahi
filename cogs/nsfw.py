@@ -30,10 +30,11 @@ class NSFW(commands.Cog):
     def __init__(self, bot: HimejiBot):
         self.bot = bot
 
-    @commands.command(brief="Obligatory Hentai Command. Run `[p]hentai list` for available tags")
+    @commands.command()
     @commands.is_nsfw()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def hentai(self, ctx: commands.Context, *, tag: str = None):
+        f"""Obligatory Hentai command. `Run {ctx.clean_prefix}hentai list` for a list of available tags"""
         endpoints = {
             "random hentai gif": "Random_hentai_gif",
             "pussy": "pussy",
