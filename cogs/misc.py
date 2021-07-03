@@ -261,7 +261,9 @@ class Miscellaneous(commands.Cog):
                 title=f"{self.bot.user.name}'s available modules/cogs",
                 description="\n".join(sorted(map(str, self.bot.cogs))),
                 color=self.bot.ok_color,
-            ).set_footer(text=f"use [p]help [module] to get info about a module/cog")
+            ).set_footer(
+                text=f"use {ctx.clean_prefix}help [module] to get info about a module/cog"
+            )
         )
 
     @commands.command()
@@ -275,9 +277,9 @@ class Miscellaneous(commands.Cog):
 
         if cmd:
             return await ctx.send(
-                embed=discord.Embed(
-                    title=cmd.name, description=cmd.help, color=self.bot.ok_color
-                ).add_field(name="Usage", value=cmd.signature or "None")
+                embed=discord.Embed(title=cmd.name, description=cmd.help, color=self.bot.ok_color)
+                .add_field(name="Usage", value=cmd.signature or "None")
+                .add_field(name="Module", value=cmd.cog_name)
             )
         else:
             # finds cogs good
@@ -297,7 +299,9 @@ class Miscellaneous(commands.Cog):
                         title=cog.qualified_name or target,
                         description=f"`Description`: {cog.description or None}\n`Commands`:\n{cog_commands}",
                         color=self.bot.ok_color,
-                    ).set_footer(text="Use [p]help [command] to get info about any command")
+                    ).set_footer(
+                        text=f"Use {ctx.clean_prefix}help [command] to get info about any command"
+                    )
                 )
 
         return await ctx.send(
