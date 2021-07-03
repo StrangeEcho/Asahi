@@ -209,40 +209,6 @@ class Miscellaneous(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.bot_has_permissions(embed_links=True, attach_files=True)
-    @commands.max_concurrency(1, commands.BucketType.user)
-    async def osu(self, ctx: commands.Context, *, user):
-        """Get osu information about someone."""
-        try:
-            async with self.bot.session.get(
-                "https://api.martinebot.com/v1/imagesgen/osuprofile",
-                params={
-                    "player_username": user,
-                },
-                raise_for_status=True,
-            ) as r:
-                pic = BytesIO(await r.read())
-        except aiohttp.ClientResponseError as e:
-            emb = discord.Embed(
-                description=f"Cannot contact the api due to error: [{e.status}] {e.message}",
-                color=self.bot.ok_color,
-            )
-            return await ctx.send(embed=emb)
-        e = discord.Embed(title=f"Here's the osu profile for {user}", color=self.bot.ok_color)
-        if isinstance(pic, BytesIO):
-            e.set_image(url="attachment://osu.png")
-        elif isinstance(pic, str):
-            e.set_footer(text="Api is currently down.")
-
-        await ctx.send(
-            embed=e,
-            file=discord.File(pic, filename="osu.png") if pic else None,
-        )
-        if isinstance(pic, BytesIO):
-            pic.close()
-
-    @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def uptime(self, ctx: commands.Context):
         """Shows bot's uptime."""
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
@@ -277,7 +243,7 @@ class Miscellaneous(commands.Cog):
 
         if cmd:
             return await ctx.send(
-                embed=discord.Embed(title=cmd.name, description=cmd.help, color=self.bot.ok_color)
+                embed=discord.Embed(title=cmd.name, description=f"Description: {cmd.help}", color=self.bot.ok_color)
                 .add_field(name="Usage", value=cmd.signature or "None")
                 .add_field(name="Module", value=cmd.cog_name)
             )
