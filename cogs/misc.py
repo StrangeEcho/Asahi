@@ -253,7 +253,7 @@ class Miscellaneous(commands.Cog):
                     name="Usage", value=f"`None`" if not cmd.signature else f"`{cmd.signature}`"
                 )
                 .add_field(name="Module", value=f"`{cmd.cog_name}`")
-                .add_field(name=f"Aliases", value=f"```{cmd_aliases}```")
+                .add_field(name=f"Aliases", value="`None`" if not cmd.aliases else f"```{cmd_aliases}```")
                 .set_footer(
                     text="[] signify optional arguments while <> signify required arguments"
                 )
