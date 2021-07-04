@@ -245,12 +245,12 @@ class Miscellaneous(commands.Cog):
             cmd_aliases = "\n".join(cmd.aliases)
             return await ctx.send(
                 embed=discord.Embed(
-                    title=f"__{cmd.name}__",
+                    title=f"Command: __{cmd.name}__",
                     description=f"`Description: {cmd.help}`",
                     color=self.bot.ok_color,
                 )
                 .add_field(
-                    name="Usage", value=f"`None`" if not cmd.signature else f"`{cmd.signature}`"
+                    name="Usage", value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`"
                 )
                 .add_field(name="Module", value=f"`{cmd.cog_name}`")
                 .add_field(name=f"Aliases", value="`None`" if not cmd.aliases else f"```{cmd_aliases}```")
