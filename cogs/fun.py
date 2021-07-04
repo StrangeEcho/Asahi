@@ -1,9 +1,9 @@
-from random import choice, randint
 from io import BytesIO
+from random import choice, randint
 
 from discord.ext import commands
-import discord
 import aiohttp
+import discord
 
 from utils.classes import HimejiBot
 
@@ -186,17 +186,17 @@ class Fun(commands.Cog):
                 anime = (await resp.json())["anime"]
                 await ctx.send(
                     embed=discord.Embed(
-                        description=f"{quote}\n~{char}",
-                        color=self.bot.ok_color
+                        description=f"{quote}\n~{char}", color=self.bot.ok_color
                     ).set_footer(text=f"Anime: {anime}")
                 )
             else:
                 await ctx.send(
                     embed=discord.Embed(
                         description=f"API threw a {resp.status}. Please try again later.",
-                        color=self.bot.error_color
+                        color=self.bot.error_color,
                     )
                 )
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

@@ -242,10 +242,21 @@ class Miscellaneous(commands.Cog):
         cmd: commands.Command = self.bot.get_command(target.lower())
 
         if cmd:
+            cmd_aliases = "\n".join(cmd.aliases)
             return await ctx.send(
-                embed=discord.Embed(title=cmd.name, description=f"Description: {cmd.help}", color=self.bot.ok_color)
-                .add_field(name="Usage", value=cmd.signature or "None")
-                .add_field(name="Module", value=cmd.cog_name)
+                embed=discord.Embed(
+                    title=f"__{cmd.name}__",
+                    description=f"`Description: {cmd.help}`",
+                    color=self.bot.ok_color,
+                )
+                .add_field(
+                    name="Usage", value=f"`None`" if not cmd.signature else f"`{cmd.signature}`"
+                )
+                .add_field(name="Module", value=f"`{cmd.cog_name}`")
+                .add_field(name=f"Aliases", value=f"```{cmd_aliases}```")
+                .set_footer(
+                    text="[] signify optional arguments while <> signify required arguments"
+                )
             )
         else:
             # finds cogs good
