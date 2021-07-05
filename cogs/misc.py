@@ -196,10 +196,7 @@ class Miscellaneous(commands.Cog):
         if user is None:
             user = ctx.author
         ext = "gif" if user.avatar.is_animated() else "png"
-        e = discord.Embed(
-            title=f"{user}'s avatar",
-            color=self.bot.ok_color
-        )
+        e = discord.Embed(title=f"{user}'s avatar", color=self.bot.ok_color)
         e.add_field(name="File Format", value=ext)
         e.add_field(name="Animated", value="\u2705" if user.avatar.is_animated() else ":x :")
         e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
@@ -242,15 +239,23 @@ class Miscellaneous(commands.Cog):
     async def help(self, ctx: commands.Context, target: str = None):
         """Retrieve info a about a cog or a command"""
         if not target:
-            await ctx.send(
+            return await ctx.send(
                 embed=discord.Embed(
                     title=f"Hi i'm {self.bot.user.name}!",
                     description=f"{self.bot.user.name} is a WIP all purpose discord bot made in discord.py.",
-                    color=self.bot.ok_color
-            )
-            .set_thumbnail(url=self.bot.user.avatar.url)
-            .add_field(name="Modules", value=f"Run {ctx.clean_prefix}modules to see a list of all my modules", inline=True)
-            .add_field(name="Help", value=f"Run {ctx.clean_prefix}help [module/command] to receive info about a module or command", inline=True)
+                    color=self.bot.ok_color,
+                )
+                .set_thumbnail(url=self.bot.user.avatar.url)
+                .add_field(
+                    name="Modules",
+                    value=f"Run {ctx.clean_prefix}modules to see a list of all my modules",
+                    inline=True,
+                )
+                .add_field(
+                    name="Help",
+                    value=f"Run {ctx.clean_prefix}help [module/command] to receive info about a module or command",
+                    inline=True,
+                )
             )
 
         cmd: commands.Command = self.bot.get_command(target.lower())
@@ -264,10 +269,13 @@ class Miscellaneous(commands.Cog):
                     color=self.bot.ok_color,
                 )
                 .add_field(
-                    name="Usage", value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`"
+                    name="Usage",
+                    value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`",
                 )
                 .add_field(name="Module", value=f"`{cmd.cog_name}`")
-                .add_field(name=f"Aliases", value="`None`" if not cmd.aliases else f"```{cmd_aliases}```")
+                .add_field(
+                    name=f"Aliases", value="`None`" if not cmd.aliases else f"```{cmd_aliases}```"
+                )
                 .set_footer(
                     text="[] signify optional arguments while <> signify required arguments"
                 )
