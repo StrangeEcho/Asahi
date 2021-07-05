@@ -186,7 +186,7 @@ class Miscellaneous(commands.Cog):
             e.add_field(name="License", value=info["license"] or "`Not specified.`")
             await ctx.reply(embed=e, mention_author=False)
 
-    @commands.command()
+    @commands.command(aliases=["av"])
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -198,7 +198,7 @@ class Miscellaneous(commands.Cog):
         ext = "gif" if user.avatar.is_animated() else "png"
         e = discord.Embed(title=f"{user}'s avatar", color=self.bot.ok_color)
         e.add_field(name="File Format", value=ext)
-        e.add_field(name="Animated", value="\u2705" if user.avatar.is_animated() else ":x :")
+        e.add_field(name="Animated", value="\u2705" if user.avatar.is_animated() else ":x:")
         e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(
