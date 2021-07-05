@@ -127,6 +127,15 @@ class NSFW(commands.Cog):
             ) as resp:
                 results = (await resp.json())["files"][:5]
                 await ctx.send("\n".join(results))
+        else:
+            await ctx.send(
+                embed=discord.Embed(
+                    title="TAG NOT FOUND",
+                    description=f"{tag} was not found in the available tag list. Please run `{ctx.clean_prefix}hb list`",
+                    color=self.bot.error_color
+                )
+            )
+
 
     @commands.group()
     @commands.cooldown(1, 5, commands.BucketType.member)
