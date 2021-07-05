@@ -196,7 +196,12 @@ class Miscellaneous(commands.Cog):
         if user is None:
             user = ctx.author
         ext = "gif" if user.avatar.is_animated() else "png"
-        e = discord.Embed(title=f"{user.name}'s avatar.", color=user.color, url=user.avatar.url)
+        e = discord.Embed(
+            title=f"{user}'s avatar",
+            color=self.bot.ok_color
+        )
+        e.add_field(name="File Format", value=ext)
+        e.add_field(name="Animated", value="\u2705" if user.avatar.is_animated() else ":x :")
         e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(
@@ -213,7 +218,7 @@ class Miscellaneous(commands.Cog):
         """Shows bot's uptime."""
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
         delta = datetime.utcnow() - self.bot.uptime
-        uptime_text = humanize.time.precisedelta(delta) or ("Less than one second.")
+        uptime_text = humanize.time.precisedelta(delta) or "Less than one second."
         embed = discord.Embed(colour=self.bot.ok_color)
         embed.add_field(name=f"{self.bot.user.name} has been up for:", value=uptime_text)
         embed.set_footer(text=f"Since: {since}")
@@ -237,7 +242,16 @@ class Miscellaneous(commands.Cog):
     async def help(self, ctx: commands.Context, target: str = None):
         """Retrieve info a about a cog or a command"""
         if not target:
-            return await self.cogs(ctx)
+            await ctx.send(
+                embed=discord.Embed(
+                    title=f"Hi i'm {self.bot.user.name}!",
+                    description=f"{self.bot.user.name} is a WIP all purpose discord bot made in discord.py.",
+                    color=self.bot.ok_color
+            )
+            .set_thumbnail(url=self.bot.user.avatar.url)
+            .add_field(name="Modules", value=f"Run {ctx.clean_prefix}modules to see a list of all my modules", inline=True)
+            .add_field(name="Help", value=f"Run {ctx.clean_prefix}help [module/command] to receive info about a module or command", inline=True)
+            )
 
         cmd: commands.Command = self.bot.get_command(target.lower())
 
