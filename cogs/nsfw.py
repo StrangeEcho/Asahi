@@ -98,6 +98,36 @@ class NSFW(commands.Cog):
                 )
             )
 
+
+    @commands.command(aliases=["hb"])
+    @commands.is_nsfw()
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def hentaibomb(self, ctx: commands.Context, *,tag: str = None):
+        """Post 5 hentai images from Waifu.pics API. Run [p]hentaibomb list for available tags"""
+        available_tags = ["waifu", "neko", "trap", "blowjob"]
+
+        if tag is None:
+            tag = choice(available_tags)
+
+        if tag is not None and tag.lower() == "list":
+            tags = "\n".join(available_tags)
+            return await ctx.send(
+                embed=discord.Embed(
+                    title="Available Tags",
+                    description=tags,
+                    color=self.bot.ok_color
+                )
+            )
+
+        if tag is not None and tag.lower() in available_tags:
+            async with self.bot.session.post(
+                url=f"https://api.waifu.pics/many/nsfw/{tag}",
+                headers={"Accept": "application/json", "content-type": "application/json"},
+                json={"files": ""}
+            ) as resp:
+                results = (await resp.json())["files"][:5]
+                await ctx.send("\n".join(results))
+
     @commands.group()
     @commands.cooldown(1, 5, commands.BucketType.member)
     @commands.is_nsfw()

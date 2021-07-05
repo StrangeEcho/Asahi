@@ -248,13 +248,17 @@ class Miscellaneous(commands.Cog):
                 .set_thumbnail(url=self.bot.user.avatar.url)
                 .add_field(
                     name="Modules",
-                    value=f"Run {ctx.clean_prefix}modules to see a list of all my modules",
+                    value=f"`Run {ctx.clean_prefix}modules` to see a list of all my modules",
                     inline=True,
                 )
                 .add_field(
                     name="Help",
-                    value=f"Run {ctx.clean_prefix}help [module/command] to receive info about a module or command",
+                    value=f"`Run {ctx.clean_prefix}help [module/command]` to receive info about a module or command",
                     inline=True,
+                )
+                .set_footer(
+                    icon_url=self.bot.user.avatar.url,
+                    text=f"{self.bot.user.name} was made at {self.bot.user.created_at.strftime('%c')}"
                 )
             )
 
