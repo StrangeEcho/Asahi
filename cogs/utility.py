@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import cast, Union, Optional
+from typing import cast, Optional, Union
 
 from discord.ext import commands
 import discord
@@ -178,16 +178,15 @@ class Utility(commands.Cog):
         e.add_field(
             name="File Formations",
             value=f"[jpg]({av.with_format('jpg')}), "
-                  f"[png]({av.with_format('png')}), "
-                  f"[webp]({av.with_format('webp')}){',' if av.is_animated() else ''} "
-                  f"{f'[gif]({av})' if av.is_animated() else ''}"
+            f"[png]({av.with_format('png')}), "
+            f"[webp]({av.with_format('webp')}){',' if av.is_animated() else ''} "
+            f"{f'[gif]({av})' if av.is_animated() else ''}",
         )
         e.add_field(name="Animated", value="\u2705" if av.is_animated() else ":x:")
         e.set_image(url=av.with_size(4096))
         e.set_footer(text=f"ID: {user.id}")
-        await ctx.send(
-            embed=e
-        )
+        await ctx.send(embed=e)
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))

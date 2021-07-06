@@ -1,6 +1,4 @@
 from datetime import datetime
-from io import BytesIO
-from typing import Optional
 import platform
 import time
 
@@ -235,7 +233,7 @@ class Miscellaneous(commands.Cog):
                 )
                 .set_footer(
                     icon_url=self.bot.user.avatar.url,
-                    text=f"{self.bot.user.name} was made at {self.bot.user.created_at.strftime('%c')}"
+                    text=f"{self.bot.user.name} was made at {self.bot.user.created_at.strftime('%c')}",
                 )
             )
 

@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from discord.ext import commands

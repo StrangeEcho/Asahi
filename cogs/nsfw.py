@@ -98,11 +98,10 @@ class NSFW(commands.Cog):
                 )
             )
 
-
     @commands.command(aliases=["hb"])
     @commands.is_nsfw()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def hentaibomb(self, ctx: commands.Context, *,tag: str = None):
+    async def hentaibomb(self, ctx: commands.Context, *, tag: str = None):
         """Post 5 hentai images from Waifu.pics API. Run [p]hentaibomb list for available tags"""
         available_tags = ["waifu", "neko", "trap", "blowjob"]
 
@@ -113,9 +112,7 @@ class NSFW(commands.Cog):
             tags = "\n".join(available_tags)
             return await ctx.send(
                 embed=discord.Embed(
-                    title="Available Tags",
-                    description=tags,
-                    color=self.bot.ok_color
+                    title="Available Tags", description=tags, color=self.bot.ok_color
                 )
             )
 
@@ -123,7 +120,7 @@ class NSFW(commands.Cog):
             async with self.bot.session.post(
                 url=f"https://api.waifu.pics/many/nsfw/{tag}",
                 headers={"Accept": "application/json", "content-type": "application/json"},
-                json={"files": ""}
+                json={"files": ""},
             ) as resp:
                 results = (await resp.json())["files"][:5]
                 await ctx.send("\n".join(results))
@@ -132,10 +129,9 @@ class NSFW(commands.Cog):
                 embed=discord.Embed(
                     title="TAG NOT FOUND",
                     description=f"{tag} was not found in the available tag list. Please run `{ctx.clean_prefix}hb list`",
-                    color=self.bot.error_color
+                    color=self.bot.error_color,
                 )
             )
-
 
     @commands.group()
     @commands.cooldown(1, 5, commands.BucketType.member)

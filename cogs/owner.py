@@ -363,18 +363,17 @@ class BotOwner(commands.Cog):
 
         await ctx.send(
             embed=discord.Embed(
-                title=user,
-                description=f"Information about {user}",
-                color=self.bot.ok_color
+                title=user, description=f"Information about {user}", color=self.bot.ok_color
+            )
+            .set_thumbnail(url=user.avatar.url)
+            .add_field(name="ID", value=user.id)
+            .add_field(name="Account Creation Date", value=user.created_at.strftime("%c"))
+            .add_field(name="Avatar", value=f"[Url]({self.bot.user.avatar.url})")
+            .add_field(name="System", value="\u2705" if user.system else ":x:")
+            .add_field(name="Bot", value="\u2705" if user.bot else ":x:")
+            .add_field(name="Flags", value=user_flags.upper())
         )
-        .set_thumbnail(url=user.avatar.url)
-        .add_field(name="ID", value=user.id)
-        .add_field(name="Account Creation Date", value=user.created_at.strftime("%c"))
-        .add_field(name="Avatar", value=f"[Url]({self.bot.user.avatar.url})")
-        .add_field(name="System", value="\u2705" if user.system else ":x:")
-        .add_field(name="Bot", value="\u2705" if user.bot else ":x:")
-        .add_field(name="Flags", value=user_flags.upper())
-        )
+
 
 def setup(bot):
     bot.add_cog(BotOwner(bot))
