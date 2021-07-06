@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import cast, Union
+from typing import cast, Union, Optional
 
 from discord.ext import commands
 import discord
@@ -164,6 +164,30 @@ class Utility(commands.Cog):
             return await ctx.send("That doesn't appear to be a valid emoji")
         await ctx.send(file=discord.File(image, filename=filename))
 
+    @commands.command(aliases=["av"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.guild_only()
+    @commands.bot_has_permissions(embed_links=True)
+    async def avatar(self, ctx: commands.Context, user: Optional[discord.Member]):
+        """Check your avatars."""
+        await ctx.channel.trigger_typing()
+        if user is None:
+            user = ctx.author
+        av = user.avatar
+        e = discord.Embed(title=f"{user}'s avatar", color=self.bot.ok_color)
+        e.add_field(
+            name="File Formations",
+            value=f"[jpg]({av.with_format('jpg')}), "
+                  f"[png]({av.with_format('png')}), "
+                  f"[webp]({av.with_format('webp')}){',' if av.is_animated() else ''} "
+                  f"{f'[gif]({av})' if av.is_animated() else ''}"
+        )
+        e.add_field(name="Animated", value="\u2705" if av.is_animated() else ":x:")
+        e.set_image(url=av.with_size(4096))
+        e.set_footer(text=f"ID: {user.id}")
+        await ctx.send(
+            embed=e
+        )
 
 def setup(bot):
     bot.add_cog(Utility(bot))

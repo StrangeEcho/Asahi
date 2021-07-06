@@ -186,29 +186,6 @@ class Miscellaneous(commands.Cog):
             e.add_field(name="License", value=info["license"] or "`Not specified.`")
             await ctx.reply(embed=e, mention_author=False)
 
-    @commands.command(aliases=["av"])
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.guild_only()
-    @commands.bot_has_permissions(embed_links=True)
-    async def avatar(self, ctx: commands.Context, user: Optional[discord.Member]):
-        """Check your avatars."""
-        await ctx.channel.trigger_typing()
-        if user is None:
-            user = ctx.author
-        ext = "gif" if user.avatar.is_animated() else "png"
-        e = discord.Embed(title=f"{user}'s avatar", color=self.bot.ok_color)
-        e.add_field(name="File Format", value=ext)
-        e.add_field(name="Animated", value="\u2705" if user.avatar.is_animated() else ":x:")
-        e.set_image(url=f"attachment://aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}")
-        e.set_footer(text=f"ID: {user.id}")
-        await ctx.send(
-            embed=e,
-            file=discord.File(
-                BytesIO(await user.avatar.with_size(4096).read()),
-                f"aaaaaaaaaaaaaaaaaaaaaaaaa.{ext}",
-            ),
-        )
-
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def uptime(self, ctx: commands.Context):
@@ -248,12 +225,12 @@ class Miscellaneous(commands.Cog):
                 .set_thumbnail(url=self.bot.user.avatar.url)
                 .add_field(
                     name="Modules",
-                    value=f"`Run {ctx.clean_prefix}modules` to see a list of all my modules",
+                    value=f"Run `{ctx.clean_prefix}modules` to see a list of all my modules",
                     inline=True,
                 )
                 .add_field(
                     name="Help",
-                    value=f"`Run {ctx.clean_prefix}help [module/command]` to receive info about a module or command",
+                    value=f"Run `{ctx.clean_prefix}help [module/command]` to receive info about a module or command",
                     inline=True,
                 )
                 .set_footer(
