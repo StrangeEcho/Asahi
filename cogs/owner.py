@@ -18,7 +18,6 @@ import config
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
 
-# most stuffs in this owner cog related to development is from https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/admin.py
 class BotOwner(commands.Cog):
     """Bot Owner only commands"""
 
@@ -37,6 +36,7 @@ class BotOwner(commands.Cog):
         # remove `foo`
         return content.strip("` \n")
 
+    @staticmethod
     def get_syntax_error(self, e):
         if e.text is None:
             return f"```py\n{e.__class__.__name__}: {e}\n```"
@@ -121,10 +121,10 @@ class BotOwner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def restart(self, ctx: commands.Context):
-        """Restarts out the bot"""
+        """Restarts the bot"""
         if await ButtonConfirmation(
             ctx,
-            "Are you sure you want me to shutdown?",
+            "Are you sure you want me to restart?",
             destructive=True,
             confirm="Yes",
             cancel="No",
@@ -206,7 +206,7 @@ class BotOwner(commands.Cog):
         else:
             await chan.send(msg)
 
-    @commands.command()
+    @commands.command()  # Command from RoboDanny https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/admin.py
     @commands.is_owner()
     async def repl(self, ctx: commands.Context):
         """Launches an interactive REPL session."""
