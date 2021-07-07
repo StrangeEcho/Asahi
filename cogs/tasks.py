@@ -3,12 +3,12 @@ import asyncio
 from discord.ext import commands, tasks
 import discord
 
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 import config
 
 
 class Tasks(commands.Cog):
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.status_handler.start()
 

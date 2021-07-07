@@ -15,7 +15,7 @@ async def check_hierarchy(ctx: commands.Context, member: discord.Member):
         )
     if member.id == ctx.guild.owner.id:
         return await ctx.send(
-            f"Lol did you just try to {ctx.command} the owner? <:HimejiLOL:854837134706999337>"
+            f"Lol did you just try to {ctx.command} the owner? <:HahaLmao:854837134706999337>"
         )
     if ctx.author.top_role <= member.top_role:
         return await ctx.send(

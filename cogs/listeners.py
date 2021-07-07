@@ -4,13 +4,13 @@ from discord.ext import commands
 import discord
 
 from config import FORWARD_DMS
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 
 log = logging.getLogger("listeners")
 
 
 class Listeners(commands.Cog):
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.timeout = 60
 

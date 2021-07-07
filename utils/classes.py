@@ -30,12 +30,12 @@ class EmbedListMenu(menus.ListPageSource):
         return embeds
 
 
-class HimejiBot(commands.AutoShardedBot):
+class KurisuBot(commands.AutoShardedBot):
     """Idk"""
 
     def __init__(self, *args, **kwargs):
         for logger in [
-            "himeji",
+            "kurisu",
             "discord.client",
             "discord.gateway",
             "discord.http",
@@ -44,10 +44,10 @@ class HimejiBot(commands.AutoShardedBot):
             "main",
         ]:
             logging.getLogger(logger).setLevel(
-                logging.DEBUG if logger == "himeji" else logging.INFO
+                logging.DEBUG if logger == "kurisu" else logging.INFO
             )
             logging.getLogger(logger).addHandler(LoggingHandler())
-        self.logger = logging.getLogger("himeji")
+        self.logger = logging.getLogger("kurisu")
         super().__init__(
             help_command=None,
             command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
@@ -114,4 +114,4 @@ class HimejiBot(commands.AutoShardedBot):
             await self._session.close()
 
 
-bot = HimejiBot()
+bot = KurisuBot()

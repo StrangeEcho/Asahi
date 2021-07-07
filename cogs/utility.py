@@ -4,13 +4,13 @@ from typing import cast, Optional, Union
 from discord.ext import commands
 import discord
 
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 
 
 class Utility(commands.Cog):
     """Some utility commands"""
 
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
 
     @commands.command(aliases=["sinfo", "ginfo", "guildinfo"])

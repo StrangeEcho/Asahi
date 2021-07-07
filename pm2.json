@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "Himeji",
+      "name": "Kurisu",
       "script": "main.py",
       "interpreter": "./venv/bin/python3",
       "interpreter_args": "-u"

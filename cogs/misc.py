@@ -8,14 +8,14 @@ import discord
 import humanize
 
 from config import APPLICATION_ID
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 from utils.funcs import box
 
 
 class Miscellaneous(commands.Cog):
     """Miscellaneous commands"""
 
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
 
     @commands.has_permissions(embed_links=True)
@@ -134,7 +134,7 @@ class Miscellaneous(commands.Cog):
         embed.add_field(name="\u200B", value="\u200B", inline=True)
         embed.add_field(
             name="Github Repository:",
-            value="Find it [here](https://github.com/Yat-o/HimejiBot/tree/rewrite)",
+            value="Find it [here](https://github.com/Yat-o/Kurisu/tree/rewrite)",
             inline=True,
         )
         embed.add_field(name="\u200B", value="\u200B", inline=True)

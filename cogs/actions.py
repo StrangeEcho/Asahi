@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 
 np = ""
 
@@ -9,7 +9,7 @@ np = ""
 class Actions(commands.Cog):
     """Commands related to Roleplay"""
 
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
 
     @commands.command()

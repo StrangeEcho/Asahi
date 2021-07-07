@@ -5,13 +5,13 @@ from discord.ext import commands
 import aiohttp
 import discord
 
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 
 
 class Fun(commands.Cog):
     """Fun related commands"""
 
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
 
     @commands.command(name="8ball")
@@ -196,6 +196,41 @@ class Fun(commands.Cog):
                         color=self.bot.error_color,
                     )
                 )
+
+    @commands.command()
+    async def mcping(self, ctx: commands.Context, *, address):
+        """Fetch information about a bedrock minecraft server. Using the https://api.mcsrvstat.us API."""
+        async with self.bot.session.get(f"https://api.mcsrvstat.us/2/{address}") as resp:
+            d = await resp.json()
+            if d["online"]:
+                e = discord.Embed(
+                    title="Ping!",
+                    description=f"Information about `{address}`",
+                    color=self.bot.ok_color,
+                )
+                e.add_field(name="Status", value="Online" if d["online"] else "Offline")
+                e.add_field(name="IP & Port", value=f"IP: {d['ip']}\nPort: {d['port']}")
+                if d["hostname"]:
+                    e.add_field(name="Hostname", value=d["hostname"])
+                e.add_field(
+                    name="Players", value=f"{d['players']['online']}/{d['players']['max']}"
+                )
+                e.add_field(name="Software", value=d["software"])
+                e.add_field(name="Version", value=d["version"])
+                e.add_field(
+                    name="Plugins",
+                    value="None"
+                    if not d["plugins"]
+                    else "\n".join(map(str, d["plugins"]["names"])),
+                )
+                e.add_field(
+                    name="Mods",
+                    value="None" if not d["mods"] else "\n".join(map(str, d["mods"]["names"])),
+                )
+
+                await ctx.send(embed=e)
+            else:
+                await ctx.send("Server isn't online. ")
 
 
 def setup(bot):

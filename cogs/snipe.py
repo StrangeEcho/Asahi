@@ -4,7 +4,7 @@ import asyncio
 from discord.ext import commands
 import discord
 
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 
 snipe = {
     "id": None,
@@ -24,7 +24,7 @@ class Snipe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
 
     @commands.Cog.listener()

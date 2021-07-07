@@ -6,7 +6,7 @@ from hentai import Format, Hentai, Tag, Utils
 import discord
 
 from config import OK_COLOR
-from utils.classes import EmbedListMenu, HimejiBot
+from utils.classes import EmbedListMenu, KurisuBot
 
 embed_color = OK_COLOR.replace("#", "0x")
 
@@ -27,7 +27,7 @@ class Embed(discord.Embed):
 class NSFW(commands.Cog):
     """NSFW related commands"""
 
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
 
     @commands.command()

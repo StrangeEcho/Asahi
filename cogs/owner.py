@@ -11,7 +11,7 @@ from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
 import discord
 
-from utils.classes import HimejiBot
+from utils.classes import KurisuBot
 from utils.funcs import box
 import config
 
@@ -21,7 +21,7 @@ START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 class BotOwner(commands.Cog):
     """Bot Owner only commands"""
 
-    def __init__(self, bot: HimejiBot):
+    def __init__(self, bot: KurisuBot):
         self.bot = bot
         self._last_result = None
         self.sessions = set()
