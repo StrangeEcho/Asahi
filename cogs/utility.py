@@ -187,6 +187,67 @@ class Utility(commands.Cog):
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(embed=e)
 
+    @commands.command(aliases=["setnsfw"])
+    @commands.has_permissions(manage_channels=True)
+    @commands.bot_has_permissions(manage_channels=True)
+    async def nsfw(self, ctx: commands.Context):
+        """Toggle nsfw flag on the current channel"""
+        if not ctx.channel.is_nsfw():
+            await ctx.channel.edit(nsfw=True)
+            await ctx.send(f"`{ctx.channel.name}` NSFW flag has been toggled to True")
+        if ctx.channel.is_nsfw():
+            await ctx.channel.edit(nsfw=False)
+            await ctx.send(f"`{ctx.channel.name}` NSFW flag has been toggled to False")
+
+    @commands.command()
+    @commands.has_permissions(manage_guild=True)
+    @commands.bot_has_permissions(manage_guild=True)
+    async def setafktimeout(self, ctx: commands.Context, timeout: str):
+        """Set the afk timeout for this server. Run [p]setafktimeout timelist for a list for all available times"""
+        timeouts = {
+            "1m": ["60", "1 Minute"],
+            "5m": ["300", "5 Minutes"],
+            "15m": ["900", "15 Minutes"],
+            "30m": ["1800", "30 Minutes"],
+            "1h": ["3600", "1 Hour"],
+        }
+        if timeout == "timelist":
+            return await ctx.send(
+                embed=discord.Embed(
+                    title="Available timeouts",
+                    description="```" + "\n".join(timeouts.keys()) + "\n```",
+                    color=self.bot.ok_color,
+                )
+            )
+        if timeout.lower() in timeouts.keys():
+            await ctx.guild.edit(afk_timeout=int(timeouts[timeout.lower()][0]))
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"Set AFK timeout to `{timeouts[timeout.lower()][1]}`",
+                    color=self.bot.ok_color,
+                )
+            )
+
+    @commands.command()
+    @commands.has_permissions(manage_guild=True)
+    @commands.bot_has_permissions(manage_guild=True)
+    async def setafkchannel(self, ctx: commands.Context, channel: discord.VoiceChannel = None):
+        """Set the channel to where people go when they hit the AFK timeout. Pass in None for no Inactive Channel"""
+        if channel is None:
+            await ctx.guild.edit(afk_channel=channel)
+            return await ctx.send(
+                embed=discord.Embed(description="Removed AFK channel", color=self.bot.ok_color)
+            )
+
+        if channel:
+            await ctx.guild.edit(afk_channel=channel)
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"Set AFK timeout channel to `{channel.name}`",
+                    color=self.bot.ok_color,
+                )
+            )
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))
