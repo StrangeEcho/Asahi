@@ -10,5 +10,5 @@ venv
 /cogs/testing.py
 
 # personal
-run.sh
+setup.sh
 reformat.bat

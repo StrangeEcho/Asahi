@@ -1,6 +1,8 @@
 from io import BytesIO
 from random import choice, randint
 
+import json
+
 from discord.ext import commands
 import aiohttp
 import discord
@@ -197,41 +199,19 @@ class Fun(commands.Cog):
                     )
                 )
 
-    @commands.command()
-    async def mcping(self, ctx: commands.Context, *, address):
-        """Fetch information about a bedrock minecraft server. Using the https://api.mcsrvstat.us API."""
-        async with self.bot.session.get(f"https://api.mcsrvstat.us/2/{address}") as resp:
-            d = await resp.json()
-            if d["online"]:
-                e = discord.Embed(
-                    title="Ping!",
-                    description=f"Information about `{address}`",
-                    color=self.bot.ok_color,
-                )
-                e.add_field(name="Status", value="Online" if d["online"] else "Offline")
-                e.add_field(name="IP & Port", value=f"IP: {d['ip']}\nPort: {d['port']}")
-                if d["hostname"]:
-                    e.add_field(name="Hostname", value=d["hostname"])
-                e.add_field(
-                    name="Players", value=f"{d['players']['online']}/{d['players']['max']}"
-                )
-                e.add_field(name="Software", value=d["software"])
-                e.add_field(name="Version", value=d["version"])
-                e.add_field(
-                    name="Plugins",
-                    value="None"
-                    if not d["plugins"]
-                    else "\n".join(map(str, d["plugins"]["names"])),
-                )
-                e.add_field(
-                    name="Mods",
-                    value="None" if not d["mods"] else "\n".join(map(str, d["mods"]["names"])),
-                )
-
-                await ctx.send(embed=e)
-            else:
-                await ctx.send("Server isn't online. ")
-
-
+    @commands.command(aliases=["bitcoin"])
+    @commands.cooldown(1, 2, commands.BucketType.user)
+    async def btc(self, ctx: commands.Context):
+        """Returns the current rate for Bitcoin"""
+        raw_resp = await self.bot.session.get("https://api.coindesk.com/v1/bpi/currentprice/BTC.json")
+        response_text = await raw_resp.text()
+        final_response = json.loads(response_text)
+        await ctx.send(
+            embed=discord.Embed(
+                title="Current BTC Rating",
+                description=f"Rate: ${final_response['bpi']['USD']['rate']}",
+                color=self.bot.ok_color
+            )
+        )
 def setup(bot):
     bot.add_cog(Fun(bot))

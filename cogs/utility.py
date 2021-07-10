@@ -215,7 +215,7 @@ class Utility(commands.Cog):
             return await ctx.send(
                 embed=discord.Embed(
                     title="Available timeouts",
-                    description="```" + "\n".join(timeouts.keys()) + "\n```",
+                    description="```\n" + "\n".join(timeouts.keys()) + "\n```",
                     color=self.bot.ok_color,
                 )
             )
