@@ -98,6 +98,7 @@ class NSFW(commands.Cog):
                 )
             )
 
+
     @commands.command(aliases=["hb"])
     @commands.is_nsfw()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -124,6 +125,45 @@ class NSFW(commands.Cog):
             ) as resp:
                 results = (await resp.json())["files"][:5]
                 await ctx.send("\n".join(results))
+        else:
+            await ctx.send(
+                embed=discord.Embed(
+                    title="TAG NOT FOUND",
+                    description=f"{tag} was not found in the available tag list. Please run `{ctx.clean_prefix}hb list`",
+                    color=self.bot.error_color,
+                )
+            )
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def hentainuke(self, ctx: commands.Context, *, tag: str = None):
+        """Post 30 hentai images from Waifu.pics API. Run [p]hentainuke list for available tags"""
+        available_tags = ["waifu", "neko", "trap", "blowjob"]
+
+        if tag is None:
+            tag = choice(available_tags)
+
+        if tag is not None and tag.lower() == "list":
+            tags = "\n".join(available_tags)
+            return await ctx.send(
+                embed=discord.Embed(
+                    title="Available Tags", description=tags, color=self.bot.ok_color
+                )
+            )
+
+        if tag is not None and tag.lower() in available_tags:
+            async with self.bot.session.post(
+                    url=f"https://api.waifu.pics/many/nsfw/{tag}",
+                    headers={"Accept": "application/json", "content-type": "application/json"},
+                    json={"files": ""},
+            ) as resp:
+                step = 5  # the amount of files to display at a time
+                idx = 5  # set the index to start with
+                files = (await resp.json())["files"]
+                while idx < len(files):
+                    sublist = files[idx - step:idx]  # [0:5], [5:10], etc
+                    await ctx.send("\n".join(map(str, sublist)))
+                    idx += step
         else:
             await ctx.send(
                 embed=discord.Embed(

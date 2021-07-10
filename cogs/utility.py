@@ -187,15 +187,15 @@ class Utility(commands.Cog):
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(embed=e)
 
-    @commands.command(aliases=["setnsfw"])
+    @commands.command()
     @commands.has_permissions(manage_channels=True)
     @commands.bot_has_permissions(manage_channels=True)
-    async def nsfw(self, ctx: commands.Context):
+    async def setnsfw(self, ctx: commands.Context):
         """Toggle nsfw flag on the current channel"""
         if not ctx.channel.is_nsfw():
             await ctx.channel.edit(nsfw=True)
             await ctx.send(f"`{ctx.channel.name}` NSFW flag has been toggled to True")
-        if ctx.channel.is_nsfw():
+        else:
             await ctx.channel.edit(nsfw=False)
             await ctx.send(f"`{ctx.channel.name}` NSFW flag has been toggled to False")
 
