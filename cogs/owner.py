@@ -361,18 +361,38 @@ class BotOwner(commands.Cog):
 
         user_flags = "\n".join(i.replace("_", " ").title() for i, v in user.public_flags if v)
 
-        await ctx.send(
-            embed=discord.Embed(
-                title=user, description=f"Information about {user}", color=self.bot.ok_color
-            )
-            .set_thumbnail(url=user.avatar.url)
-            .add_field(name="ID", value=user.id)
-            .add_field(name="Account Creation Date", value=user.created_at.strftime("%c"))
-            .add_field(name="Avatar", value=f"[Url]({user.avatar.url})")
-            .add_field(name="System", value="\u2705" if user.system else ":x:")
-            .add_field(name="Bot", value="\u2705" if user.bot else ":x:")
-            .add_field(name="Flags", value=user_flags.upper())
+        embed = discord.Embed(
+            title=f"User: {user}",
+            description=f"Fetched info for user: `{user}`",
+            color=self.bot.ok_color
         )
+        embed.set_thumbnail(url=user.avatar.url)
+        embed.add_field(
+            name="ID",
+            value=f"`{user.id}`"
+        )
+        embed.add_field(
+            name="Avatar",
+            value=f"[URL]({user.avatar.url})"
+        )
+        embed.add_field(
+            name="Account Creation",
+            value=f"`{user.created_at.strftime('%c')}`"
+        )
+        embed.add_field(
+            name="Bot",
+            value="\u2705" if user.bot else ":x:"
+        )
+        embed.add_field(
+            name="System",
+            value="\u2705" if user.system else ":x:"
+        )
+        if user.public_flags:
+            embed.add_field(
+                name="Public Flags",
+                value=f"```\n{user_flags}\n```"
+            )
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
