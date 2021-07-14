@@ -364,34 +364,16 @@ class BotOwner(commands.Cog):
         embed = discord.Embed(
             title=f"User: {user}",
             description=f"Fetched info for user: `{user}`",
-            color=self.bot.ok_color
+            color=self.bot.ok_color,
         )
         embed.set_thumbnail(url=user.avatar.url)
-        embed.add_field(
-            name="ID",
-            value=f"`{user.id}`"
-        )
-        embed.add_field(
-            name="Avatar",
-            value=f"[URL]({user.avatar.url})"
-        )
-        embed.add_field(
-            name="Account Creation",
-            value=f"`{user.created_at.strftime('%c')}`"
-        )
-        embed.add_field(
-            name="Bot",
-            value="\u2705" if user.bot else ":x:"
-        )
-        embed.add_field(
-            name="System",
-            value="\u2705" if user.system else ":x:"
-        )
+        embed.add_field(name="ID", value=f"`{user.id}`")
+        embed.add_field(name="Avatar", value=f"[URL]({user.avatar.url})")
+        embed.add_field(name="Account Creation", value=f"`{user.created_at.strftime('%c')}`")
+        embed.add_field(name="Bot", value="\u2705" if user.bot else ":x:")
+        embed.add_field(name="System", value="\u2705" if user.system else ":x:")
         if user.public_flags:
-            embed.add_field(
-                name="Public Flags",
-                value=f"```\n{user_flags}\n```"
-            )
+            embed.add_field(name="Public Flags", value=f"```\n{user_flags}\n```")
         await ctx.send(embed=embed)
 
 

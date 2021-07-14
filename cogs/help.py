@@ -3,8 +3,11 @@ import discord
 from discord.ext import commands
 
 from utils.classes import KurisuBot
+
+
 class Help(commands.Cog):
     """Help related commands"""
+
     def __init__(self, bot: KurisuBot):
         self.bot = bot
 
@@ -21,7 +24,6 @@ class Help(commands.Cog):
             )
         )
 
-
     @commands.group(invoke_without_command=True)
     async def help(self, ctx: commands.Context):
         """Shows information on a specific command or module"""
@@ -29,21 +31,25 @@ class Help(commands.Cog):
             embed=discord.Embed(
                 title=f"Hi I'm {self.bot.user.name}",
                 description=f"{self.bot.user.name} is a multi-modular all purpose bot built with Discord.py",
-                color=self.bot.ok_color
-    )
-    .set_thumbnail(url=self.bot.user.avatar.url)
-    .set_footer(
+                color=self.bot.ok_color,
+            )
+            .set_thumbnail(url=self.bot.user.avatar.url)
+            .set_footer(
                 icon_url=self.bot.user.avatar.url,
-                text=f"{self.bot.user} has been serving users since {self.bot.user.created_at.strftime('%c')}"
+                text=f"{self.bot.user} has been serving users since {self.bot.user.created_at.strftime('%c')}",
             )
-    .add_field(
+            .add_field(
                 name="Modules",
-                value=(f"Run `{ctx.clean_prefix}modules` for a list of active modules\n\n"
-                       f"Run `{ctx.clean_prefix}help module <modulename>` for info on a specific module"
-                    )
+                value=(
+                    f"Run `{ctx.clean_prefix}modules` for a list of active modules\n\n"
+                    f"Run `{ctx.clean_prefix}help module <modulename>` for info on a specific module"
+                ),
             )
-    .add_field(name="Commands", value=f"Run `{ctx.clean_prefix}help command <commandname>` for info on a command")
-    )
+            .add_field(
+                name="Commands",
+                value=f"Run `{ctx.clean_prefix}help command <commandname>` for info on a command",
+            )
+        )
 
     @help.command(aliases=["cmd"])
     async def command(self, ctx: commands.Context, *, target: str):
@@ -54,25 +60,25 @@ class Help(commands.Cog):
                 embed=discord.Embed(
                     title=f"Command: __{cmd.name}__",
                     description=f"`Command Description: {cmd.help}`",
-                    color=self.bot.ok_color
-            )
-            .add_field(
+                    color=self.bot.ok_color,
+                )
+                .add_field(
                     name="Usage",
                     value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`",
                 )
-            .add_field(name="Module", value=f"`{cmd.cog_name}`")
-            .add_field(
-                    name=f"Aliases", value="`None`" if not cmd.aliases else f"```\n{cmd_aliases}\n```"
+                .add_field(name="Module", value=f"`{cmd.cog_name}`")
+                .add_field(
+                    name=f"Aliases",
+                    value="`None`" if not cmd.aliases else f"```\n{cmd_aliases}\n```",
                 )
-            .set_footer(
+                .set_footer(
                     text="[] signify optional arguments while <> signify required arguments"
                 )
             )
         if not cmd:
             return await ctx.send(
                 embed=discord.Embed(
-                    description=f"**COMMAND NOT FOUND**",
-                    color=self.bot.error_color
+                    description=f"**COMMAND NOT FOUND**", color=self.bot.error_color
                 )
             )
 
@@ -92,18 +98,20 @@ class Help(commands.Cog):
                 embed=discord.Embed(
                     title=cog.qualified_name or target,
                     color=self.bot.ok_color,
-            )
-            .add_field(name="Description", value=cog.description or None)
-            .add_field(name="Commands", value=f"```\n{cog_commands}\n```")
-            .set_footer(text=f"Do {ctx.clean_prefix}help command <commandname> for help with a command")
+                )
+                .add_field(name="Description", value=f"`{cog.description or None}`")
+                .add_field(name="Commands", value=f"```\n{cog_commands}\n```")
+                .set_footer(
+                    text=f"Do {ctx.clean_prefix}help command <commandname> for help with a command"
+                )
             )
         if not found:
             return await ctx.send(
                 embed=discord.Embed(
-                    description=f"**MODULE NOT FOUND**",
-                    color=self.bot.error_color
+                    description=f"**MODULE NOT FOUND**", color=self.bot.error_color
                 )
             )
+
 
 def setup(bot):
     bot.add_cog(Help(bot))

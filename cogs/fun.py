@@ -203,15 +203,19 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def btc(self, ctx: commands.Context):
         """Returns the current rate for Bitcoin"""
-        raw_resp = await self.bot.session.get("https://api.coindesk.com/v1/bpi/currentprice/BTC.json")
+        raw_resp = await self.bot.session.get(
+            "https://api.coindesk.com/v1/bpi/currentprice/BTC.json"
+        )
         response_text = await raw_resp.text()
         final_response = json.loads(response_text)
         await ctx.send(
             embed=discord.Embed(
                 title="Current BTC Rating",
                 description=f"Rate: ${final_response['bpi']['USD']['rate']}",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
         )
+
+
 def setup(bot):
     bot.add_cog(Fun(bot))

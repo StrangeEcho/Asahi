@@ -44,21 +44,21 @@ class Moderation(commands.Cog):
                     embed=discord.Embed(
                         title=f"You were banned from {ctx.guild}",
                         description=f"Reason: {reason}",
-                        color=self.bot.ok_color
+                        color=self.bot.ok_color,
                     ).set_footer(text=f"Moderator: {ctx.author}")
                 )
             except (discord.Forbidden, discord.HTTPException):
                 await ctx.send(
                     embed=discord.Embed(
                         description=f"Failed sending punishment DM to {member.mention}\nProceeding with Ban regardless.",
-                        color=self.bot.error_color
+                        color=self.bot.error_color,
                     )
                 )
             await member.ban(reason=f"Reason: {reason} | Moderator: {ctx.author}")
             await ctx.send(
                 embed=discord.Embed(
                     description=f":red_circle: Successfully banned {member.mention} for {reason}",
-                    color=self.bot.ok_color
+                    color=self.bot.ok_color,
                 )
             )
 

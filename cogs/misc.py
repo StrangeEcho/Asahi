@@ -196,5 +196,6 @@ class Miscellaneous(commands.Cog):
         embed.set_footer(text=f"Since: {since}")
         await ctx.reply(embed=embed, mention_author=False)
 
+
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))

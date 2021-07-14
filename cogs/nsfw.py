@@ -98,7 +98,6 @@ class NSFW(commands.Cog):
                 )
             )
 
-
     @commands.command(aliases=["hb"])
     @commands.is_nsfw()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -153,15 +152,15 @@ class NSFW(commands.Cog):
 
         if tag is not None and tag.lower() in available_tags:
             async with self.bot.session.post(
-                    url=f"https://api.waifu.pics/many/nsfw/{tag}",
-                    headers={"Accept": "application/json", "content-type": "application/json"},
-                    json={"files": ""},
+                url=f"https://api.waifu.pics/many/nsfw/{tag}",
+                headers={"Accept": "application/json", "content-type": "application/json"},
+                json={"files": ""},
             ) as resp:
                 step = 5  # the amount of files to display at a time
                 idx = 5  # set the index to start with
                 files = (await resp.json())["files"]
                 while idx < len(files):
-                    sublist = files[idx - step:idx]  # [0:5], [5:10], etc
+                    sublist = files[idx - step : idx]  # [0:5], [5:10], etc
                     await ctx.send("\n".join(map(str, sublist)))
                     idx += step
         else:
