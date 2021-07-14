@@ -14,7 +14,7 @@ class Help(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title=f"{self.bot.user.name}'s available modules/cogs",
-                description="\n".join(sorted(map(str, self.bot.cogs))),
+                description=("```\n" + "\n".join(sorted(map(str, self.bot.cogs)))) + "\n```",
                 color=self.bot.ok_color,
             ).set_footer(
                 text=f"use {ctx.clean_prefix}help [module] to get info about a module/cog"
