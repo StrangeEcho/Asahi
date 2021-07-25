@@ -197,7 +197,7 @@ class BotOwner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def reloadall(self, ctx: commands.Context):
-        await ctx.send(embed=discord.Embed(description=f"Attempting to reload {len(list(self.bot.cogs))} cogs", color=self.bot.ok_color))
+        await ctx.send(embed=discord.Embed(description=f"Attempting to reload {len(list(self.bot.cogs)) - 1} cogs", color=self.bot.ok_color))
         success = 0
         failed = 0
         for cog in os.listdir("./cogs"):

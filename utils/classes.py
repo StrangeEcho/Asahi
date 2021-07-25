@@ -62,7 +62,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.uptime = None
         self._session = None
         self.startup_time = datetime.now()
-
+        self.version = "1.0.0"
     @property
     def session(self) -> ClientSession:
         if self._session is None:
