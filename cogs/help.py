@@ -51,7 +51,7 @@ class Help(commands.Cog):
             )
         )
 
-    @help.command(aliases=["cmd"])
+    @help.command(aliases=["cmd", "c"])
     async def command(self, ctx: commands.Context, *, target: str):
         cmd: commands.Command = self.bot.get_command(target.lower())
         if cmd:
@@ -82,7 +82,7 @@ class Help(commands.Cog):
                 )
             )
 
-    @help.command(aliases=["mod"])
+    @help.command(aliases=["mod", "m"])
     async def module(self, ctx: commands.Context, target: str):
         found = []
         for c in self.bot.cogs:

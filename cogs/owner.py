@@ -211,7 +211,7 @@ class BotOwner(commands.Cog):
                     failed += 1
         await ctx.send(
             embed=discord.Embed(
-                description=f"`Successfully reloaded {success} cog(s)`\n`Failed reloading {failed} cog(s)`",
+                description=f"`Successfully reloaded {success} cog(s)`\n`Failed reloading {failed - 1} cog(s)`", # -1 because jsk will always fail to reload
                 color=self.bot.ok_color
             ).set_footer(text="If any cogs failed to reload check console for feedback.")
         )
