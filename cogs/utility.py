@@ -248,6 +248,28 @@ class Utility(commands.Cog):
                 )
             )
 
+    @commands.command(aliases=["cr"])
+    @commands.has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def createrole(self, ctx: commands.Context, *, name: str):
+        await ctx.guild.create_role(name=name)
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"Successfully created role with name `{name}`",
+                color=self.bot.ok_color
+            )
+        )
+
+    @commands.command()
+    async def deleterole(self, ctx, *, role: discord.Role):
+        await role.delete()
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"Successfully deleted role called `{role}`",
+                color=self.bot.ok_color
+            )
+        )
 
 def setup(bot):
     bot.add_cog(Utility(bot))

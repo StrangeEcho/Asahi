@@ -1,3 +1,4 @@
+import os
 from contextlib import redirect_stdout
 from typing import Optional
 import asyncio
@@ -195,6 +196,30 @@ class BotOwner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
+    async def reloadall(self, ctx: commands.Context):
+        await ctx.send(embed=discord.Embed(description=f"Attempting to reload {len(list(self.bot.cogs))} cogs", color=self.bot.ok_color))
+        success = 0
+        failed = 0
+        for cog in os.listdir("./cogs"):
+            if cog.endswith(".py"):
+                try:
+                    self.bot.reload_extension(f"cogs.{cog[:-3]}")
+                    self.bot.logger.info(f"Reloaded {cog}")
+                    success += 1
+                except Exception as e:
+                    self.bot.logger.warning(f"Failed reloading {cog}\n{e}")
+                    failed += 1
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"`Successfully reloaded {success} cog(s)`\n`Failed reloading {failed} cog(s)`",
+                color=self.bot.ok_color
+            ).set_footer(text="If any cogs failed to reload check console for feedback.")
+        )
+        success -= success
+        failed -= failed
+
+    @commands.command()
+    @commands.is_owner()
     async def say(self, ctx, chan: Optional[discord.TextChannel] = None, *, msg):
         """Say something with the bot."""
         try:
@@ -375,6 +400,12 @@ class BotOwner(commands.Cog):
         if user.public_flags:
             embed.add_field(name="Public Flags", value=f"```\n{user_flags}\n```")
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.is_owner()
+    async def leave(self, ctx: commands.Context, guild: discord.Guild):
+        await guild.leave()
+        await ctx.send(f"Successfully left {guild.name}")
 
 
 def setup(bot):

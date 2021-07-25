@@ -81,7 +81,7 @@ class KurisuBot(commands.AutoShardedBot):
         )
         self.logger.info(f"Registered Shard Count: {len(self.shards)}")
         self.logger.info(f"Recognized Owner ID(s): {', '.join(map(str, self.owner_ids))}")
-        self.logger.info("STARTING COG LOADING PROCESS")
+        self.logger.info("ATTEMPTING TO MOUNT COG EXTENSIONS!")
         loaded_cogs = 0
         unloaded_cogs = 0
         for cog in os.listdir("./cogs"):
@@ -95,8 +95,8 @@ class KurisuBot(commands.AutoShardedBot):
                     self.logger.warning(f"Failed to load the cog: {cog}")
                     self.logger.warning(f"{e}")
         self.logger.info("DONE")
-        self.logger.info(f"Total loaded cogs: {loaded_cogs}")
-        msg = f"Total unloaded cogs: {unloaded_cogs}"
+        self.logger.info(f"Total mounted cogs: {loaded_cogs}")
+        msg = f"Total unmounted cogs: {unloaded_cogs}"
         self.logger.info(msg) if unloaded_cogs == 0 else self.logger.warning(msg)
         time_difference = ((self.startup_time - datetime.now()) * 1000).total_seconds()
         formatted_time_difference = str(time_difference).replace("-", "")
