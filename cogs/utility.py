@@ -262,6 +262,9 @@ class Utility(commands.Cog):
         )
 
     @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def deleterole(self, ctx, *, role: discord.Role):
         await role.delete()
         await ctx.send(
@@ -270,6 +273,9 @@ class Utility(commands.Cog):
                 color=self.bot.ok_color
             )
         )
+
+    @commands.command()
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))
