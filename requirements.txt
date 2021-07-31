@@ -1,6 +1,7 @@
 jishaku
 psutil
 git+https://github.com/Rapptz/discord.py
+PyNacl
 tabulate 
 matplotlib
 git+https://github.com/Rapptz/discord-ext-menus

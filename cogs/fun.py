@@ -1,6 +1,5 @@
 from io import BytesIO
 from random import choice, randint
-
 import json
 
 from discord.ext import commands

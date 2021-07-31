@@ -1,9 +1,9 @@
-import os
 from contextlib import redirect_stdout
 from typing import Optional
 import asyncio
 import inspect
 import io
+import os
 import re
 import textwrap
 import traceback
@@ -197,7 +197,13 @@ class BotOwner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def reloadall(self, ctx: commands.Context):
-        await ctx.send(embed=discord.Embed(description=f"Attempting to reload {len(list(self.bot.cogs)) - 1} cogs", color=self.bot.ok_color))
+        """Reload all cogs at once"""
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"Attempting to reload {len(list(self.bot.cogs)) - 1} cogs",
+                color=self.bot.ok_color,
+            )
+        )
         success = 0
         failed = 0
         for cog in os.listdir("./cogs"):
@@ -211,8 +217,9 @@ class BotOwner(commands.Cog):
                     failed += 1
         await ctx.send(
             embed=discord.Embed(
-                description=f"`Successfully reloaded {success} cog(s)`\n`Failed reloading {failed - 1} cog(s)`", # -1 because jsk will always fail to reload
-                color=self.bot.ok_color
+                description=f"`Successfully reloaded {success} cog(s)`\n`Failed reloading {failed - 1} cog(s)`",
+                # -1 because jsk will always fail to reload
+                color=self.bot.ok_color,
             ).set_footer(text="If any cogs failed to reload check console for feedback.")
         )
         success -= success

@@ -23,12 +23,6 @@ async def check_hierarchy(ctx: commands.Context, member: discord.Member):
         )
 
 
-def can_execute_action(ctx, user, target):
-    return (
-        user.id == ctx.bot.owner_id or user == ctx.guild.owner or user.top_role > target.top_role
-    )
-
-
 # Credits to https://github.com/Cog-Creators/Red-DiscordBot/blob/ded5aff08cfe443498770e7f27035db694e72c30/redbot/core/utils/chat_formatting.py#L86
 def box(text: str, lang: str = "") -> str:
     """Get the given text in a code block.

@@ -4,7 +4,7 @@ from discord.ext import commands
 import discord
 
 from config import FORWARD_DMS
-from utils.classes import KurisuBot
+from utils.classes import KurisuBot, PrefixManager
 
 log = logging.getLogger("listeners")
 
@@ -13,6 +13,7 @@ class Listeners(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.timeout = 60
+        self.prefix_manager = PrefixManager(bot=self.bot)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
@@ -153,6 +154,13 @@ class Listeners(commands.Cog):
         if (after.edited_at - after.created_at).total_seconds() > self.timeout:
             return
         await self.edit_process_commands(after)
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild: discord.Guild):
+        await self.prefix_manager.remove_prefix(guild=guild.id)
+        self.bot.logger.info(
+            f"Removed {guild.name} from on-memory prefix cache and database table."
+        )
 
 
 def setup(bot):

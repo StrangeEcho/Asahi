@@ -1,7 +1,6 @@
 from datetime import datetime
 import logging
 import os
-import platform
 
 from aiohttp import ClientSession
 from discord.ext import commands, menus
@@ -9,6 +8,7 @@ import discord
 
 import config
 
+from .database import connection
 from .log import LoggingHandler
 
 
@@ -50,7 +50,6 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger = logging.getLogger("kurisu")
         super().__init__(
             help_command=None,
-            command_prefix=commands.when_mentioned_or(config.BOT_PREFIX),
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions(roles=False, everyone=False),
             *args,
@@ -62,7 +61,10 @@ class KurisuBot(commands.AutoShardedBot):
         self.uptime = None
         self._session = None
         self.startup_time = datetime.now()
-        self.version = "1.0.0"
+        self.version = "2.0.0"
+        self.db = connection
+        self.prefixes = {}
+
     @property
     def session(self) -> ClientSession:
         if self._session is None:
@@ -112,6 +114,46 @@ class KurisuBot(commands.AutoShardedBot):
         await super().close()
         if self._session:
             await self._session.close()
+            await self.db.close()
 
 
-bot = KurisuBot()
+class PrefixManager:
+    def __init__(self, bot: KurisuBot):
+        self.bot = bot
+
+    def add_prefix(self, guild: int, prefix: str):
+        if not guild in self.bot.prefixes:
+            self.bot.db.cursor().execute(
+                "INSERT INTO guildsettings (guild, prefix) VALUES (?,?)",
+                (
+                    guild,
+                    prefix,
+                ),
+            )
+        if guild in self.bot.prefixes:
+            self.bot.db.cursor().execute(
+                """
+            UPDATE guildsettings
+            SET prefix ?
+            WHERE guild = ?
+            """,
+                (
+                    prefix,
+                    guild,
+                ),
+            )
+        self.bot.db.commit()
+        self.bot.prefixes[str(guild)] = prefix
+
+    def remove_prefix(self, guild: int):
+        if guild in self.bot.prefixes:
+            self.bot.prefixes.pop(str(guild))
+            self.bot.db.cursor().execute("DELETE FROM guildsettings WHERE guild = ?", (guild,))
+
+    def startup_caching(self):
+        cur = self.bot.db.cursor()
+        cur.execute("SELECT * FROM guildsettings")
+        result = cur.fetchall()
+        for g, p in result:
+            self.bot.prefixes.setdefault(str(g), str(p))
+            self.bot.logger.info("Prefixes Appended To Cache")

@@ -1,13 +1,11 @@
 #main
-/config.py
-/cogs/test.py
-/colors.txt
-/utils/helpstrings.py/
+config.py
 /.vscode
 __pycache__
 .idea
 venv
 /cogs/testing.py
+kurisu.db
 
 # personal
 setup.sh
