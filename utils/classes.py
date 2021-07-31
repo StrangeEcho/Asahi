@@ -114,7 +114,7 @@ class KurisuBot(commands.AutoShardedBot):
         await super().close()
         if self._session:
             await self._session.close()
-            await self.db.close()
+            self.db.close()
 
 
 class PrefixManager:
