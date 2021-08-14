@@ -9,12 +9,6 @@ schema = f"""
     "log_channel" INTEGER NOT NULL,
     "log_enabled" INTEGER NOT NULL 
   )
-  CREATE TABLE IF NOT EXISTS "userdata" (
-    "userid"  INTEGER NOT NULL,
-    "username"  TEXT NOT NULL,
-    "currencybalance" NUMERAL NOT NULL,
-    "ondailycooldown" INTEGER NOT NULL 
-  )
  """
 
 connection = sqlite3.connect("kurisu.db")
