@@ -1,6 +1,7 @@
 from datetime import datetime
 import logging
 import os
+import sqlite3
 
 from aiohttp import ClientSession
 from discord.ext import commands, menus
@@ -8,7 +9,7 @@ import discord
 
 import config
 
-from .database import connection
+
 from .log import LoggingHandler
 
 
@@ -62,7 +63,7 @@ class KurisuBot(commands.AutoShardedBot):
         self._session = None
         self.startup_time = datetime.now()
         self.version = "2.0.0"
-        self.db = connection
+        self.db = sqlite3.connect("kurisu.db")
         self.prefixes = {}
 
     @property
@@ -114,7 +115,7 @@ class KurisuBot(commands.AutoShardedBot):
         await super().close()
         if self._session:
             await self._session.close()
-            self.db.close()
+        self.db.close()
 
 
 class PrefixManager:
