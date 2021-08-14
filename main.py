@@ -5,7 +5,7 @@ import discord
 
 from config import BOT_PREFIX, TOKEN
 from utils.classes import KurisuBot, PrefixManager
-from utils.database import schema
+from utils.schema import schema
 
 logging.getLogger("main")
 
@@ -40,7 +40,7 @@ def DatabaseInit(Schema: str):
         bot.logger.critical(
             f"Error While Appending Guild Prefixes To Database.\nError: {e}\nExiting..."
         )
-        exit()
+        exit(code=1)
     bot.logger.info("Guild Prefixes Successfully Appended To On-Memory Cache.")
     bot.logger.info("Database Initialization Complete.")
 
