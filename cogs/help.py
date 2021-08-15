@@ -3,7 +3,6 @@ import discord
 
 from utils.classes import KurisuBot
 
-
 class Help(commands.Cog):
     """Help related commands"""
 

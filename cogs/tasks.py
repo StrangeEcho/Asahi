@@ -4,7 +4,6 @@ from discord.ext import commands, tasks
 import discord
 
 from utils.classes import KurisuBot
-import config
 
 
 class Tasks(commands.Cog):
@@ -25,7 +24,7 @@ class Tasks(commands.Cog):
         await asyncio.sleep(60)
         await self.bot.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.listening, name=f"you do {config.BOT_PREFIX}help"
+                type=discord.ActivityType.listening, name=f"you do @Kurisu help"
             )
         )
         await asyncio.sleep(60)

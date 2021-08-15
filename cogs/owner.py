@@ -147,7 +147,7 @@ class BotOwner(commands.Cog):
             confirm_message="Goodbye then :wave:",
             cancel_message="I guess I will stay then",
         ).run():
-            exit(code=26)
+            await self.bot.full_exit()
 
     @commands.command()
     @commands.is_owner()

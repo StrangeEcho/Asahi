@@ -10,27 +10,40 @@ class ServerSettings(commands.Cog):
         self.bot = bot
         self.prefix_manager = PrefixManager(bot=self.bot)
 
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def prefix(self, ctx: commands.Context, prefix: str = None):
-        """Change prefix of bot"""
-        if prefix is None:
-            guild_prefix = self.bot.prefixes.get(str(ctx.guild.id))
-            return await ctx.send(
-                embed=discord.Embed(
-                    description=f"The current prefix for this guild is `{guild_prefix or BOT_PREFIX}`",
-                    color=self.bot.ok_color,
-                )
+    @commands.group(name="prefix", invoke_without_command=True)
+    async def prefix(self, ctx: commands.Context):
+        """Guild prefixes related commands"""
+        g_prefix = self.bot.prefixes.get(str(ctx.guild.id)) or BOT_PREFIX
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"The current prefix for this guild is `{g_prefix}`",
+                color=self.bot.ok_color
             )
-        elif prefix:
-            self.prefix_manager.add_prefix(guild=ctx.guild.id, prefix=prefix)
-            await ctx.send(
-                embed=discord.Embed(
-                    title="New Prefix Set!",
-                    description=f"New Prefix: `{prefix}`",
-                    color=self.bot.ok_color,
-                )
+        )
+
+    @prefix.command(name="set")
+    @commands.has_permissions(manage_guild=True)
+    async def _set(self, ctx, prefix: str):
+        """Set a new prefix for this server"""
+        self.prefix_manager.add_prefix(ctx.guild.id, prefix)
+        await ctx.send(
+            embed=discord.Embed(
+                title="New Prefix Set",
+                description=f"New Prefix: `{prefix}`",
+                color=self.bot.ok_color
             )
+        )
+    @prefix.command(aliases=["reset"])
+    @commands.has_permissions(manage_guild=True)
+    async def default(self, ctx: commands.Context):
+        """Set the current prefix for this server back to default"""
+        self.prefix_manager.remove_prefix(ctx.guild.id)
+        await ctx.send(
+            embed=discord.Embed(
+                title="Prefix set back to normal",
+                color=self.bot.ok_color
+            )
+        )
 
 
 def setup(bot):

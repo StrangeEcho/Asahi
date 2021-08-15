@@ -24,7 +24,7 @@ if discord.__version__ != "2.0.0a":
         f"DISCORD.PY VERSION REQUIREMENT NOT MET. EXPECTED 2.0.0a, GOT {discord.__version__}."
     )
     bot.logger.critical("EXITING!")
-    exit(code=1)
+    exit(code=26)
 
 pm = PrefixManager(bot=bot)
 
@@ -40,10 +40,9 @@ def DatabaseInit(Schema: str):
         bot.logger.critical(
             f"Error While Appending Guild Prefixes To Database.\nError: {e}\nExiting..."
         )
-        exit(code=1)
+        exit(code=26)
     bot.logger.info("Guild Prefixes Successfully Appended To On-Memory Cache.")
     bot.logger.info("Database Initialization Complete.")
-
 
 DatabaseInit(schema)
 bot.logger.info("Running Kurisu Now!")

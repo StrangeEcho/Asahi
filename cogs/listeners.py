@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from discord.ext import commands
 import discord
@@ -6,7 +7,7 @@ import discord
 from config import FORWARD_DMS
 from utils.classes import KurisuBot, PrefixManager
 
-log = logging.getLogger("listeners")
+logging.getLogger("listeners")
 
 
 class Listeners(commands.Cog):
@@ -102,6 +103,9 @@ class Listeners(commands.Cog):
             self.bot.logger.error(
                 f"**{ctx.command.qualified_name} failed to execute**", exc_info=error.original
             )
+        else:
+            self.bot.logger.error("Unhandled Exception Found")
+            traceback.print_exception(type(error), error, error.__traceback__)
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):

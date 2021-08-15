@@ -62,7 +62,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.uptime = None
         self._session = None
         self.startup_time = datetime.now()
-        self.version = "2.0.0"
+        self.version = "2.1.1"
         self.db = sqlite3.connect("kurisu.db")
         self.prefixes = {}
 
@@ -83,7 +83,10 @@ class KurisuBot(commands.AutoShardedBot):
             f"FINISHED CHUNKING {len(self.guilds)} GUILDS AND CACHING {len(self.users)} USERS",
         )
         self.logger.info(f"Registered Shard Count: {len(self.shards)}")
-        self.logger.info(f"Recognized Owner ID(s): {', '.join(map(str, self.owner_ids))}")
+        bot_owner_usernames = []
+        for o in self.owner_ids:
+            bot_owner_usernames.append(await self.fetch_user(o))
+        self.logger.info("Acknowledged Owner ID(s): " + ", ".join(map(str, bot_owner_usernames)))
         self.logger.info("ATTEMPTING TO MOUNT COG EXTENSIONS!")
         loaded_cogs = 0
         unloaded_cogs = 0
@@ -111,12 +114,22 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger.warning(f"SHARD {shard_id} IS NOW IN A DISCONNECTED STATE FROM DISCORD")
 
     async def close(self):
-        """Logs out of Discord and closes all connections."""
+        """Logs out bot and closes any active connections. Method is used to restart bot."""
         await super().close()
         if self._session:
             await self._session.close()
+            self.logger.info("HTTP Client Session(s) closed")
         self.db.close()
+        self.logger.info("Database Connection Closed")
 
+    async def full_exit(self):
+        """Completely kills the process and closes all connections. However, it will continue to restart if being ran with PM2"""
+        if self._session:
+            await self._session.close()
+            self.logger.info("HTTP Client Session Closed.")
+        self.db.close()
+        self.logger.info("Database Connection Closed")
+        exit(code=26)
 
 class PrefixManager:
     def __init__(self, bot: KurisuBot):
@@ -147,14 +160,17 @@ class PrefixManager:
         self.bot.prefixes[str(guild)] = prefix
 
     def remove_prefix(self, guild: int):
-        if guild in self.bot.prefixes:
+        if str(guild) in self.bot.prefixes:
             self.bot.prefixes.pop(str(guild))
             self.bot.db.cursor().execute("DELETE FROM guildsettings WHERE guild = ?", (guild,))
+            self.bot.db.commit()
 
     def startup_caching(self):
         cur = self.bot.db.cursor()
-        cur.execute("SELECT * FROM guildsettings")
+        cur.execute("SELECT guild, prefix FROM guildsettings")
         result = cur.fetchall()
         for g, p in result:
             self.bot.prefixes.setdefault(str(g), str(p))
             self.bot.logger.info("Prefixes Appended To Cache")
+
+
