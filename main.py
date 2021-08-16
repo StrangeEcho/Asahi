@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from discord.ext import commands
@@ -29,13 +30,13 @@ if discord.__version__ != "2.0.0a":
 pm = PrefixManager(bot=bot)
 
 
-def DatabaseInit(Schema: str):
+async def DatabaseInit(Schema: str):
     bot.logger.info("Initializing Database...")
-    bot.db.execute(Schema)
+    await bot.db.execute(query=Schema)
     bot.logger.info("Schema Execution Complete.")
     bot.logger.info("Attempting To Append Prefixes To On-Memory Cache.")
     try:
-        pm.startup_caching()
+        await pm.startup_caching()
     except Exception as e:
         bot.logger.critical(
             f"Error While Appending Guild Prefixes To Database.\nError: {e}\nExiting..."
@@ -45,6 +46,6 @@ def DatabaseInit(Schema: str):
     bot.logger.info("Database Initialization Complete.")
 
 
-DatabaseInit(schema)
+asyncio.run(DatabaseInit(schema))
 bot.logger.info("Running Kurisu Now!")
 bot.run(TOKEN)

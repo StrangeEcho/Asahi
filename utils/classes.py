@@ -1,9 +1,11 @@
 from datetime import datetime
+from pathlib import Path
+import asyncio
 import logging
 import os
-import sqlite3
 
 from aiohttp import ClientSession
+from databases import Database
 from discord.ext import commands, menus
 import discord
 
@@ -62,8 +64,12 @@ class KurisuBot(commands.AutoShardedBot):
         self._session = None
         self.startup_time = datetime.now()
         self.version = "2.1.1"
-        self.db = sqlite3.connect("kurisu.db")
+        self.db = Database("sqlite:///kurisu.db")
         self.prefixes = {}
+
+    @property
+    def database(self) -> Database:
+        return self.db
 
     @property
     def session(self) -> ClientSession:
@@ -73,6 +79,8 @@ class KurisuBot(commands.AutoShardedBot):
 
     async def on_connect(self):
         self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
+        await self.db.connect()
+        self.logger.info("Connected to the database: `kurisu.db`")
 
     async def on_ready(self):
         if self.uptime is not None:
@@ -118,15 +126,16 @@ class KurisuBot(commands.AutoShardedBot):
         if self._session:
             await self._session.close()
             self.logger.info("HTTP Client Session(s) closed")
-        self.db.close()
+        await self.db.disconnect()
         self.logger.info("Database Connection Closed")
+        await asyncio.sleep(1)
 
     async def full_exit(self):
         """Completely kills the process and closes all connections. However, it will continue to restart if being ran with PM2"""
         if self._session:
             await self._session.close()
             self.logger.info("HTTP Client Session Closed.")
-        self.db.close()
+        await self.db.disconnect()
         self.logger.info("Database Connection Closed")
         exit(code=26)
 
@@ -135,40 +144,28 @@ class PrefixManager:
     def __init__(self, bot: KurisuBot):
         self.bot = bot
 
-    def add_prefix(self, guild: int, prefix: str):
-        if not guild in self.bot.prefixes:
-            self.bot.db.cursor().execute(
-                "INSERT INTO guildsettings (guild, prefix) VALUES (?,?)",
-                (
-                    guild,
-                    prefix,
-                ),
-            )
-        if guild in self.bot.prefixes:
-            self.bot.db.cursor().execute(
-                """
-            UPDATE guildsettings
-            SET prefix ?
-            WHERE guild = ?
-            """,
-                (
-                    prefix,
-                    guild,
-                ),
-            )
-        self.bot.db.commit()
+    async def add_prefix(self, guild: int, prefix: str):
+        await self.bot.db.execute(
+            query="insert into guildsettings (guild, prefix) values (:guild, :prefix) on conflict(guild) do update set prefix = :update_prefix",
+            values={
+                "guild": guild,
+                "prefix": prefix,
+                "update_prefix": prefix,
+            },
+        )
         self.bot.prefixes[str(guild)] = prefix
 
-    def remove_prefix(self, guild: int):
+    async def remove_prefix(self, guild: int):
         if str(guild) in self.bot.prefixes:
             self.bot.prefixes.pop(str(guild))
-            self.bot.db.cursor().execute("DELETE FROM guildsettings WHERE guild = ?", (guild,))
-            self.bot.db.commit()
+            await self.bot.db.execute(
+                query="DELETE FROM guildsettings WHERE guild = :guild_id",
+                values={
+                    "guild_id": guild,
+                },
+            )
 
-    def startup_caching(self):
-        cur = self.bot.db.cursor()
-        cur.execute("SELECT guild, prefix FROM guildsettings")
-        result = cur.fetchall()
-        for g, p in result:
+    async def startup_caching(self):
+        for g, p in await self.bot.db.fetch_all(query="SELECT guild, prefix FROM guildsettings"):
             self.bot.prefixes.setdefault(str(g), str(p))
             self.bot.logger.info("Prefixes Appended To Cache")
