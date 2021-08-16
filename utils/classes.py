@@ -146,7 +146,7 @@ class PrefixManager:
 
     async def add_prefix(self, guild: int, prefix: str):
         await self.bot.db.execute(
-            query="insert into guildsettings (guild, prefix) values (:guild, :prefix) on conflict(guild) do update set prefix = :update_prefix",
+            query="INSERT INTO guildsettings (guild, prefix) VALUES (:guild, :prefix) ON CONFLICT(guild) DO UPDATE SET prefix = :update_prefix",
             values={
                 "guild": guild,
                 "prefix": prefix,
