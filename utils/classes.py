@@ -9,7 +9,6 @@ import discord
 
 import config
 
-
 from .log import LoggingHandler
 
 
@@ -131,6 +130,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger.info("Database Connection Closed")
         exit(code=26)
 
+
 class PrefixManager:
     def __init__(self, bot: KurisuBot):
         self.bot = bot
@@ -172,5 +172,3 @@ class PrefixManager:
         for g, p in result:
             self.bot.prefixes.setdefault(str(g), str(p))
             self.bot.logger.info("Prefixes Appended To Cache")
-
-

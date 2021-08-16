@@ -17,7 +17,7 @@ class ServerSettings(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 description=f"The current prefix for this guild is `{g_prefix}`",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
         )
 
@@ -30,19 +30,17 @@ class ServerSettings(commands.Cog):
             embed=discord.Embed(
                 title="New Prefix Set",
                 description=f"New Prefix: `{prefix}`",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
         )
+
     @prefix.command(aliases=["reset"])
     @commands.has_permissions(manage_guild=True)
     async def default(self, ctx: commands.Context):
         """Set the current prefix for this server back to default"""
         self.prefix_manager.remove_prefix(ctx.guild.id)
         await ctx.send(
-            embed=discord.Embed(
-                title="Prefix set back to normal",
-                color=self.bot.ok_color
-            )
+            embed=discord.Embed(title="Prefix set back to normal", color=self.bot.ok_color)
         )
 
 

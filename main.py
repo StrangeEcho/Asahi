@@ -44,6 +44,7 @@ def DatabaseInit(Schema: str):
     bot.logger.info("Guild Prefixes Successfully Appended To On-Memory Cache.")
     bot.logger.info("Database Initialization Complete.")
 
+
 DatabaseInit(schema)
 bot.logger.info("Running Kurisu Now!")
 bot.run(TOKEN)

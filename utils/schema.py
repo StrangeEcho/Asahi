@@ -4,5 +4,3 @@ schema = """
     "prefix"  TEXT NOT NULL
   )
  """
-
-
