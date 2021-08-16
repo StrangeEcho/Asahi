@@ -25,6 +25,8 @@ class ServerSettings(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     async def _set(self, ctx, prefix: str):
         """Set a new prefix for this server"""
+        if len(prefix) > 10:
+            return await ctx.send("Prefix can't be longer than 10 characters.")
         await self.prefix_manager.add_prefix(ctx.guild.id, prefix)
         await ctx.send(
             embed=discord.Embed(
