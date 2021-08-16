@@ -1,3 +1,3 @@
 schema = """
-create table if not exists guildsettings (guild bigint primary key, prefix varchar(10))
+CREATE TABLE IF NOT EXISTS guildsettings (guild BIGINT PRIMARY KEY, prefix VARCHAR(10))
  """
