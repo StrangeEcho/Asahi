@@ -1,6 +1,3 @@
 schema = """
-  CREATE TABLE IF NOT EXISTS "guildsettings" (
-    "guild"  INTEGER NOT NULL,
-    "prefix"  TEXT NOT NULL
-  )
+create table if not exists guildsettings (guild bigint primary key, prefix varchar(10))
  """

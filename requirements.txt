@@ -2,6 +2,9 @@ jishaku
 psutil
 git+https://github.com/Rapptz/discord.py
 PyNacl
+aiosqlite
+databases
+databases[sqlite]
 tabulate 
 matplotlib
 git+https://github.com/Rapptz/discord-ext-menus
