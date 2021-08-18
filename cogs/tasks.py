@@ -24,7 +24,7 @@ class Tasks(commands.Cog):
         await asyncio.sleep(60)
         await self.bot.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.listening, name=f"you do @Kurisu help"
+                type=discord.ActivityType.listening, name=f"you do @{self.bot.user.name} help"
             )
         )
         await asyncio.sleep(60)

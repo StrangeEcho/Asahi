@@ -52,34 +52,45 @@ class Help(commands.Cog):
 
     @help.command(aliases=["cmd", "c"])
     async def command(self, ctx: commands.Context, *, target: str):
-        cmd: commands.Command = self.bot.get_command(target.lower())
+        cmd = self.bot.get_command(target.lower())
         if cmd:
             cmd_aliases = "\n".join(cmd.aliases)
+            embed = discord.Embed(
+                title=f"__{cmd.name}__",
+                description=f"Description: {cmd.help}",
+                color=self.bot.ok_color
+            )
+            embed.add_field(
+                name="Usage",
+                value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`",
+            )
+            embed.add_field(
+                name="Module\Cog",
+                value=f"`{cmd.cog_name}`"
+            )
+            if cmd.aliases:
+                embed.add_field(
+                    name="Aliases",
+                    value=f"```\n{cmd_aliases}\n```"
+            
+                )
+            if isinstance(cmd, commands.Group):
+                group_commands = "\n".join(map(str, cmd.commands))
+                embed.add_field(
+                    name="Group Commands",
+                    value=f"```\n{group_commands}\n```"
+                )
+            return await ctx.send(embed=embed)
+        else:
             return await ctx.send(
                 embed=discord.Embed(
-                    title=f"Command: __{cmd.name}__",
-                    description=f"`Command Description: {cmd.help}`",
-                    color=self.bot.ok_color,
-                )
-                .add_field(
-                    name="Usage",
-                    value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`",
-                )
-                .add_field(name="Module", value=f"`{cmd.cog_name}`")
-                .add_field(
-                    name=f"Aliases",
-                    value="`None`" if not cmd.aliases else f"```\n{cmd_aliases}\n```",
-                )
-                .set_footer(
-                    text="[] signify optional arguments while <> signify required arguments"
+                    description=f"COMMAND NOT FOUND",
+                    color=self.bot.error_color
                 )
             )
-        if not cmd:
-            return await ctx.send(
-                embed=discord.Embed(
-                    description=f"**COMMAND NOT FOUND**", color=self.bot.error_color
-                )
-            )
+
+
+
 
     @help.command(aliases=["mod", "m"])
     async def module(self, ctx: commands.Context, target: str):
