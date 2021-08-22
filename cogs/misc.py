@@ -177,7 +177,7 @@ class Miscellaneous(commands.Cog):
                 e = discord.Embed(
                     title="404 - Page Not Found",
                     description="We looked everywhere but couldn't find that project",
-                    colour=self.bot.ok_color,
+                    colour=self.bot.error_color,
                 )
                 e.set_thumbnail(
                     url="https://cdn-images-1.medium.com/max/1200/1%2A2FrV8q6rPdz6w2ShV6y7bw.png"

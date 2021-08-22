@@ -13,15 +13,20 @@ class Help(commands.Cog):
     @commands.command(aliases=["cogs"])
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def modules(self, ctx: commands.Context):
+        text = ""
+        for _ in self.bot.cogs.keys():
+            cog = self.bot.get_cog(_)
+            if len(cog.get_commands()) != 0:
+                text += f"\n{_}"
         await ctx.send(
             embed=discord.Embed(
-                title=f"{self.bot.user.name}'s available modules/cogs",
-                description=("```\n" + "\n".join(sorted(map(str, self.bot.cogs)))) + "\n```",
-                color=self.bot.ok_color,
-            ).set_footer(
-                text=f"use {ctx.clean_prefix}help [module] to get info about a module/cog"
+                title="Available Modules",
+                description=f"```py\n{text}\n```",
+                color=self.bot.ok_color
             )
         )
+
+
 
     @commands.group(invoke_without_command=True)
     async def help(self, ctx: commands.Context):
