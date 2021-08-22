@@ -1,6 +1,8 @@
 from datetime import datetime
 import platform
 import time
+import os
+import psutil
 
 from discord.ext import commands
 from EZPaginator import Paginator 
@@ -96,6 +98,7 @@ class Miscellaneous(commands.Cog):
         text_channels = 0
         voice_channels = 0
         bot_owners = []
+        process = psutil.Process(os.getpid())
         for o in self.bot.owner_ids:
             bot_owners.append(await self.bot.fetch_user(o))
         for chan in self.bot.get_all_channels():
@@ -138,6 +141,10 @@ class Miscellaneous(commands.Cog):
             color=self.bot.ok_color
         )
         embed2.set_author(icon_url=self.bot.user.avatar.url, name="Statistics")
+        embed2.add_field(
+            name="On-Board Memory Usage",
+            value=process.memory_info().rss() / 1024 ** 2
+        )
         embed2.add_field(
             name=f"Websocket Latency",
             value=f"{round(self.bot.latency * 1000)} ms"
