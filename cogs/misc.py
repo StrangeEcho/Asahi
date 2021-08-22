@@ -3,11 +3,12 @@ import platform
 import time
 
 from discord.ext import commands
+from EZPaginator import Paginator 
 import aiohttp
 import discord
 import humanize
 
-from config import APPLICATION_ID
+from config import APPLICATION_ID, BOT_PREFIX
 from utils.classes import KurisuBot
 from utils.funcs import box
 
@@ -94,6 +95,9 @@ class Miscellaneous(commands.Cog):
         """Some stats about me."""
         text_channels = 0
         voice_channels = 0
+        bot_owners = []
+        for o in self.bot.owner_ids:
+            bot_owners.append(await self.bot.fetch_user(o))
         for chan in self.bot.get_all_channels():
             if isinstance(chan, discord.TextChannel):
                 text_channels += 1
@@ -101,49 +105,66 @@ class Miscellaneous(commands.Cog):
                 voice_channels += 1
         embed = discord.Embed(
             title=f"{self.bot.user.name} Stats",
-            description=f"Invite me [here](https://discord.com/api/oauth2/authorize?client_id=784474257832804372&scope=bot) and join my Support Server [here](https://discord.gg/Cs5RdJF9pb)",
             color=self.bot.ok_color,
         )
-        embed.set_author(name=f"Version: {self.bot.version}")
-        embed.set_thumbnail(url=self.bot.user.avatar.url)
-        embed.add_field(name="Author:", value="Tylerr#6979", inline=True)
+        embed.set_author(icon_url=self.bot.user.avatar.url, name="General")
         embed.add_field(
-            name="Python Versions:",
-            value=f"Python Version: {platform.python_version()}\nDiscord.py Version: {discord.__version__}",
-            inline=True,
-        )
-        embed.add_field(name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms")
-        embed.add_field(name="Shards", value=self.bot.shard_count)
-        embed.add_field(name="Bot ID:", value=self.bot.user.id, inline=True)
-        embed.add_field(name="Guild Count:", value=len(self.bot.guilds), inline=True)
-        embed.add_field(name="Cached Users:", value=len(self.bot.users), inline=True)
-        embed.add_field(
-            name="Channels:",
-            value=f"Text: {text_channels}\nVoice: {voice_channels}\nTotal: {text_channels + voice_channels}",
-            inline=True,
+            name="Author(s)",
+            value="\n".join(map(str, bot_owners))
         )
         embed.add_field(
-            name="Uptime:",
-            value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
-            inline=True,
+            name="Mention & ID",
+            value=f"{self.bot.user.mention}\n`{self.bot.user.id}`"
         )
         embed.add_field(
-            name="Creation Date:",
-            value=self.bot.user.created_at.strftime("%c"),
-            inline=True,
+            name="I was created at...",
+            value=self.bot.user.created_at.strftime("%c")
         )
-        embed.add_field(name="\u200B", value="\u200B", inline=True)
         embed.add_field(
-            name="Github Repository:",
-            value="Find it [here](https://github.com/Yat-o/Kurisu/tree/rewrite)",
-            inline=True,
+            name="Prefix",
+            value=f"`{self.bot.prefixes.get(str(ctx.guild.id)) or BOT_PREFIX}` or {self.bot.user.mention}"
         )
-        embed.add_field(name="\u200B", value="\u200B", inline=True)
+        embed.add_field(
+            name="Support Server & Invite Link",
+            value=f"Click [Here](https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot) To Invite Me and Click [Here](https://discord.gg/Cs5RdJF9pb) To Join My Support Server"
+        )
         embed.set_footer(
-            icon_url=ctx.author.avatar.url,
-            text=f"{self.bot.user.name} was made with love. <3",
+            icon_url=self.bot.user.avatar.url,
+            text=f"{self.bot.user.name} was made with love <3"
         )
-        await ctx.send(embed=embed)
+        embed2 = discord.Embed(
+            title=f"{self.bot.user.name} Stats",
+            description="Find My Source [Here](https://github.com/Yat-o/Kurisu/tree/rewrite)",
+            color=self.bot.ok_color
+        )
+        embed2.set_author(icon_url=self.bot.user.avatar.url, name="Statistics")
+        embed2.add_field(
+            name=f"Websocket Latency",
+            value=f"{round(self.bot.latency * 1000)} ms"
+        )
+        embed2.add_field(
+            name="Shard Count",
+            value=len(self.bot.shards)
+        )
+        embed2.add_field(
+            name="Cached Users & Guilds",
+            value=f"Users: {len(self.bot.users)}\nGuilds: {len(self.bot.guilds)}"
+        )
+        embed2.add_field(
+            name="Channels",
+            value=f"Text: {text_channels}\nVoice: {voice_channels}"
+        )
+        embed2.add_field(
+            name="Uptime",
+            value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
+        )
+        embed2.add_field(
+            name="Commands Executed Since Startup",
+            value=self.bot.executed_commands
+        )
+        msg = await ctx.send(embed=embed)
+        paginator = Paginator(self.bot, msg, embeds=[embed, embed2])
+        await paginator.start()
 
     @commands.command(usage="(project name)")
     @commands.cooldown(1, 5, commands.BucketType.user)

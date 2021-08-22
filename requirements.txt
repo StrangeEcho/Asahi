@@ -11,5 +11,6 @@ git+https://github.com/Rapptz/discord-ext-menus
 babel
 humanize
 hentai
-colorama 
+colorama
+EZPaginator 
 git+https://github.com/crazygmr101/button-utils

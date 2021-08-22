@@ -64,6 +64,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.startup_time = datetime.now()
         self.version = "2.1.1"
         self.db = Database("sqlite:///kurisu.db")
+        self.executed_commands = 0
         self.prefixes = {}
 
     @property
@@ -168,3 +169,4 @@ class PrefixManager:
         for g, p in await self.bot.db.fetch_all(query="SELECT guild, prefix FROM guildsettings"):
             self.bot.prefixes.setdefault(str(g), str(p))
             self.bot.logger.info("Prefixes Appended To Cache")
+                   
