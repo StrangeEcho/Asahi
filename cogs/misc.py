@@ -143,7 +143,7 @@ class Miscellaneous(commands.Cog):
         embed2.set_author(icon_url=self.bot.user.avatar.url, name="Statistics")
         embed2.add_field(
             name="On-Board Memory Usage",
-            value=f"{round(process.memory_info().rss / 1024 ** 2)} Mbs"
+            value=f"{round(process.memory_info().rss / 1024 ** 2)} MBs"
         )
         embed2.add_field(
             name=f"Websocket Latency",
@@ -169,8 +169,25 @@ class Miscellaneous(commands.Cog):
             name="Commands Executed Since Startup",
             value=self.bot.executed_commands
         )
+        embed3 = discord.Embed(
+            name=f"{self.bot.user.name} Stats",
+            color=self.bot.ok_color
+        )
+        embed3.set_author(icon_url=self.bot.avatar.url, name="About Me")
+        embed3.add_field(
+            name="Bot Version",
+            value=f"`{self.bot.version}`"
+        )
+        embed3.add_field(
+            name="Python Version",
+            value=f"[{platform.python_version()}](https://python.org)"
+        )
+        embed3.add_field(
+            name="Discord.py Version",
+            value=f"[{discord.__version__}](https://discordpy.readthedocs.io/en/master/index.html)"
+        )
         msg = await ctx.send(embed=embed)
-        paginator = Paginator(self.bot, msg, embeds=[embed, embed2])
+        paginator = Paginator(self.bot, msg, embeds=[embed, embed2, embed3])
         await paginator.start()
 
     @commands.command(usage="(project name)")
