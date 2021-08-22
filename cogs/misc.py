@@ -170,7 +170,7 @@ class Miscellaneous(commands.Cog):
             value=self.bot.executed_commands
         )
         embed3 = discord.Embed(
-            name=f"{self.bot.user.name} Stats",
+            title=f"{self.bot.user.name} Stats",
             color=self.bot.ok_color
         )
         embed3.set_author(icon_url=self.bot.avatar.url, name="About Me")
