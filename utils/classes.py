@@ -79,7 +79,10 @@ class KurisuBot(commands.AutoShardedBot):
 
     async def on_connect(self):
         self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
-        await self.db.connect()
+        try:
+            await self.db.connect()
+        except AssertionError:
+            pass
         self.logger.info("Connected to the database: `kurisu.db`")
 
     async def on_ready(self):
