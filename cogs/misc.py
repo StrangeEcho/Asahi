@@ -1,14 +1,14 @@
 from datetime import datetime
+import os
 import platform
 import time
-import os
-import psutil
 
+from EZPaginator import Paginator
 from discord.ext import commands
-from EZPaginator import Paginator 
 import aiohttp
 import discord
 import humanize
+import psutil
 
 from config import APPLICATION_ID, BOT_PREFIX
 from utils.classes import KurisuBot
@@ -111,80 +111,53 @@ class Miscellaneous(commands.Cog):
             color=self.bot.ok_color,
         )
         embed.set_author(icon_url=self.bot.user.avatar.url, name="General")
+        embed.add_field(name="Author(s)", value="\n".join(map(str, bot_owners)))
         embed.add_field(
-            name="Author(s)",
-            value="\n".join(map(str, bot_owners))
+            name="Mention & ID", value=f"{self.bot.user.mention}\n`{self.bot.user.id}`"
         )
-        embed.add_field(
-            name="Mention & ID",
-            value=f"{self.bot.user.mention}\n`{self.bot.user.id}`"
-        )
-        embed.add_field(
-            name="I was created at...",
-            value=self.bot.user.created_at.strftime("%c")
-        )
+        embed.add_field(name="I was created at...", value=self.bot.user.created_at.strftime("%c"))
         embed.add_field(
             name="Prefix",
-            value=f"`{self.bot.prefixes.get(str(ctx.guild.id)) or BOT_PREFIX}` or {self.bot.user.mention}"
+            value=f"`{self.bot.prefixes.get(str(ctx.guild.id)) or BOT_PREFIX}` or {self.bot.user.mention}",
         )
         embed.add_field(
             name="Support Server & Invite Link",
-            value=f"Click [Here](https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot) To Invite Me and Click [Here](https://discord.gg/Cs5RdJF9pb) To Join My Support Server"
+            value=f"Click [Here](https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot) To Invite Me and Click [Here](https://discord.gg/Cs5RdJF9pb) To Join My Support Server",
         )
         embed.set_footer(
-            icon_url=self.bot.user.avatar.url,
-            text=f"{self.bot.user.name} was made with love <3"
+            icon_url=self.bot.user.avatar.url, text=f"{self.bot.user.name} was made with love <3"
         )
         embed2 = discord.Embed(
             title=f"{self.bot.user.name} Stats",
             description="Find My Source [Here](https://github.com/Yat-o/Kurisu/tree/rewrite)",
-            color=self.bot.ok_color
+            color=self.bot.ok_color,
         )
         embed2.set_author(icon_url=self.bot.user.avatar.url, name="Statistics")
         embed2.add_field(
             name="On-Board Memory Usage",
-            value=f"{round(process.memory_info().rss / 1024 ** 2)} MBs"
+            value=f"{round(process.memory_info().rss / 1024 ** 2)} MBs",
         )
-        embed2.add_field(
-            name=f"Websocket Latency",
-            value=f"{round(self.bot.latency * 1000)} ms"
-        )
-        embed2.add_field(
-            name="Shard Count",
-            value=len(self.bot.shards)
-        )
+        embed2.add_field(name=f"Websocket Latency", value=f"{round(self.bot.latency * 1000)} ms")
+        embed2.add_field(name="Shard Count", value=len(self.bot.shards))
         embed2.add_field(
             name="Cached Users & Guilds",
-            value=f"Users: {len(self.bot.users)}\nGuilds: {len(self.bot.guilds)}"
+            value=f"Users: {len(self.bot.users)}\nGuilds: {len(self.bot.guilds)}",
         )
-        embed2.add_field(
-            name="Channels",
-            value=f"Text: {text_channels}\nVoice: {voice_channels}"
-        )
+        embed2.add_field(name="Channels", value=f"Text: {text_channels}\nVoice: {voice_channels}")
         embed2.add_field(
             name="Uptime",
             value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
         )
-        embed2.add_field(
-            name="Commands Executed Since Startup",
-            value=self.bot.executed_commands
-        )
-        embed3 = discord.Embed(
-            title=f"{self.bot.user.name} Stats",
-            color=self.bot.ok_color
-        )
+        embed2.add_field(name="Commands Executed Since Startup", value=self.bot.executed_commands)
+        embed3 = discord.Embed(title=f"{self.bot.user.name} Stats", color=self.bot.ok_color)
         embed3.set_author(icon_url=self.bot.user.avatar.url, name="About Me")
+        embed3.add_field(name="Bot Version", value=f"`{self.bot.version}`")
         embed3.add_field(
-            name="Bot Version",
-            value=f"`{self.bot.version}`"
-        )
-        embed3.add_field(
-            name="Python Version",
-            value=f"[{platform.python_version()}](https://python.org)"
+            name="Python Version", value=f"[{platform.python_version()}](https://python.org)"
         )
         embed3.add_field(
             name="Discord.py Version",
-            value=f"[{discord.__version__}](https://discordpy.readthedocs.io/en/master/index.html)"
+            value=f"[{discord.__version__}](https://discordpy.readthedocs.io/en/master/index.html)",
         )
         msg = await ctx.send(embed=embed)
         paginator = Paginator(self.bot, msg, embeds=[embed, embed2, embed3])

@@ -172,4 +172,3 @@ class PrefixManager:
         for g, p in await self.bot.db.fetch_all(query="SELECT guild, prefix FROM guildsettings"):
             self.bot.prefixes.setdefault(str(g), str(p))
             self.bot.logger.info("Prefixes Appended To Cache")
-                   

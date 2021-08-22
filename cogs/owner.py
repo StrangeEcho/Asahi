@@ -384,7 +384,7 @@ class BotOwner(commands.Cog):
                 description=f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
                 color=self.bot.ok_color,
             ),
-            delete_after=5
+            delete_after=5,
         )
 
     @commands.command()

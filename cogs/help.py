@@ -23,11 +23,9 @@ class Help(commands.Cog):
             embed=discord.Embed(
                 title="Available Modules",
                 description="```apache\n" + "\n".join(sorted(mod_list)) + "\n```",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
         )
-
-
 
     @commands.group(invoke_without_command=True)
     async def help(self, ctx: commands.Context):
@@ -64,39 +62,23 @@ class Help(commands.Cog):
             embed = discord.Embed(
                 title=f"__{cmd.name}__",
                 description=f"Description: {cmd.help}",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
             embed.add_field(
                 name="Usage",
                 value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`",
             )
-            embed.add_field(
-                name="Module\Cog",
-                value=f"`{cmd.cog_name}`"
-            )
+            embed.add_field(name="Module\Cog", value=f"`{cmd.cog_name}`")
             if cmd.aliases:
-                embed.add_field(
-                    name="Aliases",
-                    value=f"```\n{cmd_aliases}\n```"
-            
-                )
+                embed.add_field(name="Aliases", value=f"```\n{cmd_aliases}\n```")
             if isinstance(cmd, commands.Group):
                 group_commands = "\n".join(map(str, cmd.commands))
-                embed.add_field(
-                    name="Group Commands",
-                    value=f"```\n{group_commands}\n```"
-                )
+                embed.add_field(name="Group Commands", value=f"```\n{group_commands}\n```")
             return await ctx.send(embed=embed)
         else:
             return await ctx.send(
-                embed=discord.Embed(
-                    description=f"COMMAND NOT FOUND",
-                    color=self.bot.error_color
-                )
+                embed=discord.Embed(description=f"COMMAND NOT FOUND", color=self.bot.error_color)
             )
-
-
-
 
     @help.command(aliases=["mod", "m"])
     async def module(self, ctx: commands.Context, target: str):

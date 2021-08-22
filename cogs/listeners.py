@@ -109,7 +109,7 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):
-        self.bot.executed_commands += 1 
+        self.bot.executed_commands += 1
         location = " Direct Message"
         locationID = None
         if ctx.guild:
