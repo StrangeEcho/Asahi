@@ -173,7 +173,7 @@ class Miscellaneous(commands.Cog):
             title=f"{self.bot.user.name} Stats",
             color=self.bot.ok_color
         )
-        embed3.set_author(icon_url=self.bot.avatar.url, name="About Me")
+        embed3.set_author(icon_url=self.bot.user.avatar.url, name="About Me")
         embed3.add_field(
             name="Bot Version",
             value=f"`{self.bot.version}`"
