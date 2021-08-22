@@ -143,7 +143,7 @@ class Miscellaneous(commands.Cog):
         embed2.set_author(icon_url=self.bot.user.avatar.url, name="Statistics")
         embed2.add_field(
             name="On-Board Memory Usage",
-            value=process.memory_info().rss() / 1024 ** 2
+            value=process.memory_info().rss / 1024 ** 2
         )
         embed2.add_field(
             name=f"Websocket Latency",
