@@ -18,10 +18,11 @@ class Help(commands.Cog):
             cog = self.bot.get_cog(_)
             if len(cog.get_commands()) != 0:
                 text += f"\n{_}"
+                mod_list = text.split("\n")
         await ctx.send(
             embed=discord.Embed(
                 title="Available Modules",
-                description=f"```py\n{text}\n```",
+                description="```apache\n" + "\n".join(sorted(mod_list)) + "\n```",
                 color=self.bot.ok_color
             )
         )
