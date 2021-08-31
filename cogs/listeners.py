@@ -76,10 +76,14 @@ class Listeners(commands.Cog):
                 ctx.command.reset_cooldown(ctx)
                 new_ctx = await self.bot.get_context(ctx.message)
                 await self.bot.invoke(new_ctx)
-                return
+            else:
+                await ctx.send(
+                    embed=discord.Embed(
+                        description=error,
+                        color=self.bot.error_color
+                    )
+                )
             
-
-
         elif isinstance(error, commands.BadArgument):
             await ctx.send(
                 embed=discord.Embed(
