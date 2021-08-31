@@ -5,7 +5,7 @@ from discord.ext import commands, menus
 from hentai import Format, Hentai, Tag, Utils
 import discord
 
-from config import OK_COLOR
+from configoptions import OK_COLOR
 from utils.classes import EmbedListMenu, KurisuBot
 
 embed_color = OK_COLOR.replace("#", "0x")

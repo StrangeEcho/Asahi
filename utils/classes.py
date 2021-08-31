@@ -62,7 +62,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.uptime = None
         self._session = None
         self.startup_time = datetime.now()
-        self.version = "2.1.1"
+        self.version = "2.2.1"
         self.db = Database("sqlite:///kurisu.db")
         self.executed_commands = 0
         self.prefixes = {}

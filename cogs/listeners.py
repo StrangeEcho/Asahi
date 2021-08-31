@@ -4,7 +4,7 @@ import traceback
 from discord.ext import commands
 import discord
 
-from config import FORWARD_DMS, RESET_OWNER_COOLDOWNS
+from configoptions import FORWARD_DMS, RESET_OWNER_COOLDOWNS
 from utils.classes import KurisuBot, PrefixManager
 
 logging.getLogger("listeners")
@@ -67,6 +67,7 @@ class Listeners(commands.Cog):
                 commands.BotMissingPermissions,
                 commands.CheckFailure,
                 commands.MissingRequiredArgument,
+                commands.BadArgument
             ),
         ):
             await ctx.send(embed=discord.Embed(description=str(error), color=self.bot.error_color))
@@ -83,15 +84,6 @@ class Listeners(commands.Cog):
                         color=self.bot.error_color
                     )
                 )
-            
-        elif isinstance(error, commands.BadArgument):
-            await ctx.send(
-                embed=discord.Embed(
-                    title="You passed in a bad argument",
-                    description=error,
-                    color=self.bot.error_color,
-                )
-            )
 
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
