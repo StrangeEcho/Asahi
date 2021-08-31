@@ -4,7 +4,7 @@ import traceback
 from discord.ext import commands
 import discord
 
-from config import FORWARD_DMS
+from config import FORWARD_DMS, RESET_OWNER_COOLDOWNS
 from utils.classes import KurisuBot, PrefixManager
 
 logging.getLogger("listeners")
@@ -65,12 +65,20 @@ class Listeners(commands.Cog):
                 commands.BotMissingAnyRole,
                 commands.MissingRole,
                 commands.BotMissingPermissions,
-                commands.CommandOnCooldown,
                 commands.CheckFailure,
                 commands.MissingRequiredArgument,
             ),
         ):
             await ctx.send(embed=discord.Embed(description=str(error), color=self.bot.error_color))
+
+        elif isinstance(error, commands.CommandOnCooldown):
+            if RESET_OWNER_COOLDOWNS and ctx.author.id in self.bot.owner_ids:
+                ctx.command.reset_cooldown(ctx)
+                new_ctx = await bot.get_context(ctx.message)
+                await self.bot.invoke(new_ctx)
+                return
+            
+
 
         elif isinstance(error, commands.BadArgument):
             await ctx.send(
