@@ -74,7 +74,7 @@ class Listeners(commands.Cog):
         elif isinstance(error, commands.CommandOnCooldown):
             if RESET_OWNER_COOLDOWNS and ctx.author.id in self.bot.owner_ids:
                 ctx.command.reset_cooldown(ctx)
-                new_ctx = await bot.get_context(ctx.message)
+                new_ctx = await self.bot.get_context(ctx.message)
                 await self.bot.invoke(new_ctx)
                 return
             
