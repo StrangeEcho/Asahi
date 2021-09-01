@@ -9,6 +9,7 @@ from discord.ext import commands, menus
 import discord
 
 import configoptions
+import config
 
 from .log import LoggingHandler
 
