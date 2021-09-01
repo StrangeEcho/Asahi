@@ -7,6 +7,7 @@ import os
 import re
 import textwrap
 import traceback
+import subprocess
 
 from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
@@ -224,6 +225,41 @@ class BotOwner(commands.Cog):
         )
         success -= success
         failed -= failed
+
+
+    @commands.is_owner()
+    @commands.command(brief="Update Aoi from Github")
+    async def update(self, ctx: commands.Context):
+        await ctx.send(
+            embed=discord.Embed(
+                description="Attempting to update KurisuBot to latest version",
+                color=self.bot.ok_color
+            )
+        )
+        process = subprocess.Popen(["git", "pull", "--recurse-submodules"], stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"Output: ```{str(output[:1800], 'utf-8')}```",
+                color=self.bot.ok_color
+            )
+        )
+        process = subprocess.Popen(["git", "describe", "--always"], stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+        await ctx.send(
+            embed=discord.Embed(
+                description="Reloading all modules now",
+                color=self.bot.ok_color
+            )
+        )
+        await asyncio.sleep(1.5)
+        await self.reloadall(ctx)
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"Sucessfully updated KurisuBot Version `{self.bot.version}` to `{str(output, 'utf-8')}`",
+                color=self.bot.ok_color
+            )
+        )
 
     @commands.command()
     @commands.is_owner()
