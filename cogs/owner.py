@@ -209,7 +209,7 @@ class BotOwner(commands.Cog):
 
 
     @commands.is_owner()
-    @commands.command(brief="Update Aoi from Github")
+    @commands.command()
     async def update(self, ctx: commands.Context):
         """Update to the latest version of KurisuBot or whatever the latest commit of your fork is"""
         await ctx.send(
