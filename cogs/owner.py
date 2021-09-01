@@ -198,45 +198,27 @@ class BotOwner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def reloadall(self, ctx: commands.Context):
-        """Reload all cogs at once"""
+        """Reloads everysingle cog the bot has"""
         await ctx.send(
             embed=discord.Embed(
-                description=f"Attempting to reload {len(list(self.bot.cogs)) - 1} cogs",
-                color=self.bot.ok_color,
+                description="Attempting to reload all cogs/extensions",
+                color=self.bot.ok_color
             )
         )
-        success = 0
-        failed = 0
-        for cog in os.listdir("./cogs"):
-            if cog.endswith(".py"):
-                try:
-                    self.bot.reload_extension(f"cogs.{cog[:-3]}")
-                    self.bot.logger.info(f"Reloaded {cog}")
-                    success += 1
-                except Exception as e:
-                    self.bot.logger.warning(f"Failed reloading {cog}\n{e}")
-                    failed += 1
-        await ctx.send(
-            embed=discord.Embed(
-                description=f"`Successfully reloaded {success} cog(s)`\n`Failed reloading {failed - 1} cog(s)`",
-                # -1 because jsk will always fail to reload
-                color=self.bot.ok_color,
-            ).set_footer(text="If any cogs failed to reload check console for feedback.")
-        )
-        success -= success
-        failed -= failed
+        await self.bot.reload_all_extensions(ctx)
 
 
     @commands.is_owner()
     @commands.command(brief="Update Aoi from Github")
     async def update(self, ctx: commands.Context):
+        """Update to the latest version of KurisuBot or whatever the latest commit of your fork is"""
         await ctx.send(
             embed=discord.Embed(
                 description="Attempting to update KurisuBot to latest version",
                 color=self.bot.ok_color
             )
         )
-        process = subprocess.Popen(["git", "pull", "--recurse-submodules"], stdout=subprocess.PIPE)
+        process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
         output = process.communicate()[0]
         await ctx.send(
             embed=discord.Embed(
@@ -245,15 +227,15 @@ class BotOwner(commands.Cog):
             )
         )
         process = subprocess.Popen(["git", "describe", "--always"], stdout=subprocess.PIPE)
-        output = process.communicate()[0]
+        output = process.communicate()[0]  
         await ctx.send(
             embed=discord.Embed(
-                description="Reloading all modules now",
+                description="Reloading all modules now.",
                 color=self.bot.ok_color
             )
         )
         await asyncio.sleep(1.5)
-        await self.reloadall(ctx)
+        await self.bot.reload_all_extensions(ctx)
         await ctx.send(
             embed=discord.Embed(
                 description=f"Sucessfully updated KurisuBot Version `{self.bot.version}` to `{str(output, 'utf-8')}`",

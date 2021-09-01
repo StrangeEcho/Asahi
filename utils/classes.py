@@ -63,7 +63,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.uptime = None
         self._session = None
         self.startup_time = datetime.now()
-        self.version = "2.2.1"
+        self.version = "2.2.2"
         self.db = Database("sqlite:///kurisu.db")
         self.executed_commands = 0
         self.prefixes = {}
@@ -143,6 +143,27 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger.info("Database Connection Closed")
         exit(code=26)
 
+    async def reload_all_extensions(self, ctx: commands.Context = None):
+        self.logger.info("Signal recieved to reload all bot extensions")
+        success = 0
+        failed = 0
+        for cog in os.listdir("./cogs"):
+            if cog.endswith(".py"):
+                try:
+                    self.reload_extension(f"cogs.{cog[:-3]}")
+                    self.logger.info(f"Reloaded {cog}")
+                    success += 1
+                except Exception as e:
+                    self.logger.warning(f"Failed reloading {cog}\n{e}")
+                    failed += 1
+        if ctx:
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"Successfully reloaded {success} cog(s)\n Failed reloading {failed} cog(s)",
+                    color=self.ok_color
+                )
+                .set_footer(text="If any cogs failed to reload, check console for feedback.")
+            )
 
 class PrefixManager:
     def __init__(self, bot: KurisuBot):
