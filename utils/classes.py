@@ -57,7 +57,7 @@ class KurisuBot(commands.AutoShardedBot):
             *args,
             **kwargs,
         )
-        self.owner_ids = configoptions.OWNER_IDS
+        self.owner_ids = config.OWNER_IDS
         self.ok_color = int(str(f"0x{configoptions.OK_COLOR}").replace("#", ""), base=16)
         self.error_color = int(str(f"0x{configoptions.ERROR_COLOR}").replace("#", ""), base=16)
         self.uptime = None
