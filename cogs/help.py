@@ -60,7 +60,7 @@ class Help(commands.Cog):
         if cmd:
             cmd_aliases = "\n".join(cmd.aliases)
             embed = discord.Embed(
-                title=f"__{cmd.name}__",
+                title=f"__{str(cmd.name).capitalize()}__",
                 description=f"Description: {cmd.help}",
                 color=self.bot.ok_color,
             )

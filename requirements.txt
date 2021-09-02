@@ -13,4 +13,4 @@ humanize
 hentai
 colorama
 EZPaginator 
-git+https://github.com/crazygmr101/button-utils
+dpy-button-utils~=1.1.0

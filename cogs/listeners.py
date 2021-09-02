@@ -4,6 +4,8 @@ import traceback
 from discord.ext import commands
 import discord
 
+from config import OWNER_IDS
+
 from configoptions import FORWARD_DMS, RESET_OWNER_COOLDOWNS
 from utils.classes import KurisuBot, PrefixManager
 
@@ -95,15 +97,19 @@ class Listeners(commands.Cog):
                     icon_url=ctx.author.avatar.url, text="This incident was reported to my master."
                 )
             )
-            for owner in self.bot.owner_ids:
-                owner = self.bot.get_user(owner)
-                await owner.send(
-                    embed=discord.Embed(
-                        title="You Baka!",
-                        description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error}\n```",
-                        color=self.bot.error_color,
+            for o in OWNER_IDS:
+                try:
+                    owner = self.bot.fetch_user(o)
+                    await owner.send(
+                        embed=discord.Embed(
+                            title="You Baka!",
+                            description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error}\n```",
+                            color=self.bot.error_color,
+                        )
                     )
-                )
+                except Exception as e:
+                    self.bot.logger.error(e)
+
             self.bot.logger.error(
                 f"**{ctx.command.qualified_name} failed to execute**", exc_info=error.original
             )

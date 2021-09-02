@@ -57,7 +57,7 @@ class KurisuBot(commands.AutoShardedBot):
             *args,
             **kwargs,
         )
-        self.owner_ids = config.OWNER_IDS
+        self.owner_ids: set = {000000000000} # The 0's are a placeholder
         self.ok_color = int(str(f"0x{configoptions.OK_COLOR}").replace("#", ""), base=16)
         self.error_color = int(str(f"0x{configoptions.ERROR_COLOR}").replace("#", ""), base=16)
         self.uptime = None
@@ -95,9 +95,10 @@ class KurisuBot(commands.AutoShardedBot):
         )
         self.logger.info(f"Registered Shard Count: {len(self.shards)}")
         bot_owner_usernames = []
-        for o in self.owner_ids:
+        for o in config.OWNER_IDS:
             bot_owner_usernames.append(await self.fetch_user(o))
-        self.logger.info("Acknowledged Owner ID(s): " + ", ".join(map(str, bot_owner_usernames)))
+        self.logger.info("Acknowledged Owner(s): " + ", ".join(map(str, bot_owner_usernames)))
+        self.logger.info(f"NO_PRIVLEDGED_OWNERS config was set to {configoptions.NO_PRIVLEDGED_OWNERS}")
         self.logger.info("ATTEMPTING TO MOUNT COG EXTENSIONS!")
         loaded_cogs = 0
         unloaded_cogs = 0

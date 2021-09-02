@@ -4,7 +4,8 @@ import logging
 from discord.ext import commands
 import discord
 
-from config import BOT_PREFIX, TOKEN
+from config import BOT_PREFIX, TOKEN, OWNER_IDS
+from configoptions import NO_PRIVLEDGED_OWNERS
 from utils.classes import KurisuBot, PrefixManager
 from utils.schema import schema
 
@@ -45,6 +46,9 @@ async def DatabaseInit(Schema: str):
     bot.logger.info("Guild Prefixes Successfully Appended To On-Memory Cache.")
     bot.logger.info("Database Initialization Complete.")
 
+if not NO_PRIVLEDGED_OWNERS:
+    for o in OWNER_IDS:
+        bot.owner_ids.add(o)
 
 asyncio.run(DatabaseInit(schema))
 bot.logger.info("Running Kurisu Now!")

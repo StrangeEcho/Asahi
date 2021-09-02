@@ -1,3 +1,4 @@
+from configoptions import OK_COLOR
 from contextlib import redirect_stdout
 from typing import Optional
 import asyncio
@@ -44,6 +45,7 @@ class BotOwner(commands.Cog):
             return f"```py\n{e.__class__.__name__}: {e}\n```"
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
+    @staticmethod
     def paginate(self, text: str):
         """Fix the limit since tyler gay."""
         last = 0
@@ -56,6 +58,52 @@ class BotOwner(commands.Cog):
         if appd_index != len(text) - 1:
             pages.append(text[last:curr])
         return list(filter(lambda a: a != "", pages))
+    
+    @commands.command()
+    async def elevate(self, ctx: commands.Context, user: discord.User = None):
+        if not ctx.author.id in config.OWNER_IDS:
+            return await ctx.send(
+                embed=discord.Embed(
+                    description="Your ID was not found in the OWNER config.",
+                    color=self.bot.error_color
+                )
+            )
+        if not user:
+            user = ctx.author
+
+        msg = await ctx.send(
+            embed=discord.Embed(
+                description="Are you sure you want to do this?\nReact with ✅ to confirm.",
+                color=self.bot.ok_color
+            ).set_footer(text="⚠️ Elevating people to OWNER privledge will allow them to use owner only commands.")
+        )
+        await msg.add_reaction("\u2705")
+ 
+        def check(reaction: discord.Reaction, user: discord.User):
+            return user.id == ctx.author.id and str(reaction.emoji) == "\u2705"
+        
+        try:
+            await self.bot.wait_for("reaction_add", check=check, timeout=10)
+            self.bot.owner_ids.add(user.id)
+            filtered = [await self.bot.fetch_user(x) for x in self.bot.owner_ids if not x == 000000000000]
+            await ctx.send(
+                content=user.mention,
+                embed=discord.Embed(
+                    description="You have two minutes.",
+                    color=self.bot.ok_color
+                ).add_field(
+                    name="Current Privledged People",
+                    value="```\n" + "\n".join(map(str, filtered)) + "\n```" 
+                )
+            )
+            loop = asyncio.get_running_loop()
+            def remove_owner():
+                self.bot.owner_ids.remove(user.id)
+                self.bot.logger.info(f"Removed {user}({user.id}) from the elevated owner privledge set.")
+            loop.call_later(10, remove_owner)
+        except asyncio.TimeoutError:
+            await ctx.message.add_reaction("⏰")
+            await ctx.send("`Confirmation Timed Out`")
 
     @commands.command(name="eval")
     @commands.is_owner()
