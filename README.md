@@ -40,7 +40,7 @@ source venv/bin/activate #activate it
   pip3 install wheel 
   ```
 * After that you are set to now install the bot's requirements\
-`pip3 install -r requirements.txt -U`
+`pip3 install -r requirements.txt`
 * Now rename the configexample.toml and fill it out as needed
 ```shell
 mv configexample.toml config.toml #CASE SENSITIVE
