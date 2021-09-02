@@ -14,3 +14,4 @@ hentai
 colorama
 EZPaginator 
 dpy-button-utils~=1.1.0
+toml

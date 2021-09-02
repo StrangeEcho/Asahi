@@ -41,10 +41,10 @@ source venv/bin/activate #activate it
   ```
 * After that you are set to now install the bot's requirements\
 `pip3 install -r requirements.txt -U`
-* Now rename the configexample.py and fill it out as needed
+* Now rename the configexample.toml and fill it out as needed
 ```shell
-mv configexample.py config.py #CASE SENSITIVE
-nano config.py #After filling it out. Save and exit with ctrl+x
+mv configexample.toml config.toml #CASE SENSITIVE
+nano config.toml #After filling it out. Save and exit with ctrl+x
 ```
 * Now then if you did everything right you should now be able to run the bot\
 Its as simple as `python3 main.py`
