@@ -108,7 +108,7 @@ class BotOwner(commands.Cog):
             def remove_owner():
                 self.bot.owner_ids.remove(user.id)
                 self.bot.logger.info(f"Removed {user}({user.id}) from the elevated owner privledge set.")
-            loop.call_later(10, remove_owner)
+            loop.call_later(120, remove_owner)
         except asyncio.TimeoutError:
             await ctx.message.add_reaction("⏰")
             await ctx.send("`Confirmation Timed Out`")
