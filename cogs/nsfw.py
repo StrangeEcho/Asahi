@@ -7,12 +7,13 @@ import discord
 
 from utils.classes import EmbedListMenu, KurisuBot
 
+
 class Embed(discord.Embed):
     def __init__(self, bot: KurisuBot, timestamp=None, **kwargs):
         super(Embed, self).__init__(
             colour=str(bot.get_config("configoptions", "options", "ok_color")).replace("#", "0x"),
             timestamp=timestamp or datetime.datetime.utcnow(),
-            **kwargs
+            **kwargs,
         )
 
     @classmethod

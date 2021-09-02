@@ -59,12 +59,13 @@ class KurisuBot(commands.AutoShardedBot):
         self.config = toml.load("config.toml")
         self.configoptions = toml.load("configoptions.toml")
         self.owner_ids: set = {000000000000}  # The 0's are a placeholder
-        self.ok_color = int(
-            str(f"0x{self.get_config('configoptions', 'options', 'ok_color')}").replace("#", ""),
+        self.error_color = int(
+            str(self.get_config("configoptions", "options", "ok_color")).replace("#", "0x"),
             base=16,
         )
         self.error_color = int(
-            str(f"0x{self.get_config('configoptions', 'options', 'error_color')}").replace("#", ""), base=16
+            str(self.get_config("configoptions", "options", "error_color")).replace("#", "0x"),
+            base=16,
         )
         self.uptime = None
         self._session = None
