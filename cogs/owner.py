@@ -61,6 +61,7 @@ class BotOwner(commands.Cog):
     
     @commands.command()
     async def elevate(self, ctx: commands.Context, user: discord.User = None):
+        """Elevate a user or yourself to ownership privledge"""
         if not ctx.author.id in config.OWNER_IDS:
             return await ctx.send(
                 embed=discord.Embed(
@@ -70,6 +71,13 @@ class BotOwner(commands.Cog):
             )
         if not user:
             user = ctx.author
+        if user.id in self.bot.owner_ids:
+            return await ctx.send(
+                embed=discord.Embed(
+                    description=f"{user} is already in the ownership privledge set",
+                    color=self.bot.error_color
+                )
+            )
 
         msg = await ctx.send(
             embed=discord.Embed(
