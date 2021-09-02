@@ -4,9 +4,6 @@ import traceback
 from discord.ext import commands
 import discord
 
-from config import OWNER_IDS
-
-from configoptions import FORWARD_DMS, RESET_OWNER_COOLDOWNS
 from utils.classes import KurisuBot, PrefixManager
 
 logging.getLogger("listeners")
@@ -69,23 +66,21 @@ class Listeners(commands.Cog):
                 commands.BotMissingPermissions,
                 commands.CheckFailure,
                 commands.MissingRequiredArgument,
-                commands.BadArgument
+                commands.BadArgument,
             ),
         ):
             await ctx.send(embed=discord.Embed(description=str(error), color=self.bot.error_color))
 
         elif isinstance(error, commands.CommandOnCooldown):
-            if RESET_OWNER_COOLDOWNS and ctx.author.id in self.bot.owner_ids:
+            if (
+                self.bot.get_config("configoptions", "options", "reset_owner_cooldowns")
+                and ctx.author.id in self.bot.owner_ids
+            ):
                 ctx.command.reset_cooldown(ctx)
                 new_ctx = await self.bot.get_context(ctx.message)
                 await self.bot.invoke(new_ctx)
             else:
-                await ctx.send(
-                    embed=discord.Embed(
-                        description=error,
-                        color=self.bot.error_color
-                    )
-                )
+                await ctx.send(embed=discord.Embed(description=error, color=self.bot.error_color))
 
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
@@ -97,7 +92,7 @@ class Listeners(commands.Cog):
                     icon_url=ctx.author.avatar.url, text="This incident was reported to my master."
                 )
             )
-            for o in OWNER_IDS:
+            for o in self.bot.get_config("config", "config", "owner_ids"):
                 try:
                     owner = self.bot.fetch_user(o)
                     await owner.send(
@@ -138,8 +133,8 @@ class Listeners(commands.Cog):
             return
         if message.author.bot:
             return
-        if not message.guild and FORWARD_DMS is True:
-            for owner in self.bot.owner_ids:
+        if not message.guild and self.bot.get_config("configoptions", "options", "forward_dms"):
+            for owner in self.bot.get_config("config", "config", "owner_ids"):
                 try:
                     await self.bot.get_user(owner).send(
                         embed=discord.Embed(

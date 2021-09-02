@@ -1,4 +1,3 @@
-from configoptions import OK_COLOR
 from contextlib import redirect_stdout
 from typing import Optional
 import asyncio
@@ -6,9 +5,9 @@ import inspect
 import io
 import os
 import re
+import subprocess
 import textwrap
 import traceback
-import subprocess
 
 from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
@@ -16,7 +15,6 @@ import discord
 
 from utils.classes import KurisuBot
 from utils.funcs import box
-import config
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
@@ -58,15 +56,15 @@ class BotOwner(commands.Cog):
         if appd_index != len(text) - 1:
             pages.append(text[last:curr])
         return list(filter(lambda a: a != "", pages))
-    
+
     @commands.command()
     async def elevate(self, ctx: commands.Context, user: discord.User = None):
-        """Elevate a user or yourself to ownership privledge"""
-        if not ctx.author.id in config.OWNER_IDS:
+        """Elevate a user or yourself to ownership privliedge"""
+        if not ctx.author.id in self.bot.get_config("config", "config", "owner_ids"):
             return await ctx.send(
                 embed=discord.Embed(
                     description="Your ID was not found in the OWNER config.",
-                    color=self.bot.error_color
+                    color=self.bot.error_color,
                 )
             )
         if not user:
@@ -74,40 +72,47 @@ class BotOwner(commands.Cog):
         if user.id in self.bot.owner_ids:
             return await ctx.send(
                 embed=discord.Embed(
-                    description=f"{user} is already in the ownership privledge set",
-                    color=self.bot.error_color
+                    description=f"{user} is already in the ownership privliedge set",
+                    color=self.bot.error_color,
                 )
             )
 
         msg = await ctx.send(
             embed=discord.Embed(
                 description="Are you sure you want to do this?\nReact with ✅ to confirm.",
-                color=self.bot.ok_color
-            ).set_footer(text="⚠️ Elevating people to OWNER privledge will allow them to use owner only commands.")
+                color=self.bot.ok_color,
+            ).set_footer(
+                text="⚠️ Elevating people to OWNER privliedge will allow them to use owner only commands."
+            )
         )
         await msg.add_reaction("\u2705")
- 
+
         def check(reaction: discord.Reaction, user: discord.User):
             return user.id == ctx.author.id and str(reaction.emoji) == "\u2705"
-        
+
         try:
             await self.bot.wait_for("reaction_add", check=check, timeout=10)
             self.bot.owner_ids.add(user.id)
-            filtered = [await self.bot.fetch_user(x) for x in self.bot.owner_ids if not x == 000000000000]
+            filtered = [
+                await self.bot.fetch_user(x) for x in self.bot.owner_ids if not x == 000000000000
+            ]
             await ctx.send(
                 content=user.mention,
                 embed=discord.Embed(
-                    description="You have two minutes.",
-                    color=self.bot.ok_color
+                    description="You have two minutes.", color=self.bot.ok_color
                 ).add_field(
-                    name="Current Privledged People",
-                    value="```\n" + "\n".join(map(str, filtered)) + "\n```" 
-                )
+                    name="Current Priviledged People",
+                    value="```\n" + "\n".join(map(str, filtered)) + "\n```",
+                ),
             )
             loop = asyncio.get_running_loop()
+
             def remove_owner():
                 self.bot.owner_ids.remove(user.id)
-                self.bot.logger.info(f"Removed {user}({user.id}) from the elevated owner privledge set.")
+                self.bot.logger.info(
+                    f"Removed {user}({user.id}) from the elevated owner priviledge set."
+                )
+
             loop.call_later(120, remove_owner)
         except asyncio.TimeoutError:
             await ctx.message.add_reaction("⏰")
@@ -257,12 +262,10 @@ class BotOwner(commands.Cog):
         """Reloads everysingle cog the bot has"""
         await ctx.send(
             embed=discord.Embed(
-                description="Attempting to reload all cogs/extensions",
-                color=self.bot.ok_color
+                description="Attempting to reload all cogs/extensions", color=self.bot.ok_color
             )
         )
         await self.bot.reload_all_extensions(ctx)
-
 
     @commands.is_owner()
     @commands.command()
@@ -271,31 +274,27 @@ class BotOwner(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 description="Attempting to update KurisuBot to latest version",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
         )
         process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
         output = process.communicate()[0]
         await ctx.send(
             embed=discord.Embed(
-                description=f"Output: ```{str(output[:1800], 'utf-8')}```",
-                color=self.bot.ok_color
+                description=f"Output: ```{str(output[:1800], 'utf-8')}```", color=self.bot.ok_color
             )
         )
         process = subprocess.Popen(["git", "describe", "--always"], stdout=subprocess.PIPE)
-        output = process.communicate()[0]  
+        output = process.communicate()[0]
         await ctx.send(
-            embed=discord.Embed(
-                description="Reloading all modules now.",
-                color=self.bot.ok_color
-            )
+            embed=discord.Embed(description="Reloading all modules now.", color=self.bot.ok_color)
         )
         await asyncio.sleep(1.5)
         await self.bot.reload_all_extensions(ctx)
         await ctx.send(
             embed=discord.Embed(
                 description=f"Sucessfully updated KurisuBot Version `{self.bot.version}` to `{str(output, 'utf-8')}`",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
         )
 
@@ -439,7 +438,7 @@ class BotOwner(commands.Cog):
         `limit`: The amount of messages to check back through. Defaults to 50.
         """
 
-        prefix = config.BOT_PREFIX
+        prefix = self.bot.get_config("config", "config", "prefix")
 
         if ctx.channel.permissions_for(ctx.me).manage_messages:
             messages = await ctx.channel.purge(

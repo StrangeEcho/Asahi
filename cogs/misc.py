@@ -10,7 +10,6 @@ import discord
 import humanize
 import psutil
 
-from config import APPLICATION_ID, BOT_PREFIX
 from utils.classes import KurisuBot
 from utils.funcs import box
 
@@ -70,7 +69,7 @@ class Miscellaneous(commands.Cog):
     async def invite(self, ctx: commands.Context):
         """Invite the bot to your server."""
         embed = discord.Embed(color=self.bot.ok_color, title="<3")
-        embed.description = f"Invite Link: https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot"
+        embed.description = f"Invite Link: https://discord.com/api/oauth2/authorize?client_id={self.bot.get_config('config', 'config', 'application_id')}&scope=bot"
         embed.set_footer(
             text=f"Thank you for inviting {self.bot.user.name} <3",
             icon_url=self.bot.user.avatar.url,
@@ -118,7 +117,7 @@ class Miscellaneous(commands.Cog):
         embed.add_field(name="I was created at...", value=self.bot.user.created_at.strftime("%c"))
         embed.add_field(
             name="Prefix",
-            value=f"`{self.bot.prefixes.get(str(ctx.guild.id)) or BOT_PREFIX}` or {self.bot.user.mention}",
+            value=f"`{self.bot.prefixes.get(str(ctx.guild.id)) or self.bot.get_config('config', 'config', 'prefix')}` or {self.bot.user.mention}",
         )
         embed.add_field(
             name="Support Server & Invite Link",

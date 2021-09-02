@@ -1,7 +1,6 @@
 from discord.ext import commands
 import discord
 
-from config import BOT_PREFIX
 from utils.classes import KurisuBot, PrefixManager
 
 
@@ -13,7 +12,9 @@ class ServerSettings(commands.Cog):
     @commands.group(name="prefix", invoke_without_command=True)
     async def prefix(self, ctx: commands.Context):
         """Guild prefixes related commands"""
-        g_prefix = self.bot.prefixes.get(str(ctx.guild.id)) or BOT_PREFIX
+        g_prefix = self.bot.prefixes.get(str(ctx.guild.id)) or self.bot.get_config(
+            "config", "config", "prefix"
+        )
         await ctx.send(
             embed=discord.Embed(
                 description=f"The current prefix for this guild is `{g_prefix}`",

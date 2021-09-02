@@ -4,8 +4,6 @@ import logging
 from discord.ext import commands
 import discord
 
-from config import BOT_PREFIX, TOKEN, OWNER_IDS
-from configoptions import NO_PRIVLEDGED_OWNERS
 from utils.classes import KurisuBot, PrefixManager
 from utils.schema import schema
 
@@ -14,7 +12,7 @@ logging.getLogger("main")
 
 def get_prefix(bot: KurisuBot, msg: discord.Message):
     if not msg.guild or not str(msg.guild.id) in bot.prefixes:
-        return commands.when_mentioned_or(BOT_PREFIX)(bot, msg)
+        return commands.when_mentioned_or(bot.get_config("config", "config", "prefix"))(bot, msg)
     return commands.when_mentioned_or(bot.prefixes.get(str(msg.guild.id)))(bot, msg)
 
 
@@ -46,10 +44,11 @@ async def DatabaseInit(Schema: str):
     bot.logger.info("Guild Prefixes Successfully Appended To On-Memory Cache.")
     bot.logger.info("Database Initialization Complete.")
 
-if not NO_PRIVLEDGED_OWNERS:
-    for o in OWNER_IDS:
+
+if not bot.get_config("configoptions", "options", "no_priviledged_owners"):
+    for o in bot.get_config("config", "config", "owner_ids"):
         bot.owner_ids.add(o)
 
 asyncio.run(DatabaseInit(schema))
 bot.logger.info("Running Kurisu Now!")
-bot.run(TOKEN)
+bot.run(bot.get_config("config", "config", "token"))

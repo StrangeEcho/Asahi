@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 import asyncio
 import logging
 import os
@@ -7,9 +8,7 @@ from aiohttp import ClientSession
 from databases import Database
 from discord.ext import commands, menus
 import discord
-
-import configoptions
-import config
+import toml
 
 from .log import LoggingHandler
 
@@ -57,13 +56,20 @@ class KurisuBot(commands.AutoShardedBot):
             *args,
             **kwargs,
         )
-        self.owner_ids: set = {000000000000} # The 0's are a placeholder
-        self.ok_color = int(str(f"0x{configoptions.OK_COLOR}").replace("#", ""), base=16)
-        self.error_color = int(str(f"0x{configoptions.ERROR_COLOR}").replace("#", ""), base=16)
+        self.config = toml.load("config.toml")
+        self.configoptions = toml.load("configoptions.toml")
+        self.owner_ids: set = {000000000000}  # The 0's are a placeholder
+        self.ok_color = int(
+            str(f"0x{self.get_config('configoptions', 'options', 'ok_color')}").replace("#", ""),
+            base=16,
+        )
+        self.error_color = int(
+            str(f"0x{self.get_config('configoptions', 'options', 'error_color')}").replace("#", ""), base=16
+        )
         self.uptime = None
         self._session = None
         self.startup_time = datetime.now()
-        self.version = "2.2.2"
+        self.version = "3.2.2"
         self.db = Database("sqlite:///kurisu.db")
         self.executed_commands = 0
         self.prefixes = {}
@@ -77,6 +83,17 @@ class KurisuBot(commands.AutoShardedBot):
         if self._session is None:
             self._session = ClientSession(loop=self.loop)
         return self._session
+
+    def get_config(self, file: str, group: str, config: str = None):
+        if file == "configoptions":
+            if not config:
+                return self.configoptions[group]
+            return self.configoptions[group][config]
+
+        if file == "config":
+            if not config:
+                return self.config[group]
+            return self.config[group][config]
 
     async def on_connect(self):
         self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
@@ -94,11 +111,13 @@ class KurisuBot(commands.AutoShardedBot):
             f"FINISHED CHUNKING {len(self.guilds)} GUILDS AND CACHING {len(self.users)} USERS",
         )
         self.logger.info(f"Registered Shard Count: {len(self.shards)}")
-        bot_owner_usernames = []
-        for o in config.OWNER_IDS:
-            bot_owner_usernames.append(await self.fetch_user(o))
-        self.logger.info("Acknowledged Owner(s): " + ", ".join(map(str, bot_owner_usernames)))
-        self.logger.info(f"NO_PRIVLEDGED_OWNERS config was set to {configoptions.NO_PRIVLEDGED_OWNERS}")
+        owners = [
+            await self.fetch_user(o) for o in self.get_config("config", "config", "owner_ids")
+        ]
+        self.logger.info(f"Recognized Owner(s): {', '.join(map(str, owners))}")
+        self.logger.info(
+            f"NO_PRIVLIEDGED_OWNERS config was set to {self.get_config('configoptions', 'options', 'no_priviledged_owners')}"
+        )
         self.logger.info("ATTEMPTING TO MOUNT COG EXTENSIONS!")
         loaded_cogs = 0
         unloaded_cogs = 0
@@ -161,10 +180,10 @@ class KurisuBot(commands.AutoShardedBot):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"Successfully reloaded {success} cog(s)\n Failed reloading {failed} cog(s)",
-                    color=self.ok_color
-                )
-                .set_footer(text="If any cogs failed to reload, check console for feedback.")
+                    color=self.ok_color,
+                ).set_footer(text="If any cogs failed to reload, check console for feedback.")
             )
+
 
 class PrefixManager:
     def __init__(self, bot: KurisuBot):

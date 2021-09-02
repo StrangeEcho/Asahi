@@ -1,5 +1,5 @@
 #main
-config.py
+config.toml
 /.vscode
 __pycache__
 .idea

@@ -1,0 +1,7 @@
+[config]
+token = "" # your bots token. find on the dev portal
+prefix = "" # your bots default prefix
+application_id = 123456789 # your bots id. The app id you'd find in the dev portal is the same as the one you'd find on discord
+owner_ids = [] # Everyone you want to have ownership over the bot
+
+

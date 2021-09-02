@@ -1,0 +1,6 @@
+[options]
+foward_dms = true # If set to true, all dms sent to your bot will be forwarded back to the bot owners
+error_color = "#b22222" # The hex color the bot will use for its error embeds
+ok_color = "#ffb6c1" #  # The hex color the bot will use for its ok embeds
+reset_owner_cooldowns = true # If true, owners will be able to bypass any command cooldowns. 
+no_priviledged_owners = false # If true, owners will not have owner priviledges by default and will need to use the elevate command on themselves
