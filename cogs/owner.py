@@ -270,10 +270,10 @@ class BotOwner(commands.Cog):
     @commands.is_owner()
     @commands.command()
     async def update(self, ctx: commands.Context):
-        """Update to the latest version of KurisuBot or whatever the latest commit of your fork is"""
+        """Update to the latest version of the master repo or whatever the latest commit of your fork is"""
         await ctx.send(
             embed=discord.Embed(
-                description="Attempting to update KurisuBot to latest version",
+                description=f"Attempting to update {self.bot.user.name} to the latest commit/version.",
                 color=self.bot.ok_color,
             )
         )
@@ -293,7 +293,7 @@ class BotOwner(commands.Cog):
         await self.bot.reload_all_extensions(ctx)
         await ctx.send(
             embed=discord.Embed(
-                description=f"Sucessfully updated KurisuBot Version `{self.bot.version}` to `{str(output, 'utf-8')}`",
+                description=f"Sucessfully updated {self.bot.user.name} Version `{self.bot.version}` to `{str(output, 'utf-8')}`",
                 color=self.bot.ok_color,
             )
         )
