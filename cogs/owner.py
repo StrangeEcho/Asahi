@@ -72,7 +72,7 @@ class BotOwner(commands.Cog):
         if user.id in self.bot.owner_ids:
             return await ctx.send(
                 embed=discord.Embed(
-                    description=f"{user} is already in the ownership privliedge set",
+                    description=f"{user} is already in the ownership priviledge set",
                     color=self.bot.error_color,
                 )
             )
