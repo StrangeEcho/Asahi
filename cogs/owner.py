@@ -59,7 +59,7 @@ class BotOwner(commands.Cog):
 
     @commands.command()
     async def elevate(self, ctx: commands.Context, user: discord.User = None):
-        """Elevate a user or yourself to ownership privliedge"""
+        """Elevate a user or yourself to ownership privilege"""
         if not ctx.author.id in self.bot.get_config("config", "config", "owner_ids"):
             return await ctx.send(
                 embed=discord.Embed(
@@ -72,7 +72,7 @@ class BotOwner(commands.Cog):
         if user.id in self.bot.owner_ids:
             return await ctx.send(
                 embed=discord.Embed(
-                    description=f"{user} is already in the ownership priviledge set",
+                    description=f"{user} is already in the ownership privilege set",
                     color=self.bot.error_color,
                 )
             )
@@ -82,7 +82,7 @@ class BotOwner(commands.Cog):
                 description="Are you sure you want to do this?\nReact with ✅ to confirm.",
                 color=self.bot.ok_color,
             ).set_footer(
-                text="⚠️ Elevating people to OWNER privliedge will allow them to use owner only commands."
+                text="⚠️ Elevating people to OWNER privilege will allow them to use owner only commands."
             )
         )
         await msg.add_reaction("\u2705")
@@ -101,7 +101,7 @@ class BotOwner(commands.Cog):
                 embed=discord.Embed(
                     description="You have two minutes.", color=self.bot.ok_color
                 ).add_field(
-                    name="Current Priviledged People",
+                    name="Current privileged People",
                     value="```\n" + "\n".join(map(str, filtered)) + "\n```",
                 ),
             )
@@ -110,7 +110,7 @@ class BotOwner(commands.Cog):
             def remove_owner():
                 self.bot.owner_ids.remove(user.id)
                 self.bot.logger.info(
-                    f"Removed {user}({user.id}) from the elevated owner priviledge set."
+                    f"Removed {user}({user.id}) from the elevated owner privilege set."
                 )
 
             loop.call_later(120, remove_owner)
