@@ -20,7 +20,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} hugs {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -32,7 +32,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} kisses {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -56,7 +56,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} cuddles {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -68,7 +68,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} licks {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -80,7 +80,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} bullies {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -92,7 +92,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} pokes {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -104,7 +104,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} slaps {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 )
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text="ouch")
@@ -118,7 +118,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} has a smug look on their face.",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -130,7 +130,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{target} YOU BAKA!",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 )
                 .set_image(url=(await resp.json())["url"])
                 .set_footer(text=f"{ctx.author.name} says so themselves")
@@ -144,7 +144,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} feeds {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
@@ -156,7 +156,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} tickles {target}",
-                    color=ctx.author.top_role.color or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 
