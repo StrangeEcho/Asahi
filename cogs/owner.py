@@ -108,6 +108,8 @@ class BotOwner(commands.Cog):
             loop = asyncio.get_running_loop()
 
             def remove_owner():
+                if user.id not in self.bot.owner_ids:
+                    pass
                 self.bot.owner_ids.remove(user.id)
                 self.bot.logger.info(
                     f"Removed {user}({user.id}) from the elevated owner privilege set."
@@ -117,6 +119,28 @@ class BotOwner(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.message.add_reaction("⏰")
             await ctx.send("`Confirmation Timed Out`")
+    
+    @commands.command()
+    async def delevate(self, ctx: commands.Context, user: discord.User = None):
+        """Delevate a users ownership privilege"""
+        if not ctx.author.id in self.bot.get_config("config", "config", "owner_ids"):
+            return await ctx.send(
+                embed=discord.Embed(
+                    description="You are not authorized to complete this action",
+                    color=self.bot.error_color
+                )
+            )
+        if not user:
+            user = ctx.author
+        if user.id not in self.bot.owner_ids:
+            return await ctx.send(
+                embed=discord.Embed(
+                    description=f"{user} is currently does not have ownership privilege",
+                    color=self.bot.error_color
+                )
+            )
+        self.bot.owner_ids.remove(user.id)
+        await ctx.message.add_reaction("\u2705")
 
     @commands.command(name="eval")
     @commands.is_owner()
