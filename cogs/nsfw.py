@@ -213,7 +213,7 @@ class NSFW(commands.Cog):
 
     @nhentai.command(aliases=["info"])
     async def lookup(self, ctx: commands.Context, doujin):
-        """ Info about a doujin."""
+        """Info about a doujin."""
         if not doujin.isdigit():
             return await ctx.send("Only digits allowed.")
         if not Hentai.exists(doujin):

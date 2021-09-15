@@ -78,7 +78,7 @@ class Snipe(commands.Cog):
     @commands.command(aliases=["imagesnipe"])
     @commands.cooldown(1, 10, commands.BucketType.member)
     async def snipe(self, ctx: commands.Context):
-        """ Snipe the last deleted message, works with images """
+        """Snipe the last deleted message, works with images"""
         global snipe
 
         if (
@@ -114,7 +114,7 @@ class Snipe(commands.Cog):
     @commands.command(aliases=["esnipe"])
     @commands.cooldown(1, 10, commands.BucketType.member)
     async def editsnipe(self, ctx: commands.Context):
-        """ Sneaky Sneaky snipe the edited message """
+        """Sneaky Sneaky snipe the edited message"""
 
         if (
             edit_snipe["guild"] != ctx.guild

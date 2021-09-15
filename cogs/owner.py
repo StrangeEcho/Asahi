@@ -119,7 +119,7 @@ class BotOwner(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.message.add_reaction("⏰")
             await ctx.send("`Confirmation Timed Out`")
-    
+
     @commands.command()
     async def delevate(self, ctx: commands.Context, user: discord.User = None):
         """Delevate a users ownership privilege"""
@@ -127,7 +127,7 @@ class BotOwner(commands.Cog):
             return await ctx.send(
                 embed=discord.Embed(
                     description="You are not authorized to complete this action",
-                    color=self.bot.error_color
+                    color=self.bot.error_color,
                 )
             )
         if not user:
@@ -136,7 +136,7 @@ class BotOwner(commands.Cog):
             return await ctx.send(
                 embed=discord.Embed(
                     description=f"{user} is currently does not have ownership privilege",
-                    color=self.bot.error_color
+                    color=self.bot.error_color,
                 )
             )
         self.bot.owner_ids.remove(user.id)

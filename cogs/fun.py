@@ -18,7 +18,7 @@ class Fun(commands.Cog):
     @commands.command(name="8ball")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _8ball(self, ctx: commands.Context, *, question):
-        """Ask the mystical 8 ball anything. """
+        """Ask the mystical 8 ball anything."""
         answers = [
             "As I see it, yes.",
             "Ask again later.",

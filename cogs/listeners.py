@@ -94,7 +94,7 @@ class Listeners(commands.Cog):
             )
             for o in self.bot.get_config("config", "config", "owner_ids"):
                 try:
-                    owner = self.bot.fetch_user(o)
+                    owner = await self.bot.fetch_user(o)
                     await owner.send(
                         embed=discord.Embed(
                             title="You Baka!",

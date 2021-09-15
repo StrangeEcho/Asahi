@@ -96,10 +96,10 @@ class Miscellaneous(commands.Cog):
         """Some stats about me."""
         text_channels = 0
         voice_channels = 0
-        bot_owners = []
+        owners = [
+            self.bot.get_user(o) for o in self.bot.get_config("config", "config", "owner_ids")
+        ]
         process = psutil.Process(os.getpid())
-        for o in self.bot.owner_ids:
-            bot_owners.append(await self.bot.fetch_user(o))
         for chan in self.bot.get_all_channels():
             if isinstance(chan, discord.TextChannel):
                 text_channels += 1
@@ -110,7 +110,7 @@ class Miscellaneous(commands.Cog):
             color=self.bot.ok_color,
         )
         embed.set_author(icon_url=self.bot.user.avatar.url, name="General")
-        embed.add_field(name="Author(s)", value="\n".join(map(str, bot_owners)))
+        embed.add_field(name="Author(s)", value="\n".join(map(str, owners)))
         embed.add_field(
             name="Mention & ID", value=f"{self.bot.user.mention}\n`{self.bot.user.id}`"
         )
