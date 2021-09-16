@@ -52,5 +52,5 @@ if not bot.get_config("configoptions", "options", "no_priviledged_owners"):
         bot.owner_ids.add(o)
 
 asyncio.run(DatabaseInit(schema))
-bot.logger.info(f"Starting Kuirus with Process ID {os.getpid()}")
+bot.logger.info(f"Starting Kurisu with Process ID {os.getpid()}")
 bot.run(bot.get_config("config", "config", "token"))
