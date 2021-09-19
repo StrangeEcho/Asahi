@@ -66,7 +66,6 @@ class Music(commands.Cog):
     @commands.command()
     async def play(self, ctx: commands.Context, *, query: str):
         """Play a song"""
-        player = lavalink.get_player(ctx.guild.id)
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
