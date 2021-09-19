@@ -7,6 +7,7 @@ from utils.classes import KurisuBot
 
 
 class Music(commands.Cog):
+    """Music Module"""
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.bot.loop.create_task(self.node_init())
@@ -38,7 +39,7 @@ class Music(commands.Cog):
         except KeyError:
             return await ctx.send("No Activate Players")
         ct = player.current
-        await ctx.send(f"Currently Playing {ct.title} by {ct.author}\nTrack Length: {timedelta(milliseconds=ct.length)}")
+        await ctx.send(f"Currently Playing [{ct.title}]({ct.uri}) by {ct.author}\nTrack Length: {timedelta(milliseconds=ct.length)}")
 
     @commands.command()
     async def skip(self, ctx: commands.Context):
@@ -71,14 +72,13 @@ class Music(commands.Cog):
         except KeyError:
             player = await lavalink.connect(ctx.author.voice.channel, True)
         tracks = await player.search_yt(query)
-        if not tracks.tracks:
-            return await ctx.send("No Tracks Found")
         player.add(ctx.author, tracks.tracks[0])
-        await player.play()
         if player.is_playing:
-            await ctx.send(f"Added: {tracks.tracks[0].title} to the queue.")
+            return await ctx.send(f"Added: {tracks.tracks[0].title} to the queue")
         else:
             await ctx.send(f"Now Playing: {tracks.tracks[0].title}")
+        await player.play()
+
     @commands.command()
     async def disconnect(self, ctx: commands.Context):
         """Disconnect me from vc"""
