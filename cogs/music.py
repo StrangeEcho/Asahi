@@ -13,6 +13,7 @@ class Music(commands.Cog):
         self.ll_ip = self.bot.get_config("config", "music", "ll_host")
         self.ll_ws_port = self.bot.get_config("config", "music", "ll_port")
         self.ll_password = self.bot.get_config("config", "music", "ll_password")
+
     async def node_init(self):
         """Initialize LavaLink Node"""
         await lavalink.initialize(
@@ -59,7 +60,7 @@ class Music(commands.Cog):
         if vol < 0 or vol > 100:
             return await ctx.send("Volume Must Be Between 0 and 100")
         await player.set_volume(vol)
-        await ctx.send(f"Changed Volume To {player.volume}")
+        await ctx.send(f"Changed Volume To {player.volume}%")
 
 
     @commands.command()
