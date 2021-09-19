@@ -14,12 +14,14 @@ class Music(commands.Cog):
         self.ll_ws_port = self.bot.get_config("config", "music", "ll_port")
         self.ll_password = self.bot.get_config("config", "music", "ll_password")
     async def node_init(self):
+        """Initialize LavaLink Node"""
         await lavalink.initialize(
             bot=self.bot,
             host=self.ll_ip,
             ws_port=self.ll_ws_port,
             password=self.ll_password
         )
+        self.bot.logger.info(f"Initialized LavaLink Node\nIP: {self.ll_ip}\nPort: {self.ll_ws_port}")
 
     @commands.command(name="connect")
     async def _conenct(self, ctx: commands.Context):
@@ -36,6 +38,29 @@ class Music(commands.Cog):
             return await ctx.send("No Activate Players")
         ct = player.current
         await ctx.send(f"Currently Playing {ct.title} by {ct.author}\nTrack Length: {timedelta(milliseconds=ct.length)}")
+
+    @commands.command()
+    async def skip(self, ctx: commands.Context):
+        """Skip Song"""
+        try:
+            player = lavalink.get_player(ctx.guild.id)
+        except KeyError:
+            return await ctx.send("No Activate Players")
+        await player.skip()
+        await ctx.send("Skipped Last Song")
+
+    @commands.command()
+    async def volume(self, ctx: commands.Context, vol: int):
+        """Change Volume"""
+        try:
+            player = lavalink.get_player(ctx.guild.id)
+        except KeyError:
+            return await ctx.send("No Activate Players")
+        if vol < 0 or vol > 100:
+            return await ctx.send("Volume Must Be Between 0 and 100")
+        await player.set_volume(vol)
+        await ctx.send(f"Changed Volume To {player.volume}")
+
 
     @commands.command()
     async def play(self, ctx: commands.Context, *, query: str):
