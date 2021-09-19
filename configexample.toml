@@ -5,3 +5,7 @@ application_id = 123456789 # your bots id. The app id you'd find in the dev port
 owner_ids = [] # Everyone you want to have ownership over the bot
 
 
+[music]
+ll_host = "" # IP
+ll_port = 1234 # Port
+ll_password = "Super Secret Password" # Password

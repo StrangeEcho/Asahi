@@ -6,9 +6,10 @@ import os
 from aiohttp import ClientSession
 from databases import Database
 from discord.ext import commands, menus
+
 import discord
 import toml
-
+import lavalink
 from .log import LoggingHandler
 
 
@@ -147,6 +148,7 @@ class KurisuBot(commands.AutoShardedBot):
     async def close(self):
         """Logs out bot and closes any active connections. Method is used to restart bot."""
         await super().close()
+        await lavalink.close(self)
         if self._session:
             await self._session.close()
             self.logger.info("HTTP Client Session(s) closed")
@@ -156,6 +158,7 @@ class KurisuBot(commands.AutoShardedBot):
 
     async def full_exit(self):
         """Completely kills the process and closes all connections. However, it will continue to restart if being ran with PM2"""
+        await lavalink.close(self)
         if self._session:
             await self._session.close()
             self.logger.info("HTTP Client Session Closed.")
