@@ -149,6 +149,7 @@ class KurisuBot(commands.AutoShardedBot):
         """Logs out bot and closes any active connections. Method is used to restart bot."""
         await super().close()
         await lavalink.close(self)
+        self.logger.info("Severed LL Connections.")
         if self._session:
             await self._session.close()
             self.logger.info("HTTP Client Session(s) closed")

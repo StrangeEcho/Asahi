@@ -1,3 +1,4 @@
+import discord
 import lavalink
 from discord.ext import commands
 
@@ -63,6 +64,33 @@ class Music(commands.Cog):
         await player.set_volume(vol)
         await ctx.send(f"Changed Volume To {player.volume}%")
 
+    @commands.command()
+    async def repeat(self, ctx: commands.Context):
+        """Toggle a repeat for the queue"""
+        try:
+            player = lavalink.get_player(ctx.guild.id)
+        except KeyError:
+            return await ctx.send("No Activate Players")
+        if not player.repeat:
+            player.repeat = True
+            return await ctx.send("Repeating Queue")
+        if player.repeat:
+            player.repeat = False
+            return await ctx.send("No longer repeating queue")
+
+    @commands.command()
+    async def shuffle(self, ctx: commands.Context):
+        """Toggle a shuffle for the queue"""
+        try:
+            player = lavalink.get_player(ctx.guild.id)
+        except KeyError:
+            return await ctx.send("No Activate Players")
+        if not player.shuffle:
+            player.shuffle = True
+            return await ctx.send("Repeating Queue")
+        if player.shuffle:
+            player.shuffle = False
+            return await ctx.send("No longer repeating queue")
 
     @commands.command()
     async def play(self, ctx: commands.Context, *, query: str):
@@ -71,12 +99,21 @@ class Music(commands.Cog):
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
             player = await lavalink.connect(ctx.author.voice.channel, True)
+
         tracks = await player.search_yt(query)
-        player.add(ctx.author, tracks.tracks[0])
-        if player.is_playing:
-            return await ctx.send(f"Added: {tracks.tracks[0].title} to the queue")
-        else:
-            await ctx.send(f"Now Playing: {tracks.tracks[0].title}")
+        if not tracks:
+            return await ctx.send("No tracks found")
+        if len(tracks.tracks) == 1:
+            player.add(ctx.author, tracks.tracks[0])
+            return await ctx.send(f"Added {tracks.tracks[0].title} To The Queue.")
+
+        await ctx.send("Pick 1 out of 5\n" + "\n".join([f"{x}. {v.title[:100]}" for x, v in enumerate(tracks.tracks[:5], 1)]))
+
+        def check(m: discord.Message):
+            return m.author == ctx.author and m.channel == ctx.channel and m.content in ["1", "2", "3", "4", "5"]
+
+        msg: discord.Message = await self.bot.wait_for("message", check=check, timeout=15)
+        player.add(ctx.author, tracks.tracks[int(msg.content)])
         await player.play()
 
     @commands.command()
@@ -104,7 +141,7 @@ class Music(commands.Cog):
             return await ctx.send("Nothing in queue.")
         msg = f"**Queue in {ctx.guild.name}:**\n\n"
         for t in player.queue:
-            msg += f"- `{t.title}` Added by `{t.requester}`"
+            msg += f"- `{t.title}` Added by `{t.requester}`\n"
         await ctx.send(msg)
 
 def setup(bot):
