@@ -1,3 +1,4 @@
+import asyncio
 from datetime import timedelta
 
 from discord.ext import commands
@@ -125,10 +126,15 @@ class Music(commands.Cog):
                 and m.channel == ctx.channel
                 and m.content in ["1", "2", "3", "4", "5"]
             )
+        try:
+            msg: discord.Message = await self.bot.wait_for("message", check=check, timeout=15)
+            player.add(ctx.author, tracks.tracks[int(msg.content)])
+            await ctx.send_ok(f"Added {tracks.tracks[0].title} To The Queue.")
+        except asyncio.TimeoutError:
+            await ctx.send_error("Timeout Reached")
 
-        msg: discord.Message = await self.bot.wait_for("message", check=check, timeout=15)
-        player.add(ctx.author, tracks.tracks[int(msg.content)])
-        await player.play()
+        if not player.is_playing:
+            await player.play()
 
     @commands.command()
     async def disconnect(self, ctx: KurisuContext):
