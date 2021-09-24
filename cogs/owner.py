@@ -13,8 +13,8 @@ from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
 import discord
 
-from utils.classes import KurisuBot
 from utils.funcs import box
+from utils.kurisu import KurisuBot
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 

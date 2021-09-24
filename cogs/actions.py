@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 
-from utils.classes import KurisuBot
+from utils.kurisu import KurisuBot
 
 np = ""
 

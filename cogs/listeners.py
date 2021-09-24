@@ -4,7 +4,9 @@ import traceback
 from discord.ext import commands
 import discord
 
-from utils.classes import KurisuBot, PrefixManager
+from utils.context import KurisuContext
+from utils.helpers import PrefixManager
+from utils.kurisu import KurisuBot
 
 logging.getLogger("listeners")
 

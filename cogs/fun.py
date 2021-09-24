@@ -1,12 +1,11 @@
 from io import BytesIO
 from random import choice, randint
-import json
 
 from discord.ext import commands
 import aiohttp
 import discord
 
-from utils.classes import KurisuBot
+from utils.kurisu import KurisuBot
 
 
 class Fun(commands.Cog):

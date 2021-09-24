@@ -1,7 +1,8 @@
 from discord.ext import commands
 import discord
 
-from utils.classes import KurisuBot, PrefixManager
+from utils.helpers import PrefixManager
+from utils.kurisu import KurisuBot
 
 
 class ServerSettings(commands.Cog):

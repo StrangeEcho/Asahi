@@ -3,7 +3,7 @@ import asyncio
 from discord.ext import commands, tasks
 import discord
 
-from utils.classes import KurisuBot
+from utils.kurisu import KurisuBot
 
 
 class Tasks(commands.Cog):

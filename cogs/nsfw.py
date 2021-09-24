@@ -5,7 +5,8 @@ from discord.ext import commands, menus
 from hentai import Format, Hentai, Tag, Utils
 import discord
 
-from utils.classes import EmbedListMenu, KurisuBot
+from utils.helpers import EmbedListMenu
+from utils.kurisu import KurisuBot
 
 
 class Embed(discord.Embed):

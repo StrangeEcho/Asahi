@@ -5,30 +5,13 @@ import os
 
 from aiohttp import ClientSession
 from databases import Database
-from discord.ext import commands, menus
-
+from discord.ext import commands
 import discord
-import toml
 import lavalink
+import toml
+
+from .context import KurisuContext
 from .log import LoggingHandler
-
-
-class EmbedListMenu(menus.ListPageSource):
-    """
-    Paginated embed menu.
-    """
-
-    def __init__(self, data):
-        """
-        Initializes the EmbedListMenu.
-        """
-        super().__init__(data, per_page=1)
-
-    async def format_page(self, menu, embeds):
-        """
-        Formats the page.
-        """
-        return embeds
 
 
 class KurisuBot(commands.AutoShardedBot):
@@ -145,6 +128,10 @@ class KurisuBot(commands.AutoShardedBot):
     async def on_shard_disconnect(self, shard_id):
         self.logger.warning(f"SHARD {shard_id} IS NOW IN A DISCONNECTED STATE FROM DISCORD")
 
+    async def on_message(self, message: discord.Message):
+        ctx: KurisuContext = await self.get_context(message, cls=KurisuContext)
+        await self.invoke(ctx)
+
     async def close(self):
         """Logs out bot and closes any active connections. Method is used to restart bot."""
         await super().close()
@@ -187,34 +174,3 @@ class KurisuBot(commands.AutoShardedBot):
                     color=self.ok_color,
                 ).set_footer(text="If any cogs failed to reload, check console for feedback.")
             )
-
-
-class PrefixManager:
-    def __init__(self, bot: KurisuBot):
-        self.bot = bot
-
-    async def add_prefix(self, guild: int, prefix: str):
-        await self.bot.db.execute(
-            query="INSERT INTO guildsettings (guild, prefix) VALUES (:guild, :prefix) ON CONFLICT(guild) DO UPDATE SET prefix = :update_prefix",
-            values={
-                "guild": guild,
-                "prefix": prefix,
-                "update_prefix": prefix,
-            },
-        )
-        self.bot.prefixes[str(guild)] = prefix
-
-    async def remove_prefix(self, guild: int):
-        if str(guild) in self.bot.prefixes:
-            self.bot.prefixes.pop(str(guild))
-            await self.bot.db.execute(
-                query="DELETE FROM guildsettings WHERE guild = :guild_id",
-                values={
-                    "guild_id": guild,
-                },
-            )
-
-    async def startup_caching(self):
-        for g, p in await self.bot.db.fetch_all(query="SELECT guild, prefix FROM guildsettings"):
-            self.bot.prefixes.setdefault(str(g), str(p))
-            self.bot.logger.info("Prefixes Appended To Cache")

@@ -10,8 +10,8 @@ import discord
 import humanize
 import psutil
 
-from utils.classes import KurisuBot
 from utils.funcs import box
+from utils.kurisu import KurisuBot
 
 
 class Miscellaneous(commands.Cog):

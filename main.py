@@ -5,7 +5,8 @@ import os
 from discord.ext import commands
 import discord
 
-from utils.classes import KurisuBot, PrefixManager
+from utils.helpers import PrefixManager
+from utils.kurisu import KurisuBot
 from utils.schema import schema
 
 logging.getLogger("main")
@@ -13,10 +14,8 @@ logging.getLogger("main")
 
 def get_prefix(bot: KurisuBot, msg: discord.Message):
     if not msg.guild or not str(msg.guild.id) in bot.prefixes:
-        return commands.when_mentioned_or(
-            bot.get_config("config", "config", "prefix"))(bot, msg)
-    return commands.when_mentioned_or(bot.prefixes.get(str(msg.guild.id)))(bot,
-                                                                           msg)
+        return commands.when_mentioned_or(bot.get_config("config", "config", "prefix"))(bot, msg)
+    return commands.when_mentioned_or(bot.prefixes.get(str(msg.guild.id)))(bot, msg)
 
 
 bot = KurisuBot(command_prefix=get_prefix)
