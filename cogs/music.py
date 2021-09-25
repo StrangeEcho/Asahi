@@ -101,8 +101,12 @@ class Music(commands.Cog):
             return await ctx.send_ok("No longer repeating queue")
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.guild)
     async def play(self, ctx: KurisuContext, *, query: str):
         """Play a song"""
+        if not ctx.author.voice.channel:
+            return ctx.send_error("You must be in a voice channel to use this command.")
+
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
@@ -117,7 +121,7 @@ class Music(commands.Cog):
 
         await ctx.send_ok(
             "Pick 1 out of 5\n"
-            + "\n".join([f"`{x}`. {v.title[:100]}" for x, v in enumerate(tracks.tracks[:5], 1)])
+            + "\n".join([f"`{x}`. {v.title[:100]} - {timedelta(milliseconds=v.length)}" for x, v in enumerate(tracks.tracks[:5], 1)])
         )
 
         def check(m: discord.Message):
@@ -128,8 +132,9 @@ class Music(commands.Cog):
             )
         try:
             msg: discord.Message = await self.bot.wait_for("message", check=check, timeout=15)
-            player.add(ctx.author, tracks.tracks[int(msg.content)])
-            await ctx.send_ok(f"Added {tracks.tracks[0].title} To The Queue.")
+            a_int = int(msg.content) - 1
+            player.add(ctx.author, tracks.tracks[a_int])
+            await ctx.send_ok(f"Added {tracks.tracks[a_int].title} To The Queue.")
         except asyncio.TimeoutError:
             await ctx.send_error("Timeout Reached")
 
@@ -139,6 +144,8 @@ class Music(commands.Cog):
     @commands.command()
     async def disconnect(self, ctx: KurisuContext):
         """Disconnect me from vc"""
+        if not ctx.me.voice.channel:
+            return ctx.send_error("I am not connected to any vc.")
         if not ctx.author in ctx.me.voice.channel.members:
             return await ctx.send_error("You must be in the same vc as me to disconnect me.")
         try:
