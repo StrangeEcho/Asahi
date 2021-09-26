@@ -293,7 +293,7 @@ class BotOwner(commands.Cog):
 
     @commands.is_owner()
     @commands.command()
-    async def update(self, ctx: commands.Context):
+    async def update(self, ctx: commands.Context, reload: bool = False):
         """Update to the latest version of the master repo or whatever the latest commit of your fork is"""
         await ctx.send(
             embed=discord.Embed(
@@ -310,11 +310,14 @@ class BotOwner(commands.Cog):
         )
         process = subprocess.Popen(["git", "describe", "--always"], stdout=subprocess.PIPE)
         output = process.communicate()[0]
-        await ctx.send(
-            embed=discord.Embed(description="Reloading all modules now.", color=self.bot.ok_color)
-        )
-        await asyncio.sleep(1.5)
-        await self.bot.reload_all_extensions(ctx)
+        if reload:
+            await ctx.send(
+                embed=discord.Embed(
+                    description="Reloading all modules now.", color=self.bot.ok_color
+                )
+            )
+            await asyncio.sleep(1.5)
+            await self.bot.reload_all_extensions(ctx)
         await ctx.send(
             embed=discord.Embed(
                 description=f"Sucessfully updated {self.bot.user.name} Version `{self.bot.version}` to `{str(output, 'utf-8')}`",

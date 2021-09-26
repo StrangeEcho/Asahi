@@ -1,3 +1,4 @@
+import random
 from io import BytesIO
 from random import choice, randint
 
@@ -196,6 +197,54 @@ class Fun(commands.Cog):
                         color=self.bot.error_color,
                     )
                 )
+
+    @commands.group(invoke_without_command=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def img(self, ctx: commands.Context):
+        """Return sfw images from the waifu.im api"""
+        await ctx.send(f"Do `{ctx.clean_prefix}help cmd img` for more information on this command")
+
+    @img.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def all(self, ctx: commands.Context):
+        """Retrieve an image from the full image database"""
+        async with self.bot.session.get("https://api.waifu.im/sfw/all") as resp:
+            await ctx.send(
+                embed=discord.Embed(
+                    color=int(
+                        str((await resp.json())["dominant_color"]).replace("#", "0x"), base=16
+                    )
+                    or self.bot.ok_color
+                ).set_image(url=(await resp.json())["url"])
+            )
+
+    @img.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def maid(self, ctx: commands.Context):
+        """Maids go brrr"""
+        async with self.bot.session.get("https://api.waifu.im/sfw/maid") as resp:
+            await ctx.send(
+                embed=discord.Embed(
+                    color=int(
+                        str((await resp.json())["dominant_color"]).replace("#", "0x"), base=16
+                    )
+                    or self.bot.ok_color
+                ).set_image(url=(await resp.json())["url"])
+            )
+
+    @img.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def waifu(self, ctx: commands.Context):
+        """Get yourself a waifu from the waifu.im db with this."""
+        async with self.bot.session.get("https://api.waifu.im/sfw/waifu") as resp:
+            await ctx.send(
+                embed=discord.Embed(
+                    color=int(
+                        str((await resp.json())["dominant_color"]).replace("#", "0x"), base=16
+                    )
+                    or self.bot.ok_color
+                ).set_image(url=(await resp.json())["url"])
+            )
 
 
 def setup(bot):
