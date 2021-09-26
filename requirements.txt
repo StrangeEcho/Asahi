@@ -11,5 +11,8 @@ git+https://github.com/Rapptz/discord-ext-menus
 babel
 humanize
 hentai
-colorama 
-git+https://github.com/crazygmr101/button-utils
+colorama
+EZPaginator 
+dpy-button-utils~=1.1.0
+toml
+git+https://github.com/PredaaA/Red-Lavalink@feature/dpy-voiceprotocol

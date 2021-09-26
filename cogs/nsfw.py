@@ -5,16 +5,16 @@ from discord.ext import commands, menus
 from hentai import Format, Hentai, Tag, Utils
 import discord
 
-from config import OK_COLOR
-from utils.classes import EmbedListMenu, KurisuBot
-
-embed_color = OK_COLOR.replace("#", "0x")
+from utils.helpers import EmbedListMenu
+from utils.kurisu import KurisuBot
 
 
 class Embed(discord.Embed):
-    def __init__(self, colour=int(embed_color, base=16), timestamp=None, **kwargs):
+    def __init__(self, bot: KurisuBot, timestamp=None, **kwargs):
         super(Embed, self).__init__(
-            colour=colour, timestamp=timestamp or datetime.datetime.utcnow(), **kwargs
+            colour=str(bot.get_config("configoptions", "options", "ok_color")).replace("#", "0x"),
+            timestamp=timestamp or datetime.datetime.utcnow(),
+            **kwargs,
         )
 
     @classmethod
@@ -214,7 +214,7 @@ class NSFW(commands.Cog):
 
     @nhentai.command(aliases=["info"])
     async def lookup(self, ctx: commands.Context, doujin):
-        """ Info about a doujin."""
+        """Info about a doujin."""
         if not doujin.isdigit():
             return await ctx.send("Only digits allowed.")
         if not Hentai.exists(doujin):

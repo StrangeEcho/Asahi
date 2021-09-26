@@ -1,11 +1,12 @@
 import asyncio
 import logging
+import os
 
 from discord.ext import commands
 import discord
 
-from config import BOT_PREFIX, TOKEN
-from utils.classes import KurisuBot, PrefixManager
+from utils.helpers import PrefixManager
+from utils.kurisu import KurisuBot
 from utils.schema import schema
 
 logging.getLogger("main")
@@ -13,12 +14,11 @@ logging.getLogger("main")
 
 def get_prefix(bot: KurisuBot, msg: discord.Message):
     if not msg.guild or not str(msg.guild.id) in bot.prefixes:
-        return commands.when_mentioned_or(BOT_PREFIX)(bot, msg)
+        return commands.when_mentioned_or(bot.get_config("config", "config", "prefix"))(bot, msg)
     return commands.when_mentioned_or(bot.prefixes.get(str(msg.guild.id)))(bot, msg)
 
 
 bot = KurisuBot(command_prefix=get_prefix)
-
 
 if discord.__version__ != "2.0.0a":
     bot.logger.critical(
@@ -46,6 +46,10 @@ async def DatabaseInit(Schema: str):
     bot.logger.info("Database Initialization Complete.")
 
 
+if not bot.get_config("configoptions", "options", "no_priviledged_owners"):
+    for o in bot.get_config("config", "config", "owner_ids"):
+        bot.owner_ids.add(o)
+
 asyncio.run(DatabaseInit(schema))
-bot.logger.info("Running Kurisu Now!")
-bot.run(TOKEN)
+bot.logger.info(f"Starting Kurisu with Process ID {os.getpid()}")
+bot.run(bot.get_config("config", "config", "token"))

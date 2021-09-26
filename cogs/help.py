@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 
-from utils.classes import KurisuBot
+from utils.kurisu import KurisuBot
 
 
 class Help(commands.Cog):
@@ -13,13 +13,17 @@ class Help(commands.Cog):
     @commands.command(aliases=["cogs"])
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def modules(self, ctx: commands.Context):
+        text = ""
+        for _ in self.bot.cogs.keys():
+            cog = self.bot.get_cog(_)
+            if len(cog.get_commands()) != 0:
+                text += f"\n{_}"
+                mod_list = text.split("\n")
         await ctx.send(
             embed=discord.Embed(
-                title=f"{self.bot.user.name}'s available modules/cogs",
-                description=("```\n" + "\n".join(sorted(map(str, self.bot.cogs)))) + "\n```",
+                title="Available Modules",
+                description="```apache\n" + "\n".join(sorted(mod_list)) + "\n```",
                 color=self.bot.ok_color,
-            ).set_footer(
-                text=f"use {ctx.clean_prefix}help [module] to get info about a module/cog"
             )
         )
 
@@ -52,33 +56,28 @@ class Help(commands.Cog):
 
     @help.command(aliases=["cmd", "c"])
     async def command(self, ctx: commands.Context, *, target: str):
-        cmd: commands.Command = self.bot.get_command(target.lower())
+        cmd = self.bot.get_command(target.lower())
         if cmd:
             cmd_aliases = "\n".join(cmd.aliases)
-            return await ctx.send(
-                embed=discord.Embed(
-                    title=f"Command: __{cmd.name}__",
-                    description=f"`Command Description: {cmd.help}`",
-                    color=self.bot.ok_color,
-                )
-                .add_field(
-                    name="Usage",
-                    value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`",
-                )
-                .add_field(name="Module", value=f"`{cmd.cog_name}`")
-                .add_field(
-                    name=f"Aliases",
-                    value="`None`" if not cmd.aliases else f"```\n{cmd_aliases}\n```",
-                )
-                .set_footer(
-                    text="[] signify optional arguments while <> signify required arguments"
-                )
+            embed = discord.Embed(
+                title=f"__{str(cmd.name).capitalize()}__",
+                description=f"Description: {cmd.help}",
+                color=self.bot.ok_color,
             )
-        if not cmd:
+            embed.add_field(
+                name="Usage",
+                value=f"`{ctx.clean_prefix}{cmd.name} {'' if not cmd.signature else cmd.signature}`",
+            )
+            embed.add_field(name="Module\Cog", value=f"`{cmd.cog_name}`")
+            if cmd.aliases:
+                embed.add_field(name="Aliases", value=f"```\n{cmd_aliases}\n```")
+            if isinstance(cmd, commands.Group):
+                group_commands = "\n".join(map(str, cmd.commands))
+                embed.add_field(name="Group Commands", value=f"```\n{group_commands}\n```")
+            return await ctx.send(embed=embed)
+        else:
             return await ctx.send(
-                embed=discord.Embed(
-                    description=f"**COMMAND NOT FOUND**", color=self.bot.error_color
-                )
+                embed=discord.Embed(description=f"COMMAND NOT FOUND", color=self.bot.error_color)
             )
 
     @help.command(aliases=["mod", "m"])

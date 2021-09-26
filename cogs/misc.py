@@ -1,15 +1,17 @@
 from datetime import datetime
+import os
 import platform
 import time
 
+from EZPaginator import Paginator
 from discord.ext import commands
 import aiohttp
 import discord
 import humanize
+import psutil
 
-from config import APPLICATION_ID
-from utils.classes import KurisuBot
 from utils.funcs import box
+from utils.kurisu import KurisuBot
 
 
 class Miscellaneous(commands.Cog):
@@ -67,7 +69,7 @@ class Miscellaneous(commands.Cog):
     async def invite(self, ctx: commands.Context):
         """Invite the bot to your server."""
         embed = discord.Embed(color=self.bot.ok_color, title="<3")
-        embed.description = f"Invite Link: https://discord.com/api/oauth2/authorize?client_id={APPLICATION_ID}&scope=bot"
+        embed.description = f"Invite Link: https://discord.com/api/oauth2/authorize?client_id={self.bot.get_config('config', 'config', 'application_id')}&scope=bot"
         embed.set_footer(
             text=f"Thank you for inviting {self.bot.user.name} <3",
             icon_url=self.bot.user.avatar.url,
@@ -94,6 +96,10 @@ class Miscellaneous(commands.Cog):
         """Some stats about me."""
         text_channels = 0
         voice_channels = 0
+        owners = [
+            self.bot.get_user(o) for o in self.bot.get_config("config", "config", "owner_ids")
+        ]
+        process = psutil.Process(os.getpid())
         for chan in self.bot.get_all_channels():
             if isinstance(chan, discord.TextChannel):
                 text_channels += 1
@@ -101,49 +107,60 @@ class Miscellaneous(commands.Cog):
                 voice_channels += 1
         embed = discord.Embed(
             title=f"{self.bot.user.name} Stats",
-            description=f"Invite me [here](https://discord.com/api/oauth2/authorize?client_id=784474257832804372&scope=bot) and join my Support Server [here](https://discord.gg/Cs5RdJF9pb)",
             color=self.bot.ok_color,
         )
-        embed.set_author(name=f"Version: {self.bot.version}")
-        embed.set_thumbnail(url=self.bot.user.avatar.url)
-        embed.add_field(name="Author:", value="Tylerr#6979", inline=True)
+        embed.set_author(icon_url=self.bot.user.avatar.url, name="General")
+        embed.add_field(name="Author(s)", value="\n".join(map(str, owners)))
         embed.add_field(
-            name="Python Versions:",
-            value=f"Python Version: {platform.python_version()}\nDiscord.py Version: {discord.__version__}",
-            inline=True,
+            name="Mention & ID", value=f"{self.bot.user.mention}\n`{self.bot.user.id}`"
         )
-        embed.add_field(name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms")
-        embed.add_field(name="Shards", value=self.bot.shard_count)
-        embed.add_field(name="Bot ID:", value=self.bot.user.id, inline=True)
-        embed.add_field(name="Guild Count:", value=len(self.bot.guilds), inline=True)
-        embed.add_field(name="Cached Users:", value=len(self.bot.users), inline=True)
+        embed.add_field(name="I was created at...", value=self.bot.user.created_at.strftime("%c"))
         embed.add_field(
-            name="Channels:",
-            value=f"Text: {text_channels}\nVoice: {voice_channels}\nTotal: {text_channels + voice_channels}",
-            inline=True,
+            name="Prefix",
+            value=f"`{self.bot.prefixes.get(str(ctx.guild.id)) or self.bot.get_config('config', 'config', 'prefix')}` or {self.bot.user.mention}",
         )
         embed.add_field(
-            name="Uptime:",
-            value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
-            inline=True,
+            name="Support Server & Invite Link",
+            value=f"Click [Here](https://discord.com/api/oauth2/authorize?client_id={self.bot.get_config('config', 'config', 'application_id')}&scope=bot) To Invite Me and Click [Here](https://discord.gg/Cs5RdJF9pb) To Join My Support Server",
         )
-        embed.add_field(
-            name="Creation Date:",
-            value=self.bot.user.created_at.strftime("%c"),
-            inline=True,
-        )
-        embed.add_field(name="\u200B", value="\u200B", inline=True)
-        embed.add_field(
-            name="Github Repository:",
-            value="Find it [here](https://github.com/Yat-o/Kurisu/tree/rewrite)",
-            inline=True,
-        )
-        embed.add_field(name="\u200B", value="\u200B", inline=True)
         embed.set_footer(
-            icon_url=ctx.author.avatar.url,
-            text=f"{self.bot.user.name} was made with love. <3",
+            icon_url=self.bot.user.avatar.url, text=f"{self.bot.user.name} was made with love <3"
         )
-        await ctx.send(embed=embed)
+        embed2 = discord.Embed(
+            title=f"{self.bot.user.name} Stats",
+            description="Find My Source [Here](https://github.com/Yat-o/Kurisu/tree/rewrite)",
+            color=self.bot.ok_color,
+        )
+        embed2.set_author(icon_url=self.bot.user.avatar.url, name="Statistics")
+        embed2.add_field(
+            name="On-Board Memory Usage",
+            value=f"{round(process.memory_info().rss / 1024 ** 2)} MBs",
+        )
+        embed2.add_field(name=f"Websocket Latency", value=f"{round(self.bot.latency * 1000)} ms")
+        embed2.add_field(name="Shard Count", value=len(self.bot.shards))
+        embed2.add_field(
+            name="Cached Users & Guilds",
+            value=f"Users: {len(self.bot.users)}\nGuilds: {len(self.bot.guilds)}",
+        )
+        embed2.add_field(name="Channels", value=f"Text: {text_channels}\nVoice: {voice_channels}")
+        embed2.add_field(
+            name="Uptime",
+            value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
+        )
+        embed2.add_field(name="Commands Executed Since Startup", value=self.bot.executed_commands)
+        embed3 = discord.Embed(title=f"{self.bot.user.name} Stats", color=self.bot.ok_color)
+        embed3.set_author(icon_url=self.bot.user.avatar.url, name="About Me")
+        embed3.add_field(name="Bot Version", value=f"`{self.bot.version}`")
+        embed3.add_field(
+            name="Python Version", value=f"[{platform.python_version()}](https://python.org)"
+        )
+        embed3.add_field(
+            name="Discord.py Version",
+            value=f"[{discord.__version__}](https://discordpy.readthedocs.io/en/master/index.html)",
+        )
+        msg = await ctx.send(embed=embed)
+        paginator = Paginator(self.bot, msg, embeds=[embed, embed2, embed3])
+        await paginator.start()
 
     @commands.command(usage="(project name)")
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -156,7 +173,7 @@ class Miscellaneous(commands.Cog):
                 e = discord.Embed(
                     title="404 - Page Not Found",
                     description="We looked everywhere but couldn't find that project",
-                    colour=self.bot.ok_color,
+                    colour=self.bot.error_color,
                 )
                 e.set_thumbnail(
                     url="https://cdn-images-1.medium.com/max/1200/1%2A2FrV8q6rPdz6w2ShV6y7bw.png"

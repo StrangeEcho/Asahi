@@ -4,8 +4,9 @@ import traceback
 from discord.ext import commands
 import discord
 
-from config import FORWARD_DMS
-from utils.classes import KurisuBot, PrefixManager
+from utils.context import KurisuContext
+from utils.helpers import PrefixManager
+from utils.kurisu import KurisuBot
 
 logging.getLogger("listeners")
 
@@ -65,21 +66,23 @@ class Listeners(commands.Cog):
                 commands.BotMissingAnyRole,
                 commands.MissingRole,
                 commands.BotMissingPermissions,
-                commands.CommandOnCooldown,
                 commands.CheckFailure,
                 commands.MissingRequiredArgument,
+                commands.BadArgument,
             ),
         ):
             await ctx.send(embed=discord.Embed(description=str(error), color=self.bot.error_color))
 
-        elif isinstance(error, commands.BadArgument):
-            await ctx.send(
-                embed=discord.Embed(
-                    title="You passed in a bad argument",
-                    description=error,
-                    color=self.bot.error_color,
-                )
-            )
+        elif isinstance(error, commands.CommandOnCooldown):
+            if (
+                self.bot.get_config("configoptions", "options", "reset_owner_cooldowns")
+                and ctx.author.id in self.bot.owner_ids
+            ):
+                ctx.command.reset_cooldown(ctx)
+                new_ctx = await self.bot.get_context(ctx.message)
+                await self.bot.invoke(new_ctx)
+            else:
+                await ctx.send(embed=discord.Embed(description=error, color=self.bot.error_color))
 
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send(
@@ -91,15 +94,19 @@ class Listeners(commands.Cog):
                     icon_url=ctx.author.avatar.url, text="This incident was reported to my master."
                 )
             )
-            for owner in self.bot.owner_ids:
-                owner = self.bot.get_user(owner)
-                await owner.send(
-                    embed=discord.Embed(
-                        title="You Baka!",
-                        description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error}\n```",
-                        color=self.bot.error_color,
+            for o in self.bot.get_config("config", "config", "owner_ids"):
+                try:
+                    owner = await self.bot.fetch_user(o)
+                    await owner.send(
+                        embed=discord.Embed(
+                            title="You Baka!",
+                            description=f"`{ctx.command}` errored out in `{ctx.guild}({ctx.guild.id})`\n```py\n{error}\n```",
+                            color=self.bot.error_color,
+                        )
                     )
-                )
+                except Exception as e:
+                    self.bot.logger.error(e)
+
             self.bot.logger.error(
                 f"**{ctx.command.qualified_name} failed to execute**", exc_info=error.original
             )
@@ -109,6 +116,7 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):
+        self.bot.executed_commands += 1
         location = " Direct Message"
         locationID = None
         if ctx.guild:
@@ -127,8 +135,8 @@ class Listeners(commands.Cog):
             return
         if message.author.bot:
             return
-        if not message.guild and FORWARD_DMS is True:
-            for owner in self.bot.owner_ids:
+        if not message.guild and self.bot.get_config("configoptions", "options", "forward_dms"):
+            for owner in self.bot.get_config("config", "config", "owner_ids"):
                 try:
                     await self.bot.get_user(owner).send(
                         embed=discord.Embed(

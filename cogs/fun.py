@@ -1,12 +1,11 @@
 from io import BytesIO
 from random import choice, randint
-import json
 
 from discord.ext import commands
 import aiohttp
 import discord
 
-from utils.classes import KurisuBot
+from utils.kurisu import KurisuBot
 
 
 class Fun(commands.Cog):
@@ -18,7 +17,7 @@ class Fun(commands.Cog):
     @commands.command(name="8ball")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _8ball(self, ctx: commands.Context, *, question):
-        """Ask the mystical 8 ball anything. """
+        """Ask the mystical 8 ball anything."""
         answers = [
             "As I see it, yes.",
             "Ask again later.",
@@ -197,23 +196,6 @@ class Fun(commands.Cog):
                         color=self.bot.error_color,
                     )
                 )
-
-    @commands.command(aliases=["bitcoin"])
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    async def btc(self, ctx: commands.Context):
-        """Returns the current rate for Bitcoin"""
-        raw_resp = await self.bot.session.get(
-            "https://api.coindesk.com/v1/bpi/currentprice/BTC.json"
-        )
-        response_text = await raw_resp.text()
-        final_response = json.loads(response_text)
-        await ctx.send(
-            embed=discord.Embed(
-                title="Current BTC Rating",
-                description=f"Rate: ${final_response['bpi']['USD']['rate']}",
-                color=self.bot.ok_color,
-            )
-        )
 
 
 def setup(bot):

@@ -4,8 +4,8 @@ from discord.ext import commands
 from discord.utils import get
 import discord
 
-from utils.classes import KurisuBot
 from utils.funcs import check_hierarchy
+from utils.kurisu import KurisuBot
 
 
 class Moderation(commands.Cog):

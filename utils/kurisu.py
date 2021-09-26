@@ -5,30 +5,13 @@ import os
 
 from aiohttp import ClientSession
 from databases import Database
-from discord.ext import commands, menus
+from discord.ext import commands
 import discord
+import lavalink
+import toml
 
-import config
-
+from .context import KurisuContext
 from .log import LoggingHandler
-
-
-class EmbedListMenu(menus.ListPageSource):
-    """
-    Paginated embed menu.
-    """
-
-    def __init__(self, data):
-        """
-        Initializes the EmbedListMenu.
-        """
-        super().__init__(data, per_page=1)
-
-    async def format_page(self, menu, embeds):
-        """
-        Formats the page.
-        """
-        return embeds
 
 
 class KurisuBot(commands.AutoShardedBot):
@@ -56,14 +39,23 @@ class KurisuBot(commands.AutoShardedBot):
             *args,
             **kwargs,
         )
-        self.owner_ids = config.OWNER_IDS
-        self.ok_color = int(str(f"0x{config.OK_COLOR}").replace("#", ""), base=16)
-        self.error_color = int(str(f"0x{config.ERROR_COLOR}").replace("#", ""), base=16)
+        self.config = toml.load("config.toml")
+        self.configoptions = toml.load("configoptions.toml")
+        self.owner_ids: set = {000000000000}  # The 0's are a placeholder
+        self.ok_color = int(
+            str(self.get_config("configoptions", "options", "ok_color")).replace("#", "0x"),
+            base=16,
+        )
+        self.error_color = int(
+            str(self.get_config("configoptions", "options", "error_color")).replace("#", "0x"),
+            base=16,
+        )
         self.uptime = None
         self._session = None
         self.startup_time = datetime.now()
-        self.version = "2.1.1"
+        self.version = "3.2.2"
         self.db = Database("sqlite:///kurisu.db")
+        self.executed_commands = 0
         self.prefixes = {}
 
     @property
@@ -76,9 +68,23 @@ class KurisuBot(commands.AutoShardedBot):
             self._session = ClientSession(loop=self.loop)
         return self._session
 
+    def get_config(self, file: str, group: str, config: str = None):
+        if file == "configoptions":
+            if not config:
+                return self.configoptions[group]
+            return self.configoptions[group][config]
+
+        if file == "config":
+            if not config:
+                return self.config[group]
+            return self.config[group][config]
+
     async def on_connect(self):
         self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
-        await self.db.connect()
+        try:
+            await self.db.connect()
+        except AssertionError:
+            pass
         self.logger.info("Connected to the database: `kurisu.db`")
 
     async def on_ready(self):
@@ -89,10 +95,13 @@ class KurisuBot(commands.AutoShardedBot):
             f"FINISHED CHUNKING {len(self.guilds)} GUILDS AND CACHING {len(self.users)} USERS",
         )
         self.logger.info(f"Registered Shard Count: {len(self.shards)}")
-        bot_owner_usernames = []
-        for o in self.owner_ids:
-            bot_owner_usernames.append(await self.fetch_user(o))
-        self.logger.info("Acknowledged Owner ID(s): " + ", ".join(map(str, bot_owner_usernames)))
+        owners = [
+            await self.fetch_user(o) for o in self.get_config("config", "config", "owner_ids")
+        ]
+        self.logger.info(f"Recognized Owner(s): {', '.join(map(str, owners))}")
+        self.logger.info(
+            f"NO_PRIVLIEDGED_OWNERS config was set to {self.get_config('configoptions', 'options', 'no_priviledged_owners')}"
+        )
         self.logger.info("ATTEMPTING TO MOUNT COG EXTENSIONS!")
         loaded_cogs = 0
         unloaded_cogs = 0
@@ -119,9 +128,15 @@ class KurisuBot(commands.AutoShardedBot):
     async def on_shard_disconnect(self, shard_id):
         self.logger.warning(f"SHARD {shard_id} IS NOW IN A DISCONNECTED STATE FROM DISCORD")
 
+    async def on_message(self, message: discord.Message):
+        ctx: KurisuContext = await self.get_context(message, cls=KurisuContext)
+        await self.invoke(ctx)
+
     async def close(self):
         """Logs out bot and closes any active connections. Method is used to restart bot."""
         await super().close()
+        await lavalink.close(self)
+        self.logger.info("Severed LL Connections.")
         if self._session:
             await self._session.close()
             self.logger.info("HTTP Client Session(s) closed")
@@ -131,6 +146,7 @@ class KurisuBot(commands.AutoShardedBot):
 
     async def full_exit(self):
         """Completely kills the process and closes all connections. However, it will continue to restart if being ran with PM2"""
+        await lavalink.close(self)
         if self._session:
             await self._session.close()
             self.logger.info("HTTP Client Session Closed.")
@@ -138,33 +154,23 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger.info("Database Connection Closed")
         exit(code=26)
 
-
-class PrefixManager:
-    def __init__(self, bot: KurisuBot):
-        self.bot = bot
-
-    async def add_prefix(self, guild: int, prefix: str):
-        await self.bot.db.execute(
-            query="INSERT INTO guildsettings (guild, prefix) VALUES (:guild, :prefix) ON CONFLICT(guild) DO UPDATE SET prefix = :update_prefix",
-            values={
-                "guild": guild,
-                "prefix": prefix,
-                "update_prefix": prefix,
-            },
-        )
-        self.bot.prefixes[str(guild)] = prefix
-
-    async def remove_prefix(self, guild: int):
-        if str(guild) in self.bot.prefixes:
-            self.bot.prefixes.pop(str(guild))
-            await self.bot.db.execute(
-                query="DELETE FROM guildsettings WHERE guild = :guild_id",
-                values={
-                    "guild_id": guild,
-                },
+    async def reload_all_extensions(self, ctx: commands.Context = None):
+        self.logger.info("Signal recieved to reload all bot extensions")
+        success = 0
+        failed = 0
+        for cog in os.listdir("./cogs"):
+            if cog.endswith(".py"):
+                try:
+                    self.reload_extension(f"cogs.{cog[:-3]}")
+                    self.logger.info(f"Reloaded {cog}")
+                    success += 1
+                except Exception as e:
+                    self.logger.warning(f"Failed reloading {cog}\n{e}")
+                    failed += 1
+        if ctx:
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"Successfully reloaded {success} cog(s)\n Failed reloading {failed} cog(s)",
+                    color=self.ok_color,
+                ).set_footer(text="If any cogs failed to reload, check console for feedback.")
             )
-
-    async def startup_caching(self):
-        for g, p in await self.bot.db.fetch_all(query="SELECT guild, prefix FROM guildsettings"):
-            self.bot.prefixes.setdefault(str(g), str(p))
-            self.bot.logger.info("Prefixes Appended To Cache")

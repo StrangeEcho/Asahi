@@ -5,6 +5,7 @@ import inspect
 import io
 import os
 import re
+import subprocess
 import textwrap
 import traceback
 
@@ -12,9 +13,8 @@ from discord.ext import commands
 from dpy_button_utils import ButtonConfirmation
 import discord
 
-from utils.classes import KurisuBot
 from utils.funcs import box
-import config
+from utils.kurisu import KurisuBot
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
@@ -43,6 +43,7 @@ class BotOwner(commands.Cog):
             return f"```py\n{e.__class__.__name__}: {e}\n```"
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
+    @staticmethod
     def paginate(self, text: str):
         """Fix the limit since tyler gay."""
         last = 0
@@ -55,6 +56,91 @@ class BotOwner(commands.Cog):
         if appd_index != len(text) - 1:
             pages.append(text[last:curr])
         return list(filter(lambda a: a != "", pages))
+
+    @commands.command()
+    async def elevate(self, ctx: commands.Context, user: discord.User = None):
+        """Elevate a user or yourself to ownership privilege"""
+        if not ctx.author.id in self.bot.get_config("config", "config", "owner_ids"):
+            return await ctx.send(
+                embed=discord.Embed(
+                    description="Your ID was not found in the OWNER config.",
+                    color=self.bot.error_color,
+                )
+            )
+        if not user:
+            user = ctx.author
+        if user.id in self.bot.owner_ids:
+            return await ctx.send(
+                embed=discord.Embed(
+                    description=f"{user} is already in the ownership privilege set",
+                    color=self.bot.error_color,
+                )
+            )
+
+        msg = await ctx.send(
+            embed=discord.Embed(
+                description="Are you sure you want to do this?\nReact with ✅ to confirm.",
+                color=self.bot.ok_color,
+            ).set_footer(
+                text="⚠️ Elevating people to OWNER privilege will allow them to use owner only commands."
+            )
+        )
+        await msg.add_reaction("\u2705")
+
+        def check(reaction: discord.Reaction, user: discord.User):
+            return user.id == ctx.author.id and str(reaction.emoji) == "\u2705"
+
+        try:
+            await self.bot.wait_for("reaction_add", check=check, timeout=10)
+            self.bot.owner_ids.add(user.id)
+            filtered = [
+                await self.bot.fetch_user(x) for x in self.bot.owner_ids if not x == 000000000000
+            ]
+            await ctx.send(
+                content=user.mention,
+                embed=discord.Embed(
+                    description="You have two minutes.", color=self.bot.ok_color
+                ).add_field(
+                    name="Current privileged People",
+                    value="```\n" + "\n".join(map(str, filtered)) + "\n```",
+                ),
+            )
+            loop = asyncio.get_running_loop()
+
+            def remove_owner():
+                if user.id not in self.bot.owner_ids:
+                    pass
+                self.bot.owner_ids.remove(user.id)
+                self.bot.logger.info(
+                    f"Removed {user}({user.id}) from the elevated owner privilege set."
+                )
+
+            loop.call_later(120, remove_owner)
+        except asyncio.TimeoutError:
+            await ctx.message.add_reaction("⏰")
+            await ctx.send("`Confirmation Timed Out`")
+
+    @commands.command()
+    async def delevate(self, ctx: commands.Context, user: discord.User = None):
+        """Delevate a users ownership privilege"""
+        if not ctx.author.id in self.bot.get_config("config", "config", "owner_ids"):
+            return await ctx.send(
+                embed=discord.Embed(
+                    description="You are not authorized to complete this action",
+                    color=self.bot.error_color,
+                )
+            )
+        if not user:
+            user = ctx.author
+        if user.id not in self.bot.owner_ids:
+            return await ctx.send(
+                embed=discord.Embed(
+                    description=f"{user} is currently does not have ownership privilege",
+                    color=self.bot.error_color,
+                )
+            )
+        self.bot.owner_ids.remove(user.id)
+        await ctx.message.add_reaction("\u2705")
 
     @commands.command(name="eval")
     @commands.is_owner()
@@ -197,33 +283,44 @@ class BotOwner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def reloadall(self, ctx: commands.Context):
-        """Reload all cogs at once"""
+        """Reloads everysingle cog the bot has"""
         await ctx.send(
             embed=discord.Embed(
-                description=f"Attempting to reload {len(list(self.bot.cogs)) - 1} cogs",
+                description="Attempting to reload all cogs/extensions", color=self.bot.ok_color
+            )
+        )
+        await self.bot.reload_all_extensions(ctx)
+
+    @commands.is_owner()
+    @commands.command()
+    async def update(self, ctx: commands.Context):
+        """Update to the latest version of the master repo or whatever the latest commit of your fork is"""
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"Attempting to update {self.bot.user.name} to the latest commit/version.",
                 color=self.bot.ok_color,
             )
         )
-        success = 0
-        failed = 0
-        for cog in os.listdir("./cogs"):
-            if cog.endswith(".py"):
-                try:
-                    self.bot.reload_extension(f"cogs.{cog[:-3]}")
-                    self.bot.logger.info(f"Reloaded {cog}")
-                    success += 1
-                except Exception as e:
-                    self.bot.logger.warning(f"Failed reloading {cog}\n{e}")
-                    failed += 1
+        process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
+        output = process.communicate()[0]
         await ctx.send(
             embed=discord.Embed(
-                description=f"`Successfully reloaded {success} cog(s)`\n`Failed reloading {failed - 1} cog(s)`",
-                # -1 because jsk will always fail to reload
-                color=self.bot.ok_color,
-            ).set_footer(text="If any cogs failed to reload check console for feedback.")
+                description=f"Output: ```{str(output[:1800], 'utf-8')}```", color=self.bot.ok_color
+            )
         )
-        success -= success
-        failed -= failed
+        process = subprocess.Popen(["git", "describe", "--always"], stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+        await ctx.send(
+            embed=discord.Embed(description="Reloading all modules now.", color=self.bot.ok_color)
+        )
+        await asyncio.sleep(1.5)
+        await self.bot.reload_all_extensions(ctx)
+        await ctx.send(
+            embed=discord.Embed(
+                description=f"Sucessfully updated {self.bot.user.name} Version `{self.bot.version}` to `{str(output, 'utf-8')}`",
+                color=self.bot.ok_color,
+            )
+        )
 
     @commands.command()
     @commands.is_owner()
@@ -365,7 +462,7 @@ class BotOwner(commands.Cog):
         `limit`: The amount of messages to check back through. Defaults to 50.
         """
 
-        prefix = config.BOT_PREFIX
+        prefix = self.bot.get_config("config", "config", "prefix")
 
         if ctx.channel.permissions_for(ctx.me).manage_messages:
             messages = await ctx.channel.purge(
@@ -383,7 +480,8 @@ class BotOwner(commands.Cog):
             embed=discord.Embed(
                 description=f"Found and deleted `{len(messages)}` of my message(s) out of the last `{limit}` message(s).",
                 color=self.bot.ok_color,
-            )
+            ),
+            delete_after=5,
         )
 
     @commands.command()
