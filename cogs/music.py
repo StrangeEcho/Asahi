@@ -61,6 +61,10 @@ class Music(commands.Cog):
             return await ctx.send_error("No Activate Players")
         await player.skip()
         await ctx.send_ok("Skipped Last Song")
+        if player.current:
+            await ctx.send_ok(f"Now Playing {player.current.title}")
+        else:
+            await ctx.send_ok("Nothing left in queue.")
 
     @commands.command()
     async def volume(self, ctx: KurisuContext, vol: int):
@@ -122,13 +126,6 @@ class Music(commands.Cog):
 
         if not tracks.tracks:
             return await ctx.send_error("No Tracks Found")
-        if len(tracks.tracks) == 1:
-            player.add(ctx.author, tracks.tracks[0])
-            if player.is_playing:
-                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
-            else:
-                await ctx.send_ok(f"Now Playing {tracks.tracks[0].title}")
-            return
 
         def check(m: discord.Message):
             return (
@@ -150,8 +147,7 @@ class Music(commands.Cog):
         try:
             msg = await self.bot.wait_for("message", check=check, timeout=10.0)
             a_int = int(msg.content) - 1
-            if not player.current:
-                player.add(ctx.author, tracks.tracks[a_int])
+            player.add(ctx.author, tracks.tracks[a_int])
             if player.is_playing:
                 await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
             else:
