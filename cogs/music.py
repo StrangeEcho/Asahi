@@ -127,7 +127,7 @@ class Music(commands.Cog):
             if player.is_playing:
                 await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
             else:
-                await ctx.send_ok(f"Now Playing{tracks.tracks[0].title}")
+                await ctx.send_ok(f"Now Playing {tracks.tracks[0].title}")
 
         def check(m: discord.Message):
             return (
@@ -154,7 +154,7 @@ class Music(commands.Cog):
             if player.is_playing:
                 await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
             else:
-                await ctx.send_ok(f"Now Playing{tracks.tracks[0].title}")
+                await ctx.send_ok(f"Now Playing {tracks.tracks[0].title}")
         except asyncio.TimeoutError:
             await ctx.message.add_reaction("⏰")
 
