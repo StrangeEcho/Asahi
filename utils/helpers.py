@@ -1,4 +1,4 @@
-from discord.ext import commands, menus
+from discord.ext import menus
 
 from .kurisu import KurisuBot
 

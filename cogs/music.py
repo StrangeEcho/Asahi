@@ -31,10 +31,10 @@ class Music(commands.Cog):
     @commands.command(name="connect")
     async def _conenct(self, ctx: KurisuContext):
         """Connect the bot to your vc"""
-        if not ctx.author.voice.channel:
-            return await ctx.send_error(
-                "You are not in a Voice Channel. Please try again after joining one. "
-            )
+        if not ctx.author.voice:
+            return await ctx.send_error("You must be in a vc to use this command.")
+        if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
+            return await ctx.send("I do not have permission to join that channel.")
         await lavalink.connect(ctx.author.voice.channel, True)
         await ctx.send_ok(f"Connected to {ctx.author.voice.channel.name}")
 
@@ -46,6 +46,8 @@ class Music(commands.Cog):
         except KeyError:
             return await ctx.send_error("No Activate Players")
         ct = player.current
+        if not ct:
+            return await ctx.send_error("There is currently no song playing right now.")
         await ctx.send_ok(
             f"Currently Playing [{ct.title}]({ct.uri}) by {ct.author}\nTrack Length: {timedelta(milliseconds=ct.length)}"
         )
@@ -93,6 +95,8 @@ class Music(commands.Cog):
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
             return await ctx.send_error("No Activate Players")
+        if not player.queue:
+            return await ctx.send_error("Nothing in the queue to shuffle.")
         if not player.shuffle:
             player.shuffle = True
             return await ctx.send_ok("Repeating Queue")
@@ -104,8 +108,10 @@ class Music(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def play(self, ctx: KurisuContext, *, query: str):
         """Play a song"""
-        if not ctx.author.voice.channel:
-            return ctx.send_error("You must be in a voice channel to use this command.")
+        if not ctx.author.voice:
+            return await ctx.send_error("You must be in a vc to use this command.")
+        if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
+            return await ctx.send("I do not have permission to join that channel.")
 
         try:
             player = lavalink.get_player(ctx.guild.id)
@@ -113,16 +119,15 @@ class Music(commands.Cog):
             player = await lavalink.connect(ctx.author.voice.channel, True)
 
         tracks = await player.search_yt(query)
-        if not tracks:
-            return await ctx.send_error("No tracks found")
+
+        if not tracks.tracks:
+            return await ctx.send_error("No Tracks Found")
         if len(tracks.tracks) == 1:
             player.add(ctx.author, tracks.tracks[0])
-            return await ctx.send_ok(f"Added {tracks.tracks[0].title} To The Queue.")
-
-        await ctx.send_ok(
-            "Pick 1 out of 5\n"
-            + "\n".join([f"`{x}`. {v.title[:100]} - {timedelta(milliseconds=v.length)}" for x, v in enumerate(tracks.tracks[:5], 1)])
-        )
+            if player.is_playing:
+                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
+            else:
+                await ctx.send_ok(f"Now Playing{tracks.tracks[0].title}")
 
         def check(m: discord.Message):
             return (
@@ -130,21 +135,36 @@ class Music(commands.Cog):
                 and m.channel == ctx.channel
                 and m.content in ["1", "2", "3", "4", "5"]
             )
-        try:
-            msg: discord.Message = await self.bot.wait_for("message", check=check, timeout=15)
-            a_int = int(msg.content) - 1
-            player.add(ctx.author, tracks.tracks[a_int])
-            await ctx.send_ok(f"Added {tracks.tracks[a_int].title} To The Queue.")
-        except asyncio.TimeoutError:
-            await ctx.send_error("Timeout Reached")
 
-        if not player.is_playing:
+        await ctx.send_ok(
+            f"Choose 1 of {'5' if len(tracks.tracks) >= 5 else len(tracks.tracks)}\n"
+            + "\n".join(
+                [
+                    f"`{x}`. [{v.title}]({v.uri}) - {timedelta(milliseconds=v.length)}"
+                    for x, v in enumerate(tracks.tracks[:5], 1)
+                ]
+            )
+        )
+
+        try:
+            msg = await self.bot.wait_for("message", check=check, timeout=10.0)
+            a_int = int(msg.content) - 1
+            if not player.current:
+                player.add(ctx.author, tracks.tracks[a_int])
+            if player.is_playing:
+                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
+            else:
+                await ctx.send_ok(f"Now Playing{tracks.tracks[0].title}")
+        except asyncio.TimeoutError:
+            await ctx.message.add_reaction("⏰")
+
+        if not player.current:
             await player.play()
 
     @commands.command()
     async def disconnect(self, ctx: KurisuContext):
         """Disconnect me from vc"""
-        if not ctx.me.voice.channel:
+        if not ctx.me.voice:
             return ctx.send_error("I am not connected to any vc.")
         if not ctx.author in ctx.me.voice.channel.members:
             return await ctx.send_error("You must be in the same vc as me to disconnect me.")
