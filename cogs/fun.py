@@ -1,4 +1,3 @@
-import random
 from io import BytesIO
 from random import choice, randint
 

@@ -44,7 +44,7 @@ class Actions(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} pats {target}",
-                    color=ctx.author.top_role or self.bot.ok_color,
+                    color=ctx.author.color or self.bot.ok_color,
                 ).set_image(url=(await resp.json())["url"])
             )
 

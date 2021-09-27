@@ -20,12 +20,12 @@ def get_prefix(bot: KurisuBot, msg: discord.Message):
 
 bot = KurisuBot(command_prefix=get_prefix)
 
-if discord.__version__ != "2.0.0a":
-    bot.logger.critical(
-        f"DISCORD.PY VERSION REQUIREMENT NOT MET. EXPECTED 2.0.0a, GOT {discord.__version__}."
-    )
-    bot.logger.critical("EXITING!")
-    exit(code=26)
+# if discord.__version__ != "2.0.0a":
+#     bot.logger.critical(
+#         f"DISCORD.PY VERSION REQUIREMENT NOT MET. EXPECTED 2.0.0a, GOT {discord.__version__}."
+#     )
+#     bot.logger.critical("EXITING!")
+#     exit(code=26)
 
 pm = PrefixManager(bot=bot)
 
