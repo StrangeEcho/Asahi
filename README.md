@@ -93,7 +93,7 @@ Restart=on-success
 RestartSec=1
 User=root
 ExecStartPre=/path/to/Kurisu/venv/bin/python3 -m pip install -U poetry
-ExecStartOre=/path/to/Kurisu/venv/bin/python3 -m poetry install
+ExecStartPre=/path/to/Kurisu/venv/bin/python3 -m poetry install
 ExecStart=/path/to/Kurisu/venv/bin/python3 -u main.py
 WorkingDirectory=/path/to/Kurisu
 
