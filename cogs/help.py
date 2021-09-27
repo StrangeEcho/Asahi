@@ -27,8 +27,8 @@ class Help(commands.Cog):
             )
         )
 
-    @commands.group(invoke_without_command=True)
-    async def help(self, ctx: commands.Context):
+    @commands.group(name="help", invoke_without_command=True)
+    async def _help(self, ctx: commands.Context):
         """Shows information on a specific command or module"""
         await ctx.send(
             embed=discord.Embed(
@@ -54,7 +54,7 @@ class Help(commands.Cog):
             )
         )
 
-    @help.command(aliases=["cmd", "c"])
+    @_help.command(aliases=["cmd", "c"])
     async def command(self, ctx: commands.Context, *, target: str):
         cmd = self.bot.get_command(target.lower())
         if cmd:
@@ -80,7 +80,7 @@ class Help(commands.Cog):
                 embed=discord.Embed(description=f"COMMAND NOT FOUND", color=self.bot.error_color)
             )
 
-    @help.command(aliases=["mod", "m"])
+    @_help.command(aliases=["mod", "m"])
     async def module(self, ctx: commands.Context, target: str):
         found = []
         for c in self.bot.cogs:

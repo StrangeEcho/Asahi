@@ -32,14 +32,13 @@ databases = {extras = ["sqlite"], version = "^0.5.2"}
 humanize = "^3.11.0"
 hentai = "^3.2.8"
 colorama = "^0.4.4"
-dpy-button-utils = "~=1.1.0"
 toml = "^0.10.2"
-red-lavalink = {git = "https://github.com/PredaaA/Red-Lavalink", rev = "feature/dpy-voiceprotocol"}
+red-lavalink = {git = "https://github.com/PredaaA/Red-Lavalink", branch = "feature/dpy-voiceprotocol"}
 discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus"}
 Pillow = "^8.3.2"
 novus = {git = "https://github.com/Voxel-Fox-Ltd/Novus.git"}
 jishaku = {git = "https://github.com/6days9weeks/jishaku.git"}
-voxelbotutils = {git = "https://github.com/Voxel-Fox-Ltd/VoxelBotUtils"}
+voxelbotutils = {git = "https://github.com/6days9weeks/VoxelBotUtils", branch = "siesta"}
 
 [tool.poetry.dev-dependencies]
 

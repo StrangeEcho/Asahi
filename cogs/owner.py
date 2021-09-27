@@ -9,7 +9,6 @@ import textwrap
 import traceback
 
 from discord.ext import commands
-from dpy_button_utils import ButtonConfirmation
 import discord
 
 from utils.funcs import box
@@ -208,31 +207,90 @@ class BotOwner(commands.Cog):
     @commands.is_owner()
     async def restart(self, ctx: commands.Context):
         """Restarts the bot"""
-        if await ButtonConfirmation(
-            ctx,
-            "Are you sure you want me to restart?",
-            destructive=True,
-            confirm="Yes",
-            cancel="No",
-            confirm_message="Attempting to restart. See you in a bit. :wave:",
-            cancel_message="I guess I will stay then",
-        ).run():
+        embed = discord.Embed(title="Are you sure you want me to restart?")
+        embed.color = self.bot.ok_color
+        components = discord.ui.MessageComponents(
+            discord.ui.ActionRow(
+                discord.ui.Button(
+                    label="Yes", style=discord.ui.ButtonStyle.green, custom_id="YES_RESTART"
+                ),
+                discord.ui.Button(
+                    label="No", style=discord.ui.ButtonStyle.red, custom_id="NO_RESTART"
+                ),
+            )
+        )
+        msg = await ctx.send(embed=embed, components=components)
+
+        def check(payload: discord.Interaction):
+            if payload.message.id != msg.id:
+                return False
+            if payload.user.id not in ctx.bot.owner_ids:
+                self.bot.loop.create_task(
+                    payload.response.send_message(
+                        "You can't respond to this message!",
+                        ephemeral=True,
+                    )
+                )
+                return False
+            return True
+
+        try:
+            payload = await self.bot.wait_for("component_interaction", check=check, timeout=60)
+        except asyncio.TimeoutError:
+            embed.title = "Timed out... I guess I will stay then"
+            return await msg.edit(embed=embed, components=None)
+        if payload.component.custom_id == "YES_RESTART":
+            embed.title = "Attempting to restart. See you in a bit. :wave:"
+            await msg.edit(embed=embed, components=None)
             await self.bot.close()
+        else:
+            embed.title = "I guess I will stay then"
+            await msg.edit(embed=embed, components=None)
 
     @commands.command(aliases=["shutdown", "logout", "sleep"])
     @commands.is_owner()
     async def die(self, ctx: commands.Context):
         """Kills the bot process. IF BOT IS RUNNING WITH PM2 IT WILL RESTART REGARDLESS."""
-        if await ButtonConfirmation(
-            ctx,
-            "Are you sure you want me to shutdown?",
-            destructive=True,
-            confirm="Yes",
-            cancel="No",
-            confirm_message="Goodbye then :wave:",
-            cancel_message="I guess I will stay then",
-        ).run():
+
+        embed = discord.Embed(title="Are you sure you want me to shutdown?")
+        embed.color = self.bot.ok_color
+        components = discord.ui.MessageComponents(
+            discord.ui.ActionRow(
+                discord.ui.Button(
+                    label="Yes", style=discord.ui.ButtonStyle.green, custom_id="YES_SHUT"
+                ),
+                discord.ui.Button(
+                    label="No", style=discord.ui.ButtonStyle.red, custom_id="NO_SHUT"
+                ),
+            )
+        )
+        msg = await ctx.send(embed=embed, components=components)
+
+        def check(payload: discord.Interaction):
+            if payload.message.id != msg.id:
+                return False
+            if payload.user.id not in ctx.bot.owner_ids:
+                self.bot.loop.create_task(
+                    payload.response.send_message(
+                        "You can't respond to this message!",
+                        ephemeral=True,
+                    )
+                )
+                return False
+            return True
+
+        try:
+            payload = await self.bot.wait_for("component_interaction", check=check, timeout=60)
+        except asyncio.TimeoutError:
+            embed.title = "Timed out... I guess I will stay then"
+            return await msg.edit(embed=embed, components=None)
+        if payload.component.custom_id == "YES_SHUT":
+            embed.title = "Goodbye then :wave:"
+            await msg.edit(embed=embed, components=None)
             await self.bot.full_exit()
+        else:
+            embed.title = "I guess I will stay then"
+            await msg.edit(embed=embed, components=None)
 
     @commands.command()
     @commands.is_owner()
@@ -264,9 +322,9 @@ class BotOwner(commands.Cog):
         except commands.ExtensionError as e:
             await ctx.send(embed=discord.Embed(description=e, color=self.bot.error_color))
 
-    @commands.command()
+    @commands.command(name="reload")
     @commands.is_owner()
-    async def reload(self, ctx: commands.Context, extension):
+    async def _reload(self, ctx: commands.Context, extension):
         """Reload bot extensions"""
         try:
             self.bot.reload_extension(extension)

@@ -229,14 +229,6 @@ reference = "master"
 resolved_reference = "45d498c1b76deaf3b394d17ccf56112fa691d160"
 
 [[package]]
-name = "dpy-button-utils"
-version = "1.1.0"
-description = "An extension for discord.py that allows your bot to use buttons"
-category = "main"
-optional = false
-python-versions = ">=3.8"
-
-[[package]]
 name = "greenlet"
 version = "1.1.1"
 description = "Lightweight in-process concurrent programming"
@@ -544,7 +536,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "voxelbotutils"
-version = "0.8.2a1599+g6a49aa7"
+version = "0.8.2a1630+gb87583e"
 description = "A set of bot utilities for Novus"
 category = "main"
 optional = false
@@ -569,9 +561,9 @@ web = ["cryptography (>=3.3.1,<4.0)", "aiohttp-jinja2 (>=1.4.2,<2.0)", "aiohttp-
 
 [package.source]
 type = "git"
-url = "https://github.com/Voxel-Fox-Ltd/VoxelBotUtils"
-reference = "master"
-resolved_reference = "6a49aa7a6d7814cf412a4a0e108d9e3f61679ef3"
+url = "https://github.com/6days9weeks/VoxelBotUtils"
+reference = "siesta"
+resolved_reference = "b87583e3ed4ed6a250b144100dd8f4c20e66aff5"
 
 [[package]]
 name = "yarl"
@@ -588,7 +580,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">3.8.0,<4.0"
-content-hash = "8b64d43bd254edbb32bff7c8bb1d1cc9db6fa7e10bdf034d7e291a191fc671ec"
+content-hash = "591c0d528064097c67bb6d1c38075de2b813d2051cf34181f2146a89be1c74e2"
 
 [metadata.files]
 aiodogstatsd = [
@@ -735,10 +727,6 @@ databases = [
 ]
 discord-ext-menus = []
 "discord.py" = []
-dpy-button-utils = [
-    {file = "dpy_button_utils-1.1.0-py3-none-any.whl", hash = "sha256:0d9d009b031f8a85b7a5193c652a5c59827038e752ed2295a7b317de847fbb4a"},
-    {file = "dpy_button_utils-1.1.0.tar.gz", hash = "sha256:60c6f5953d5cfc5bc805f4d41880976f90818154747a08ee6fece9d410f135b9"},
-]
 greenlet = [
     {file = "greenlet-1.1.1-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:476ba9435afaead4382fbab8f1882f75e3fb2285c35c9285abb3dd30237f9142"},
     {file = "greenlet-1.1.1-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:44556302c0ab376e37939fd0058e1f0db2e769580d340fb03b01678d1ff25f68"},

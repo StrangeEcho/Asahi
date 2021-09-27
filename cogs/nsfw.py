@@ -5,7 +5,6 @@ from discord.ext import commands, vbu
 import discord
 import hentai
 
-from utils.helpers import EmbedListMenu
 from utils.kurisu import KurisuBot
 
 
