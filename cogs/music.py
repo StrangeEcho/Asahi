@@ -133,6 +133,7 @@ class Music(commands.Cog):
                 await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue")
             else:
                 await ctx.send_ok(f"Now playing {tracks.tracks[0].title}")
+            return
 
         def check(m: discord.Message):
             return (
