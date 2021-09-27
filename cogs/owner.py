@@ -3,7 +3,6 @@ from typing import Optional
 import asyncio
 import inspect
 import io
-import os
 import re
 import subprocess
 import textwrap
