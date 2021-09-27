@@ -1,10 +1,9 @@
+import functools
 import random
-from random import choice
 
 from discord.ext import commands, vbu
-import hentai
-import functools
 import discord
+import hentai
 
 from utils.kurisu import KurisuBot
 
@@ -80,7 +79,7 @@ class NSFW(commands.Cog):
         available_tags = ["waifu", "neko", "trap", "blowjob"]
 
         if tag is None:
-            tag = choice(available_tags)
+            tag = random.choice(available_tags)
 
         if tag is not None and tag.lower() == "list":
             tags = "\n".join(available_tags)
@@ -114,7 +113,7 @@ class NSFW(commands.Cog):
         available_tags = ["waifu", "neko", "trap", "blowjob"]
 
         if tag is None:
-            tag = choice(available_tags)
+            tag = random.choice(available_tags)
 
         if tag is not None and tag.lower() == "list":
             tags = "\n".join(available_tags)

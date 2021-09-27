@@ -1,5 +1,5 @@
-import asyncio
 from datetime import timedelta
+import asyncio
 
 from discord.ext import commands
 import discord
@@ -187,7 +187,7 @@ class Music(commands.Cog):
         if payload.component.custom_id == "CLOSE_MENU":
             embed.description = "Why did you try to play a song at the first place?"
             return await msg.edit(embed=embed, components=None)
-        
+
         await msg.delete()
 
         a_int = int(payload.values[0]) - 1
