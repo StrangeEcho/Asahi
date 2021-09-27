@@ -108,7 +108,7 @@ class Music(commands.Cog):
             player.shuffle = False
             return await ctx.send_ok("No longer repeating queue")
 
-    @commands.command()
+    @commands.command(aliases=["p"])
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def play(self, ctx: KurisuContext, *, query: str):
         """Play a song"""
@@ -126,6 +126,13 @@ class Music(commands.Cog):
 
         if not tracks.tracks:
             return await ctx.send_error("No Tracks Found")
+
+        if len(tracks.tracks) == 1:
+            await player.add(ctx.author, tracks.tracks[0])
+            if player.is_playing:
+                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue")
+            else:
+                await ctx.send_ok(f"Now playing {tracks.tracks[0].title}")
 
         def check(m: discord.Message):
             return (
@@ -149,9 +156,9 @@ class Music(commands.Cog):
             a_int = int(msg.content) - 1
             player.add(ctx.author, tracks.tracks[a_int])
             if player.is_playing:
-                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
+                await ctx.send_ok(f"Added {tracks.tracks[a_int].title} to the queue.")
             else:
-                await ctx.send_ok(f"Now Playing {tracks.tracks[0].title}")
+                await ctx.send_ok(f"Now Playing {tracks.tracks[a_int].title}")
         except asyncio.TimeoutError:
             await ctx.message.add_reaction("⏰")
 
