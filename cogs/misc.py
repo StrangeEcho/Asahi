@@ -1,8 +1,10 @@
+from datetime import datetime
 import os
 import platform
 import time
 
-from discord.ext import commands, vbu
+from EZPaginator import Paginator
+from discord.ext import commands
 import aiohttp
 import discord
 import humanize
@@ -108,24 +110,18 @@ class Miscellaneous(commands.Cog):
             color=self.bot.ok_color,
         )
         embed.set_author(icon_url=self.bot.user.avatar.url, name="General")
-        embed.description = "Click [Here](https://discord.com/api/oauth2/authorize?client_id={}&scope=bot) To Invite Me and Click [Here](https://discord.gg/Cs5RdJF9pb) To Join My Support Server".format(
-            self.bot.get_config("config", "config", "application_id")
-        )
-        embed.add_field(name="Owner(s)", value="\n".join(map(str, owners)), inline=False)
+        embed.add_field(name="Author(s)", value="\n".join(map(str, owners)))
         embed.add_field(
-            name="Mention & ID",
-            value=f"{self.bot.user.mention}\n`{self.bot.user.id}`",
-            inline=False,
+            name="Mention & ID", value=f"{self.bot.user.mention}\n`{self.bot.user.id}`"
         )
-        embed.add_field(
-            name="I was created at...",
-            value=f"<t:{int(self.bot.user.created_at.timestamp())}:F>",
-            inline=False,
-        )
+        embed.add_field(name="I was created at...", value=self.bot.user.created_at.strftime("%c"))
         embed.add_field(
             name="Prefix",
             value=f"`{self.bot.prefixes.get(str(ctx.guild.id)) or self.bot.get_config('config', 'config', 'prefix')}` or {self.bot.user.mention}",
-            inline=False,
+        )
+        embed.add_field(
+            name="Support Server & Invite Link",
+            value=f"Click [Here](https://discord.com/api/oauth2/authorize?client_id={self.bot.get_config('config', 'config', 'application_id')}&scope=bot) To Invite Me and Click [Here](https://discord.gg/Cs5RdJF9pb) To Join My Support Server",
         )
         embed.set_footer(
             icon_url=self.bot.user.avatar.url, text=f"{self.bot.user.name} was made with love <3"
@@ -139,42 +135,32 @@ class Miscellaneous(commands.Cog):
         embed2.add_field(
             name="On-Board Memory Usage",
             value=f"{round(process.memory_info().rss / 1024 ** 2)} MBs",
-            inline=False,
         )
-        embed2.add_field(
-            name=f"Websocket Latency", value=f"{round(self.bot.latency * 1000)} ms", inline=False
-        )
+        embed2.add_field(name=f"Websocket Latency", value=f"{round(self.bot.latency * 1000)} ms")
         embed2.add_field(name="Shard Count", value=len(self.bot.shards))
         embed2.add_field(
             name="Cached Users & Guilds",
             value=f"Users: {len(self.bot.users)}\nGuilds: {len(self.bot.guilds)}",
-            inline=False,
         )
-        embed2.add_field(
-            name="Channels", value=f"Text: {text_channels}\nVoice: {voice_channels}", inline=False
-        )
+        embed2.add_field(name="Channels", value=f"Text: {text_channels}\nVoice: {voice_channels}")
         embed2.add_field(
             name="Uptime",
-            value=f"{humanize.time.naturaldelta(discord.utils.utcnow() - self.bot.uptime)}",
-            inline=False,
+            value=f"{humanize.time.naturaldelta(datetime.utcnow() - self.bot.uptime)}",
         )
-        embed2.add_field(
-            name="Commands Executed Since Startup", value=self.bot.executed_commands, inline=False
-        )
+        embed2.add_field(name="Commands Executed Since Startup", value=self.bot.executed_commands)
         embed3 = discord.Embed(title=f"{self.bot.user.name} Stats", color=self.bot.ok_color)
         embed3.set_author(icon_url=self.bot.user.avatar.url, name="About Me")
-        embed3.add_field(name="Bot Version", value=f"`{self.bot.version}`", inline=False)
+        embed3.add_field(name="Bot Version", value=f"`{self.bot.version}`")
         embed3.add_field(
-            name="Python Version",
-            value=f"[{platform.python_version()}](https://python.org)",
-            inline=False,
+            name="Python Version", value=f"[{platform.python_version()}](https://python.org)"
         )
         embed3.add_field(
             name="Discord.py Version",
             value=f"[{discord.__version__}](https://discordpy.readthedocs.io/en/master/index.html)",
-            inline=False,
         )
-        await vbu.Paginator([embed, embed2, embed3], per_page=1).start(ctx)
+        msg = await ctx.send(embed=embed)
+        paginator = Paginator(self.bot, msg, embeds=[embed, embed2, embed3])
+        await paginator.start()
 
     @commands.command(usage="(project name)")
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -221,7 +207,7 @@ class Miscellaneous(commands.Cog):
     async def uptime(self, ctx: commands.Context):
         """Shows bot's uptime."""
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
-        delta = discord.utils.utcnow() - self.bot.uptime
+        delta = datetime.utcnow() - self.bot.uptime
         uptime_text = humanize.time.precisedelta(delta) or "Less than one second."
         embed = discord.Embed(colour=self.bot.ok_color)
         embed.add_field(name=f"{self.bot.user.name} has been up for:", value=uptime_text)

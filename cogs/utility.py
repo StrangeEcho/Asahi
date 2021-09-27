@@ -1,4 +1,5 @@
 from io import BytesIO
+from random import choice
 from typing import cast, Optional, Union
 import io
 
