@@ -60,7 +60,7 @@ nano config.toml #After filling it out. Save and exit with ctrl+x
 
 * Now then if you did everything right you should now be able to run the bot\
 Its as simple as `python3 main.py`
-- Congrats you have the bot running 🥳
+- Congrats you have the bot running 🎉
 
 ### Pm2 Setup
 
@@ -92,7 +92,8 @@ Type=simple
 Restart=on-success
 RestartSec=1
 User=root
-ExecStartPre=/path/to/Kurisu/venv/bin/python3 -m pip install -U poetry && poetry install
+ExecStartPre=/path/to/Kurisu/venv/bin/python3 -m pip install -U poetry
+ExecStartOre=/path/to/Kurisu/venv/bin/python3 -m poetry install
 ExecStart=/path/to/Kurisu/venv/bin/python3 -u main.py
 WorkingDirectory=/path/to/Kurisu
 
