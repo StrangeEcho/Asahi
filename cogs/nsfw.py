@@ -13,9 +13,13 @@ from utils.kurisu import KurisuBot
 class Embed(discord.Embed):
     def __init__(self, bot: KurisuBot, timestamp=None, **kwargs):
         super(Embed, self).__init__(
+<<<<<<< HEAD
             colour=int(
                 str(bot.get_config("configoptions", "options", "ok_color")).replace("#", "0x")
             ),
+=======
+            colour=str(bot.get_config("configoptions", "options", "ok_color")).replace("#", "0x"),
+>>>>>>> parent of edfe59d (lets see)
             timestamp=timestamp or datetime.datetime.utcnow(),
             **kwargs,
         )
