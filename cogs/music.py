@@ -1,11 +1,13 @@
 from datetime import timedelta
 import asyncio
 
-from discord.ext import commands
+from discord.ext import commands, vbu
+from tabulate import tabulate
 import discord
 import lavalink
 
 from utils.context import KurisuContext
+from utils.funcs import box, parse_llnode_stat
 from utils.kurisu import KurisuBot
 
 
@@ -65,6 +67,39 @@ class Music(commands.Cog):
             await ctx.send_ok(f"Now Playing {player.current.title}")
         else:
             await ctx.send_ok("Nothing left in queue.")
+
+    @commands.command()
+    @commands.is_owner()
+    async def llnodestats(self, ctx: commands.Context):
+        """Get Lavalink Node Stats"""
+        nodes = lavalink.node.get_nodes_stats()
+        if not nodes:
+            await ctx.send("No nodes found.")
+            return
+
+        stats = [stat for stat in dir(nodes[0]) if not stat.startswith("_")]
+        tabs = []
+        for i, n in enumerate(nodes, start=1):
+            tabs.append(
+                f"Node {i}/{len(nodes)}\n"
+                + box(
+                    tabulate(
+                        [
+                            (
+                                stat.replace("_", " ").title(),
+                                await parse_llnode_stat(n, stat),
+                            )
+                            for stat in stats
+                        ],
+                    ),
+                    "ml",
+                )
+            )
+
+        if len(tabs) != 1:
+            await vbu.Paginator(tabs, per_page=1).start(ctx, timeout=45)
+        else:
+            await ctx.send(tabs[0])
 
     @commands.command()
     async def volume(self, ctx: KurisuContext, vol: int):
@@ -233,8 +268,11 @@ class Music(commands.Cog):
             embed=discord.Embed(
                 title=f"Queue For {ctx.guild.name}",
                 description=f"Total Tracks: {len(player.queue)}\nTotal Track Time: {timedelta(milliseconds=total_time)}",
-                color=self.bot.ok_color
-            ).add_field(name="Tracks", value="\n".join([f"{x}. {v.title}" for x, v in enumerate(player.queue, 1)]))
+                color=self.bot.ok_color,
+            ).add_field(
+                name="Tracks",
+                value="\n".join([f"{x}. {v.title}" for x, v in enumerate(player.queue, 1)]),
+            )
         )
 
 
