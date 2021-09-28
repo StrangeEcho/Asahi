@@ -226,10 +226,16 @@ class Music(commands.Cog):
         player = lavalink.get_player(ctx.guild.id)
         if len(player.queue) == 0:
             return await ctx.send_error("Nothing in queue.")
-        msg = f"**Queue in {ctx.guild.name}:**\n\n"
-        for t in player.queue:
-            msg += f"- `{t.title}` Added by `{t.requester}`\n"
-        await ctx.send_ok(msg)
+        total_time = 0
+        for time in [i.length for i in player.queue]:
+            total_time += time
+        await ctx.send(
+            embed=discord.Embed(
+                title=f"Queue For {ctx.guild.name}",
+                description=f"Total Tracks: {len(player.queue)}\nTotal Track Time: {total_time}",
+                color=self.bot.ok_color
+            ).add_field(name="Tracks", value="\n".join([f"{x}. {v.title}" for x, v in enumerate(player.queue, 1)]))
+        )
 
 
 def setup(bot):
