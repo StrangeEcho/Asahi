@@ -232,7 +232,7 @@ class Music(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title=f"Queue For {ctx.guild.name}",
-                description=f"Total Tracks: {len(player.queue)}\nTotal Track Time: {total_time}",
+                description=f"Total Tracks: {len(player.queue)}\nTotal Track Time: {timedelta(milliseconds=total_time)}",
                 color=self.bot.ok_color
             ).add_field(name="Tracks", value="\n".join([f"{x}. {v.title}" for x, v in enumerate(player.queue, 1)]))
         )
