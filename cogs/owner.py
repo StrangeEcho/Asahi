@@ -74,49 +74,68 @@ class BotOwner(commands.Cog):
                     color=self.bot.error_color,
                 )
             )
+        components = discord.ui.MessageComponents(
+            discord.ui.ActionRow(
+                discord.ui.Button(label="yes", style=discord.ui.ButtonStyle.green)
+            )
+        )
 
         msg = await ctx.send(
             embed=discord.Embed(
-                description="Are you sure you want to do this?\nReact with ✅ to confirm.",
+                description="Are you sure you want to do this?\nClick yes to confirm.",
                 color=self.bot.ok_color,
             ).set_footer(
                 text="⚠️ Elevating people to OWNER privilege will allow them to use owner only commands."
-            )
+            ),
+            components=components,
         )
-        await msg.add_reaction("\u2705")
 
-        def check(reaction: discord.Reaction, user: discord.User):
-            return user.id == ctx.author.id and str(reaction.emoji) == "\u2705"
+        def check(payload: discord.Interaction):
+            if payload.message.id != msg.id:
+                return False
+            if payload.user.id not in self.bot.get_config("config", "config", "owner_ids"):
+                self.bot.loop.create_task(
+                    payload.response.send_message(
+                        "You aren't in the bots owners!",
+                        ephemeral=True,
+                    )
+                )
+                return False
+            return True
 
         try:
-            await self.bot.wait_for("reaction_add", check=check, timeout=10)
-            self.bot.owner_ids.add(user.id)
-            filtered = [
-                await self.bot.fetch_user(x) for x in self.bot.owner_ids if not x == 000000000000
-            ]
-            await ctx.send(
-                content=user.mention,
-                embed=discord.Embed(
-                    description="You have two minutes.", color=self.bot.ok_color
-                ).add_field(
-                    name="Current privileged People",
-                    value="```\n" + "\n".join(map(str, filtered)) + "\n```",
-                ),
-            )
-            loop = asyncio.get_running_loop()
-
-            def remove_owner():
-                if user.id not in self.bot.owner_ids:
-                    pass
-                self.bot.owner_ids.remove(user.id)
-                self.bot.logger.info(
-                    f"Removed {user}({user.id}) from the elevated owner privilege set."
-                )
-
-            loop.call_later(120, remove_owner)
+            payload = await self.bot.wait_for("component_interaction", check=check, timeout=10)
         except asyncio.TimeoutError:
+            await msg.edit(components=None)
             await ctx.message.add_reaction("⏰")
             await ctx.send("`Confirmation Timed Out`")
+            return
+        await payload.response.defer_update()
+        await msg.edit(components=None)
+        self.bot.owner_ids.add(user.id)
+        filtered = [
+            await self.bot.fetch_user(x) for x in self.bot.owner_ids if not x == 000000000000
+        ]
+        await ctx.send(
+            content=user.mention,
+            embed=discord.Embed(
+                description="You have two minutes.", color=self.bot.ok_color
+            ).add_field(
+                name="Current privileged People",
+                value="```\n" + "\n".join(map(str, filtered)) + "\n```",
+            ),
+        )
+        loop = asyncio.get_running_loop()
+
+        def remove_owner():
+            if user.id not in self.bot.owner_ids:
+                pass
+            self.bot.owner_ids.remove(user.id)
+            self.bot.logger.info(
+                f"Removed {user}({user.id}) from the elevated owner privilege set."
+            )
+
+        loop.call_later(120, remove_owner)
 
     @commands.command()
     async def delevate(self, ctx: commands.Context, user: discord.User = None):
