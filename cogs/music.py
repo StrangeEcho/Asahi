@@ -193,9 +193,9 @@ class Music(commands.Cog):
         a_int = int(payload.values[0]) - 1
         player.add(ctx.author, tracks.tracks[a_int])
         if player.is_playing:
-            await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
+            await ctx.send_ok(f"Added {tracks.tracks[a_int].title} to the queue.")
         else:
-            await ctx.send_ok(f"Now Playing {tracks.tracks[0].title}")
+            await ctx.send_ok(f"Now Playing {tracks.tracks[a_int].title}")
         if not player.current:
             await player.play()
 
