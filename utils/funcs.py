@@ -1,4 +1,8 @@
+from typing import Optional, SupportsInt
+import datetime
+
 from discord.ext import commands
+from humanize import naturalsize
 import discord
 
 
@@ -21,6 +25,30 @@ async def check_hierarchy(ctx: commands.Context, member: discord.Member):
         return await ctx.send(
             f"You can't {ctx.command.name} someone who is equal or higher in power to you on the role hierarchy"
         )
+
+
+async def parse_llnode_stat(stats, stat_name: str):
+    stat = getattr(stats, stat_name)
+    if isinstance(stat, int) and stat_name.startswith("memory_"):
+        stat = naturalsize(stat, binary=True)
+    if stat_name == "uptime":
+        stat = humanize_timedelta(seconds=stat / 1000)
+    if "load" in stat_name:
+        stat = f"{round(stat * 100, 2)} %"
+    return stat
+
+
+def humanize_timedelta(
+    *, timedelta: Optional[datetime.timedelta] = None, seconds: Optional[SupportsInt] = None
+) -> str:
+    """
+    Get a locale aware human timedelta representation.
+    """
+
+    try:
+        obj = seconds if seconds is not None else timedelta.total_seconds()
+    except AttributeError:
+        raise ValueError("You must provide either a timedelta or a number of seconds")
 
 
 # Credits to https://github.com/Cog-Creators/Red-DiscordBot/blob/ded5aff08cfe443498770e7f27035db694e72c30/redbot/core/utils/chat_formatting.py#L86
