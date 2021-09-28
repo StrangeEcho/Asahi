@@ -1,5 +1,5 @@
-import asyncio
 from datetime import timedelta
+import asyncio
 
 from discord.ext import commands
 import discord
@@ -61,6 +61,10 @@ class Music(commands.Cog):
             return await ctx.send_error("No Activate Players")
         await player.skip()
         await ctx.send_ok("Skipped Last Song")
+        if player.current:
+            await ctx.send_ok(f"Now Playing {player.current.title}")
+        else:
+            await ctx.send_ok("Nothing left in queue.")
 
     @commands.command()
     async def volume(self, ctx: KurisuContext, vol: int):
@@ -104,7 +108,7 @@ class Music(commands.Cog):
             player.shuffle = False
             return await ctx.send_ok("No longer repeating queue")
 
-    @commands.command()
+    @commands.command(aliases=["p"])
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def play(self, ctx: KurisuContext, *, query: str):
         """Play a song"""
@@ -122,42 +126,76 @@ class Music(commands.Cog):
 
         if not tracks.tracks:
             return await ctx.send_error("No Tracks Found")
+
         if len(tracks.tracks) == 1:
-            player.add(ctx.author, tracks.tracks[0])
+            await player.add(ctx.author, tracks.tracks[0])
             if player.is_playing:
-                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
+                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue")
             else:
-                await ctx.send_ok(f"Now Playing {tracks.tracks[0].title}")
+                await ctx.send_ok(f"Now playing {tracks.tracks[0].title}")
+            return
 
-        def check(m: discord.Message):
-            return (
-                m.author == ctx.author
-                and m.channel == ctx.channel
-                and m.content in ["1", "2", "3", "4", "5"]
-            )
+        track_options = []
 
-        await ctx.send_ok(
-            f"Choose 1 of {'5' if len(tracks.tracks) >= 5 else len(tracks.tracks)}\n"
-            + "\n".join(
-                [
-                    f"`{x}`. [{v.title}]({v.uri}) - {timedelta(milliseconds=v.length)}"
-                    for x, v in enumerate(tracks.tracks[:5], 1)
-                ]
+        for x, v in enumerate(tracks.tracks[:5], 1):
+            track_options.append(
+                discord.ui.SelectOption(
+                    label=v.title[:100],
+                    description=f"Length: {timedelta(milliseconds=v.length)}",
+                    value=x,
+                )
             )
+        embed = discord.Embed(
+            description="Use the select menu below to choose an song to play.",
+            color=self.bot.ok_color,
+            timestamp=discord.utils.utcnow(),
         )
+        components = discord.ui.MessageComponents(
+            discord.ui.ActionRow(
+                discord.ui.SelectMenu(
+                    custom_id="MUSIC_TRACK",
+                    options=track_options,
+                    placeholder="Select a song",
+                ),
+            ),
+            discord.ui.ActionRow(
+                discord.ui.Button(
+                    label="cancel", style=discord.ui.ButtonStyle.danger, custom_id="CLOSE_MENU"
+                )
+            ),
+        )
+        msg = await ctx.send(embed=embed, components=components)
+
+        def check(payload: discord.Interaction):
+            if payload.message.id != msg.id:
+                return False
+            if payload.user.id not in (*ctx.bot.owner_ids, ctx.author.id):
+                self.bot.loop.create_task(
+                    payload.response.send_message(
+                        "You can't use this select!",
+                        ephemeral=True,
+                    )
+                )
+                return False
+            return True
 
         try:
-            msg = await self.bot.wait_for("message", check=check, timeout=10.0)
-            a_int = int(msg.content) - 1
-            if not player.current:
-                player.add(ctx.author, tracks.tracks[a_int])
-            if player.is_playing:
-                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue.")
-            else:
-                await ctx.send_ok(f"Now Playing {tracks.tracks[0].title}")
+            payload = await self.bot.wait_for("component_interaction", check=check, timeout=60)
         except asyncio.TimeoutError:
-            await ctx.message.add_reaction("⏰")
+            embed.description = "Timed out... Choose an song before Christmas comes."
+            return await msg.edit(embed=embed, components=None)
+        if payload.component.custom_id == "CLOSE_MENU":
+            embed.description = "Why did you try to play a song at the first place?"
+            return await msg.edit(embed=embed, components=None)
 
+        await msg.delete()
+
+        a_int = int(payload.values[0]) - 1
+        player.add(ctx.author, tracks.tracks[a_int])
+        if player.is_playing:
+            await ctx.send_ok(f"Added {tracks.tracks[a_int].title} to the queue.")
+        else:
+            await ctx.send_ok(f"Now Playing {tracks.tracks[a_int].title}")
         if not player.current:
             await player.play()
 
@@ -188,10 +226,16 @@ class Music(commands.Cog):
         player = lavalink.get_player(ctx.guild.id)
         if len(player.queue) == 0:
             return await ctx.send_error("Nothing in queue.")
-        msg = f"**Queue in {ctx.guild.name}:**\n\n"
-        for t in player.queue:
-            msg += f"- `{t.title}` Added by `{t.requester}`\n"
-        await ctx.send_ok(msg)
+        total_time = 0
+        for time in [i.length for i in player.queue]:
+            total_time += time
+        await ctx.send(
+            embed=discord.Embed(
+                title=f"Queue For {ctx.guild.name}",
+                description=f"Total Tracks: {len(player.queue)}\nTotal Track Time: {timedelta(milliseconds=total_time)}",
+                color=self.bot.ok_color
+            ).add_field(name="Tracks", value="\n".join([f"{x}. {v.title}" for x, v in enumerate(player.queue, 1)]))
+        )
 
 
 def setup(bot):

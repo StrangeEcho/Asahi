@@ -1,5 +1,4 @@
 from io import BytesIO
-from random import choice
 from typing import cast, Optional, Union
 import io
 
@@ -210,24 +209,31 @@ class Utility(commands.Cog):
             guild = ctx.guild
 
         weird_stuff = {
-            "ANIMATED_ICON": ("Animated Icon"),
-            "BANNER": ("Banner Image"),
-            "COMMERCE": ("Commerce"),
-            "COMMUNITY": ("Community"),
-            "DISCOVERABLE": ("Server Discovery"),
-            "FEATURABLE": ("Featurable"),
-            "INVITE_SPLASH": ("Splash Invite"),
-            "MEMBER_LIST_DISABLED": ("Member list disabled"),
-            "MEMBER_VERIFICATION_GATE_ENABLED": ("Membership Screening enabled"),
-            "MORE_EMOJI": ("More Emojis"),
-            "NEWS": ("News Channels"),
-            "PARTNERED": ("Partnered"),
-            "PREVIEW_ENABLED": ("Preview enabled"),
-            "PUBLIC_DISABLED": ("Public disabled"),
-            "VANITY_URL": ("Vanity URL"),
-            "VERIFIED": ("Verified"),
-            "VIP_REGIONS": ("VIP Voice Servers"),
-            "WELCOME_SCREEN_ENABLED": ("Welcome Screen enabled"),
+            "ANIMATED_ICON": "Animated Icon",
+            "BANNER": "Banner Image",
+            "COMMERCE": "Commerce",
+            "COMMUNITY": "Community",
+            "DISCOVERABLE": "Server Discovery",
+            "FEATURABLE": "Featurable",
+            "INVITE_SPLASH": "Splash Invite",
+            "MEMBER_LIST_DISABLED": "Member list disabled",
+            "MEMBER_VERIFICATION_GATE_ENABLED": "Membership Screening enabled",
+            "MORE_EMOJI": "More Emojis",
+            "NEWS": "News Channels",
+            "PARTNERED": "Partnered",
+            "PREVIEW_ENABLED": "Preview enabled",
+            "PUBLIC_DISABLED": "Public disabled",
+            "VANITY_URL": "Vanity URL",
+            "VERIFIED": "Verified",
+            "VIP_REGIONS": "VIP Voice Servers",
+            "WELCOME_SCREEN_ENABLED": "Welcome Screen enabled",
+            "THREADS_ENABLED": "Threads Enabled",
+            "THREADS_ENABLED_TESTING": "Threads Testing",
+            "PRIVATE_THREADS": "Private Threads",
+            "SEVEN_DAY_THREAD_ARCHIVE": "Seven Days Thread Archive",
+            "THREE_DAY_THREAD_ARCHIVE": "Three Days Thread Archive",
+            "ROLE_ICONS": "Role Icons",
+            "RELAYS": "Relays Enabled",
         }
         guild_features = [
             f"✅ {name}\n"
@@ -239,11 +245,12 @@ class Utility(commands.Cog):
         embed.add_field(
             name="Owner", value=f"Name: **{guild.owner}**\nID: **{guild.owner.id}**", inline=True
         )
-        embed.add_field(name="Server ID", value=f"**{guild.id}**", inline=True)
-        embed.add_field(name="Creation Time", value=guild.created_at.strftime("%c"), inline=False)
+        embed.add_field(
+            name="Creation Time", value=f"<t:{int(guild.created_at.timestamp())}:F>", inline=False
+        )
         embed.add_field(name="Region", value=str(guild.region).upper(), inline=True)
         embed.add_field(name="Member Count", value=f"**{guild.member_count}**", inline=True)
-        embed.add_field(name="Role Count", value="**{}**".format(len(guild.roles)), inline=False)
+        embed.add_field(name="Role Count", value="**{}**".format(len(guild.roles)), inline=True)
         embed.add_field(
             name="Channel Count",
             value=f"Categories: **{len(guild.categories)}**\nText: **{len(guild.text_channels)}**\nVoice: **{len(guild.voice_channels)}**\nTotal: **{len(guild.text_channels) + len(guild.voice_channels)}**",
@@ -252,6 +259,12 @@ class Utility(commands.Cog):
         embed.add_field(name="Emoji Count", value="**{}**".format(len(guild.emojis)), inline=True)
         if guild_features:
             embed.add_field(name="Features", value="".join(guild_features), inline=False)
+        if guild.banner:
+            embed.set_image(url=guild.banner.url)
+        elif guild.splash:
+            embed.set_image(url=guild.splash.url)
+
+        embed.set_footer(text=f"ID: {guild.id}")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["uinfo", "memberinfo", "minfo"])
@@ -273,10 +286,14 @@ class Utility(commands.Cog):
         )
         embed.add_field(
             name="Account Creation",
-            value=user.created_at.strftime("%c"),
+            value=f"<t:{int(user.created_at.timestamp())}:F>",
         )
         embed.add_field(
-            name=f"{ctx.guild} Join Date", value=user.joined_at.strftime("%c"), inline=False
+            name=f"{ctx.guild} Join Date",
+            value=f"<t:{int(user.joined_at.timestamp())}:F>"
+            if user.joined_at != None
+            else "Unknown.",
+            inline=False,
         )
         if roles:
             embed.add_field(
@@ -286,6 +303,9 @@ class Utility(commands.Cog):
             )
         if user_flags:
             embed.add_field(name="Public User Flags", value=user_flags.upper(), inline=False)
+        if not user.bot:
+            if banner := (await self.bot.fetch_user(user.id)).banner:
+                embed.set_image(url=banner.url)
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["rinfo"])
@@ -363,7 +383,7 @@ class Utility(commands.Cog):
         if user is None:
             user = ctx.author
         av = user.avatar
-        e = discord.Embed(title=f"{user}'s avatar", color=self.bot.ok_color)
+        e = discord.Embed(title=f"{user.name}'s avatar", color=self.bot.ok_color)
         e.add_field(
             name="File Formations",
             value=f"[jpg]({av.with_format('jpg')}), "
