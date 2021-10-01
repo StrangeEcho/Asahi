@@ -5,7 +5,7 @@ __pycache__
 .idea
 venv
 /cogs/testing.py
-kurisu.db
+*.db
 
 # personal
 setup.sh
