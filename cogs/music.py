@@ -23,12 +23,18 @@ class Music(commands.Cog):
 
     async def node_init(self):
         """Initialize LavaLink Node"""
-        await lavalink.initialize(
-            bot=self.bot, host=self.ll_ip, ws_port=self.ll_ws_port, password=self.ll_password
-        )
-        self.bot.logger.info(
-            f"Initialized LavaLink Node\nIP: {self.ll_ip}\nPort: {self.ll_ws_port}"
-        )
+        try:
+            await lavalink.initialize(
+                bot=self.bot, host=self.ll_ip, ws_port=self.ll_ws_port, password=self.ll_password
+            )
+            self.bot.logger.info(
+                f"Initialized LavaLink Node\nIP: {self.ll_ip}\nPort: {self.ll_ws_port}"
+            )
+        except:
+            self.bot.logger.warning("Error thrown in Music Init. This usually means theres an error in your ll credentials.\nUnloading Cog Now.")
+            self.cog_unload()
+
+
 
     @commands.command(name="connect")
     async def _conenct(self, ctx: KurisuContext):
