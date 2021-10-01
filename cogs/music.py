@@ -34,8 +34,6 @@ class Music(commands.Cog):
             self.bot.logger.warning("Error thrown in Music Init. This usually means theres an error in your ll credentials.\nUnloading Cog Now.")
             self.cog_unload()
 
-
-
     @commands.command(name="connect")
     async def _conenct(self, ctx: KurisuContext):
         """Connect the bot to your vc"""
@@ -169,11 +167,13 @@ class Music(commands.Cog):
             return await ctx.send_error("No Tracks Found")
 
         if len(tracks.tracks) == 1:
-            await player.add(ctx.author, tracks.tracks[0])
+            player.add(ctx.author, tracks.tracks[0])
             if player.is_playing:
                 await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue")
             else:
                 await ctx.send_ok(f"Now playing {tracks.tracks[0].title}")
+            if not player.current:
+                await player.play()
             return
 
         track_options = []
