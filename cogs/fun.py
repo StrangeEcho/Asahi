@@ -211,40 +211,42 @@ class Fun(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["dominant_color"]).replace("#", "0x"), base=16
+                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace("#", "0x"), base=16
+
                     )
                     or self.bot.ok_color
-                ).set_image(url=(await resp.json())["url"])
+                ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
             )
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def maid(self, ctx: commands.Context):
-        """Maids go brrr"""
+        """maids go brrr"""
         async with self.bot.session.get("https://api.waifu.im/sfw/maid") as resp:
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["dominant_color"]).replace("#", "0x"), base=16
+                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace("#", "0x"), base=16
+
                     )
                     or self.bot.ok_color
-                ).set_image(url=(await resp.json())["url"])
+                ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
             )
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def waifu(self, ctx: commands.Context):
-        """Get yourself a waifu from the waifu.im db with this."""
+        """waifu"""
         async with self.bot.session.get("https://api.waifu.im/sfw/waifu") as resp:
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["dominant_color"]).replace("#", "0x"), base=16
+                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace("#", "0x"), base=16
+
                     )
                     or self.bot.ok_color
-                ).set_image(url=(await resp.json())["url"])
+                ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
             )
-
 
 def setup(bot):
     bot.add_cog(Fun(bot))
