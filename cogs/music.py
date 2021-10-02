@@ -160,9 +160,8 @@ class Music(commands.Cog):
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
             player = await lavalink.connect(ctx.author.voice.channel, True)
-
-        tracks = await player.search_yt(query)
-
+        async with ctx.typing():
+            tracks = await player.search_yt(query)
         if not tracks.tracks:
             return await ctx.send_error("No Tracks Found")
 
