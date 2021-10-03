@@ -6,13 +6,15 @@ import discord
 
 from utils.funcs import check_hierarchy
 from utils.kurisu import KurisuBot
-
+from utils.dbmanagers import WarningManager
 
 class Moderation(commands.Cog):
     """Moderation related commands"""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot
+        self.wm = WarningManager(self.bot)
+
 
     @commands.command()
     @commands.guild_only()
@@ -215,6 +217,49 @@ class Moderation(commands.Cog):
         else:
             await chan.edit(slowmode_delay=time)
             await ctx.send(f"`{chan.name}` now has a slowmode delay of `{time}` seconds")
+
+    @commands.group(invoke_without_command=True)
+    async def warn(self, ctx: commands.Context):
+        """Warning related commands"""
+        await ctx.send(f"Do `{ctx.clean_prefix}help cmd warn` for help about this command.")
+
+    @warn.command()
+    @commands.has_permissions(kick_members=True)
+    async def add(self, ctx: commands.Context, user: discord.Member, *, reason: str):
+        """Add warnings to a user"""
+        if await check_hierarchy(ctx, user):
+            return
+
+        if len(reason) > 200:
+            return await ctx.send("Reason cannot be over 200 characters")
+        await self.wm.add_warning(ctx, user.id, reason)
+        await ctx.send(f"Successfully Given Out Warning\nUser: {user}\nReason: {reason}")
+
+    @warn.command()
+    async def log(self, ctx: commands.Context, user: discord.Member):
+        """Grab all warnings for a user"""
+        warnings = await self.wm.fetch_warnings(user.id, ctx.guild.id)
+        if not warnings:
+            return await ctx.send(
+                embed=discord.Embed(
+                    description="No Warnings Found For That User",
+                    color=self.bot.error_color
+                )
+            )
+        await ctx.send(
+            embed=discord.Embed(
+                title=f"Warnings For {user}",
+                description="```\n" + "\n".join([f"{n}. {i[0]} - {await self.bot.fetch_user(i[1])}" for n, i in enumerate(warnings, 1)]) + "\n```" ,
+                color=self.bot.ok_color
+            )
+        )
+
+    @warn.command(aliases=["clear"])
+    @commands.has_permissions(kick_members=True)
+    async def remove(self, ctx: commands.Context, warning: int, user: discord.Member):
+        """Remove A Specific Warning Off A User"""
+        await self.wm.remove_warning(user.id, warning, ctx.guild.id)
+        await ctx.message.add_reaction("\u2705")
 
 
 def setup(bot):

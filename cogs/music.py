@@ -106,12 +106,14 @@ class Music(commands.Cog):
             await ctx.send(tabs[0])
 
     @commands.command()
-    async def volume(self, ctx: KurisuContext, vol: int):
+    async def volume(self, ctx: KurisuContext, vol: int = None):
         """Change Volume"""
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
             return await ctx.send_error("No Activate Players")
+        if not vol:
+            return await ctx.send(f"Current Volume: {player.volume}")
         if vol < 0 or vol > 100:
             return await ctx.send_error("Volume Must Be Between 0 and 100")
         await player.set_volume(vol)
