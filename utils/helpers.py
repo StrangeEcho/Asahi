@@ -1,5 +1,6 @@
 from discord.ext import menus
 
+
 class EmbedListMenu(menus.ListPageSource):
     """
     Paginated embed menu.

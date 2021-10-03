@@ -31,7 +31,9 @@ class Music(commands.Cog):
                 f"Initialized LavaLink Node\nIP: {self.ll_ip}\nPort: {self.ll_ws_port}"
             )
         except:
-            self.bot.logger.warning("Error thrown in Music Init. This usually means theres an error in your ll credentials.\nUnloading Cog Now.")
+            self.bot.logger.warning(
+                "Error thrown in Music Init. This usually means theres an error in your ll credentials.\nUnloading Cog Now."
+            )
             self.cog_unload()
 
     @commands.command(name="connect")

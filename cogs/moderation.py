@@ -4,9 +4,10 @@ from discord.ext import commands
 from discord.utils import get
 import discord
 
+from utils.dbmanagers import WarningManager
 from utils.funcs import check_hierarchy
 from utils.kurisu import KurisuBot
-from utils.dbmanagers import WarningManager
+
 
 class Moderation(commands.Cog):
     """Moderation related commands"""
@@ -14,7 +15,6 @@ class Moderation(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.wm = WarningManager(self.bot)
-
 
     @commands.command()
     @commands.guild_only()
@@ -242,15 +242,21 @@ class Moderation(commands.Cog):
         if not warnings:
             return await ctx.send(
                 embed=discord.Embed(
-                    description="No Warnings Found For That User",
-                    color=self.bot.error_color
+                    description="No Warnings Found For That User", color=self.bot.error_color
                 )
             )
         await ctx.send(
             embed=discord.Embed(
                 title=f"Warnings For {user}",
-                description="```\n" + "\n".join([f"{n}. {i[0]} - {await self.bot.fetch_user(i[1])}" for n, i in enumerate(warnings, 1)]) + "\n```" ,
-                color=self.bot.ok_color
+                description="```\n"
+                + "\n".join(
+                    [
+                        f"{n}. {i[0]} - {await self.bot.fetch_user(i[1])}"
+                        for n, i in enumerate(warnings, 1)
+                    ]
+                )
+                + "\n```",
+                color=self.bot.ok_color,
             )
         )
 

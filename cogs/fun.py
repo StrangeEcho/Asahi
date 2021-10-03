@@ -211,8 +211,10 @@ class Fun(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace("#", "0x"), base=16
-
+                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace(
+                            "#", "0x"
+                        ),
+                        base=16,
                     )
                     or self.bot.ok_color
                 ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
@@ -226,8 +228,10 @@ class Fun(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace("#", "0x"), base=16
-
+                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace(
+                            "#", "0x"
+                        ),
+                        base=16,
                     )
                     or self.bot.ok_color
                 ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
@@ -241,12 +245,15 @@ class Fun(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace("#", "0x"), base=16
-
+                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace(
+                            "#", "0x"
+                        ),
+                        base=16,
                     )
                     or self.bot.ok_color
                 ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
             )
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

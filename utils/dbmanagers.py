@@ -1,5 +1,6 @@
-from .kurisu import KurisuBot
 from discord.ext import commands
+
+from .kurisu import KurisuBot
 
 
 class PrefixManager:
@@ -46,18 +47,15 @@ class WarningManager:
                 "user": userid,
                 "reason": reason,
                 "guild": ctx.guild.id,
-                "moderator": ctx.author.id
-            }
+                "moderator": ctx.author.id,
+            },
         )
 
     async def fetch_warnings(self, userid: int, guild: int):
         """Fetch all warnings for a user within the guild passed in"""
         warnings = await self.bot.db.fetch_all(
             query="SELECT reason, moderator, guild FROM warnings WHERE user = :userid AND guild = :guild",
-            values={
-                "userid": userid,
-                "guild": guild
-            }
+            values={"userid": userid, "guild": guild},
         )
         return warnings
 
@@ -71,13 +69,5 @@ class WarningManager:
 
         await self.bot.db.execute(
             query="DELETE FROM warnings WHERE user = :user AND reason = :warning AND guild = :guild",
-            values={
-                "user": user,
-                "warning": something[0],
-                "guild": server
-            }
+            values={"user": user, "warning": something[0], "guild": server},
         )
-
-
-
-
