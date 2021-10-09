@@ -186,7 +186,7 @@ class Music(commands.Cog):
                 discord.ui.SelectOption(
                     label=v.title[:100],
                     description=f"Length: {timedelta(milliseconds=v.length)}",
-                    value=x,
+                    value=str(x),
                 )
             )
         embed = discord.Embed(
@@ -242,6 +242,24 @@ class Music(commands.Cog):
             await ctx.send_ok(f"Now Playing {tracks.tracks[a_int].title}")
         if not player.current:
             await player.play()
+
+    @commands.command(aliases=["pause"])
+    async def stop(self, ctx: KurisuContext):
+        """Stop or pause the current song"""
+        try:
+            player = lavalink.get_player(ctx.guild.id)
+        except KeyError:
+            await ctx.send_error("No player found")
+        await player.stop()
+
+    @commands.command()
+    async def resume(self, ctx: KurisuContext):
+        """Stop or pause the current song"""
+        try:
+            player = lavalink.get_player(ctx.guild.id)
+        except KeyError:
+            await ctx.send_error("No player found")
+        await player.resume()
 
     @commands.command()
     async def disconnect(self, ctx: KurisuContext):
