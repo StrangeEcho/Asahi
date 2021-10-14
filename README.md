@@ -42,13 +42,6 @@ python3 -m venv venv #initialize the venv for this project
 source venv/bin/activate #activate it
 ```
 
-* Next it is time to get install setuptools and wheel so packages dont fail to build
-
-  ```shell
-  pip3 install setuptools
-  pip3 install wheel 
-  ```
-
 * After that you are set to now install the bot's requirements\
 `pip3 install poetry && poetry install`
 - Now rename the configexample.toml and fill it out as needed
