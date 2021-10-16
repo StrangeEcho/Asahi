@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.utils import get
 import discord
 
+from utils.context import KurisuContext
 from utils.dbmanagers import WarningManager
 from utils.funcs import check_hierarchy
 from utils.kurisu import KurisuBot
@@ -225,26 +226,22 @@ class Moderation(commands.Cog):
 
     @warn.command()
     @commands.has_permissions(kick_members=True)
-    async def add(self, ctx: commands.Context, user: discord.Member, *, reason: str):
+    async def add(self, ctx: KurisuContext, user: discord.Member, *, reason: str):
         """Add warnings to a user"""
         if await check_hierarchy(ctx, user):
             return
 
         if len(reason) > 200:
-            return await ctx.send("Reason cannot be over 200 characters")
+            return await ctx.send_error("Reason cannot be over 200 characters")
         await self.wm.add_warning(ctx, user.id, reason)
-        await ctx.send(f"Successfully Given Out Warning\nUser: {user}\nReason: {reason}")
+        await ctx.send_ok(f"Successfully Given Out Warning\nUser: {user}\nReason: {reason}")
 
     @warn.command()
-    async def log(self, ctx: commands.Context, user: discord.Member):
+    async def log(self, ctx: KurisuContext, user: discord.Member):
         """Grab all warnings for a user"""
         warnings = await self.wm.fetch_warnings(user.id, ctx.guild.id)
         if not warnings:
-            return await ctx.send(
-                embed=discord.Embed(
-                    description="No Warnings Found For That User", color=self.bot.error_color
-                )
-            )
+            return await ctx.send_error("No warnings found for that user in this server")
         await ctx.send(
             embed=discord.Embed(
                 title=f"Warnings For {user}",

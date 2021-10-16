@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+from .errors import UserNotFound
 from .kurisu import KurisuBot
 
 
@@ -60,14 +61,49 @@ class WarningManager:
         return warnings
 
     async def remove_warning(self, user: int, warning: int, server: int):
-        idkanymore = await self.fetch_warnings(user, server)
+        """Delete a warning row for a user"""
+        tuplist = await self.fetch_warnings(user, server)
 
         try:
-            something = idkanymore[warning - 1]
+            target_tup = tuplist[warning - 1]
         except IndexError:
             raise commands.BadArgument("You tried to clear a invalid warning")
 
         await self.bot.db.execute(
             query="DELETE FROM warnings WHERE user = :user AND reason = :warning AND guild = :guild",
-            values={"user": user, "warning": something[0], "guild": server},
+            values={"user": user, "warning": target_tup[0], "guild": server},
         )
+
+
+class AFKManager:
+    def __init__(self, bot: KurisuBot):
+        self.bot = bot
+
+    async def insert_or_update(self, user: int, afk_message: str):
+        """Insert or Update a users afk message in DB"""
+        await self.bot.db.execute(
+            query="INSERT INTO afk (user, message) VALUES (:user, :message) ON CONFLICT DO UPDATE SET message = :msg WHERE user = :usr",
+            values={"user": user, "message": afk_message, "msg": afk_message, "usr": user},
+        )
+
+    async def toggle_afk(self, user: int):
+        data = await self.fetch_afk(user)
+
+        if data[1] == 0:
+            await self.bot.db.execute(
+                query="UPDATE afk SET toggled = 1 WHERE user = :user", values={"user": user}
+            )
+
+        if data[1] == 1:
+            await self.bot.db.execute(
+                query="UPDATE afk SET toggled = 0 WHERE user = :user", values={"user": user}
+            )
+
+    async def fetch_afk(self, user: int):
+        """Fetch a users afk message from db"""
+        data = await self.bot.db.fetch_one(
+            query="SELECT message, toggled FROM afk WHERE user = :user", values={"user": user}
+        )
+        if not data:
+            raise UserNotFound
+        return data
