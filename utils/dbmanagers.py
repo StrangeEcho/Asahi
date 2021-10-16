@@ -10,7 +10,7 @@ class PrefixManager:
 
     async def add_prefix(self, guild: int, prefix: str):
         await self.bot.db.execute(
-            query="INSERT INTO guildsettings (guild, prefix) VALUES (:guild, :prefix) ON CONFLICT(guild) DO UPDATE afk SET prefix = :update_prefix",
+            query="INSERT INTO guildsettings (guild, prefix) VALUES (:guild, :prefix) ON CONFLICT(guild) DO UPDATE SET prefix = :update_prefix",
             values={
                 "guild": guild,
                 "prefix": prefix,
@@ -82,7 +82,7 @@ class AFKManager:
     async def insert_or_update(self, user: int, afk_message: str):
         """Insert or Update a users afk message in DB"""
         await self.bot.db.execute(
-            query="INSERT INTO afk (user, message) VALUES (:user, :message) ON CONFLICT DO UPDATE SET message = :msg WHERE user = :usr",
+            query="INSERT INTO afk (user, message) VALUES (:user, :message) ON CONFLICT(user) DO UPDATE SET message = :msg",
             values={"user": user, "message": afk_message, "msg": afk_message, "usr": user},
         )
 
