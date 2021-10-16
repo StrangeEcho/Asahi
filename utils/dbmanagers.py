@@ -82,8 +82,8 @@ class AFKManager:
     async def insert_or_update(self, user: int, afk_message: str):
         """Insert or Update a users afk message in DB"""
         await self.bot.db.execute(
-            query="INSERT INTO afk (user, message) VALUES (:user, :message) ON CONFLICT(user) DO UPDATE SET message = :msg",
-            values={"user": user, "message": afk_message, "msg": afk_message, "usr": user},
+            query="INSERT INTO afk (user, message) VALUES (:user, :message) ON CONFLICT(user) DO UPDATE set message = :msg",
+            values={"user": user, "message": afk_message, "msg": afk_message},
         )
 
     async def toggle_afk(self, user: int):
