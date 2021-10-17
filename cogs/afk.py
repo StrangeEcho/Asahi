@@ -20,6 +20,7 @@ class AFK(commands.Cog):
                 return
             if data[1] == 1:
                 await message.channel.send(
+                    delete_after=5,
                     embed=discord.Embed(
                         title=f"{self.bot.get_user(i)} is AFK right now.",
                         description=data[0],
@@ -57,10 +58,11 @@ class AFK(commands.Cog):
                 title=f"Current AFK Status For {ctx.author.name}",
                 color=self.bot.ok_color
             )
-        .add_field(name="Toggled", value=afkdata[1])
+        .add_field(name="Toggled", value=bool(afkdata[1]), inline=True)
         .add_field(
                 name="Message",
-                value="```\n" + str(afkdata[0]) + "\n```"
+                value="```\n" + str(afkdata[0]) + "\n```",
+                inline=True
             )
         )
 
