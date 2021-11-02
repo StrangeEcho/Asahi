@@ -259,7 +259,7 @@ class Music(commands.Cog):
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
             await ctx.send_error("No player found")
-        await player.resume()
+        await player.resume(player.current)
 
     @commands.command()
     async def disconnect(self, ctx: KurisuContext):
