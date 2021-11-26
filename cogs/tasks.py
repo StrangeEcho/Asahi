@@ -15,16 +15,21 @@ class Tasks(commands.Cog):
     async def status_handler(self):
         await self.bot.wait_until_ready()
         await self.bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.competing, name="your love")
+            activity=discord.Activity(
+                type=discord.ActivityType.competing, name="your love"
+            )
         )
         await asyncio.sleep(60)
         await self.bot.change_presence(activity=discord.Game("with you :D"))
         await asyncio.sleep(60)
-        await self.bot.change_presence(activity=discord.Game("with Tylerr#6979!"))
+        await self.bot.change_presence(
+            activity=discord.Game("with Tylerr#6979!")
+        )
         await asyncio.sleep(60)
         await self.bot.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.listening, name=f"you do @{self.bot.user.name} help"
+                type=discord.ActivityType.listening,
+                name=f"you do @{self.bot.user.name} help",
             )
         )
         await asyncio.sleep(60)
@@ -32,7 +37,9 @@ class Tasks(commands.Cog):
             activity=discord.Game(f"with {len(self.bot.users)} humans!")
         )
         await asyncio.sleep(60)
-        await self.bot.change_presence(activity=discord.Game(f"in {len(self.bot.guilds)} guilds"))
+        await self.bot.change_presence(
+            activity=discord.Game(f"in {len(self.bot.guilds)} guilds")
+        )
         await asyncio.sleep(60)
 
 

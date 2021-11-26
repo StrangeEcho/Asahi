@@ -22,7 +22,9 @@ class Help(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Available Modules",
-                description="```apache\n" + "\n".join(sorted(mod_list)) + "\n```",
+                description="```apache\n"
+                + "\n".join(sorted(mod_list))
+                + "\n```",
                 color=self.bot.ok_color,
             )
         )
@@ -70,14 +72,21 @@ class Help(commands.Cog):
             )
             embed.add_field(name="Module\Cog", value=f"`{cmd.cog_name}`")
             if cmd.aliases:
-                embed.add_field(name="Aliases", value=f"```\n{cmd_aliases}\n```")
+                embed.add_field(
+                    name="Aliases", value=f"```\n{cmd_aliases}\n```"
+                )
             if isinstance(cmd, commands.Group):
                 group_commands = "\n".join(map(str, cmd.commands))
-                embed.add_field(name="Group Commands", value=f"```\n{group_commands}\n```")
+                embed.add_field(
+                    name="Group Commands", value=f"```\n{group_commands}\n```"
+                )
             return await ctx.send(embed=embed)
         else:
             return await ctx.send(
-                embed=discord.Embed(description=f"COMMAND NOT FOUND", color=self.bot.error_color)
+                embed=discord.Embed(
+                    description=f"COMMAND NOT FOUND",
+                    color=self.bot.error_color,
+                )
             )
 
     @_help.command(aliases=["mod", "m"])
@@ -91,13 +100,17 @@ class Help(commands.Cog):
                 break
         if found:
             cog = self.bot.get_cog(found[0])
-            cog_commands = "\n".join(sorted(map(str, cog.get_commands()))) or None
+            cog_commands = (
+                "\n".join(sorted(map(str, cog.get_commands()))) or None
+            )
             return await ctx.send(
                 embed=discord.Embed(
                     title=cog.qualified_name or target,
                     color=self.bot.ok_color,
                 )
-                .add_field(name="Description", value=f"`{cog.description or None}`")
+                .add_field(
+                    name="Description", value=f"`{cog.description or None}`"
+                )
                 .add_field(name="Commands", value=f"```\n{cog_commands}\n```")
                 .set_footer(
                     text=f"Do {ctx.clean_prefix}help command <commandname> for help with a command"
@@ -106,7 +119,8 @@ class Help(commands.Cog):
         if not found:
             return await ctx.send(
                 embed=discord.Embed(
-                    description=f"**MODULE NOT FOUND**", color=self.bot.error_color
+                    description=f"**MODULE NOT FOUND**",
+                    color=self.bot.error_color,
                 )
             )
 

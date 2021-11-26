@@ -16,7 +16,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def hug(self, ctx: commands.Context, *, target=np):
         """Hug someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/hug") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/hug"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} hugs {target}",
@@ -28,7 +30,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def kiss(self, ctx: commands.Context, *, target=np):
         """Kiss someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/hug") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/hug"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} kisses {target}",
@@ -40,7 +44,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pat(self, ctx: commands.Context, *, target=np):
         """Pat someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/pat") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/pat"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} pats {target}",
@@ -52,7 +58,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def cuddle(self, ctx: commands.Context, *, target=np):
         """Cuddle with someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/cuddle") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/cuddle"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} cuddles {target}",
@@ -64,7 +72,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def lick(self, ctx: commands.Context, *, target=np):
         """Lick someone"""
-        async with self.bot.session.get("https://api.waifu.pics/sfw/lick") as resp:
+        async with self.bot.session.get(
+            "https://api.waifu.pics/sfw/lick"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} licks {target}",
@@ -76,7 +86,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def bully(self, ctx: commands.Context, *, target=np):
         """Bully someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/bully") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/bully"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} bullies {target}",
@@ -88,7 +100,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def poke(self, ctx: commands.Context, *, target=np):
         """Poke someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/poke") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/poke"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} pokes {target}",
@@ -100,7 +114,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slap(self, ctx: commands.Context, *, target=np):
         """Slap someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/slap") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/slap"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} slaps {target}",
@@ -114,7 +130,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def smug(self, ctx: commands.Context):
         """Smugly look at someone"""
-        async with self.bot.session.get(url="https://api.waifu.pics/sfw/smug") as resp:
+        async with self.bot.session.get(
+            url="https://api.waifu.pics/sfw/smug"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} has a smug look on their face.",
@@ -126,7 +144,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def baka(self, ctx: commands.Context, *, target=np):
         """Call someone an idiot"""
-        async with self.bot.session.get(url="https://nekos.life/api/v2/img/baka") as resp:
+        async with self.bot.session.get(
+            url="https://nekos.life/api/v2/img/baka"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{target} YOU BAKA!",
@@ -140,7 +160,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def feed(self, ctx: commands.Context, *, target=np):
         """Feed someone"""
-        async with self.bot.session.get(url="https://nekos.life/api/v2/img/feed") as resp:
+        async with self.bot.session.get(
+            url="https://nekos.life/api/v2/img/feed"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} feeds {target}",
@@ -152,7 +174,9 @@ class Actions(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def tickle(self, ctx: commands.Context, *, target=np):
         """Tickle someone"""
-        async with self.bot.session.get("https://nekos.life/api/v2/img/tickle") as resp:
+        async with self.bot.session.get(
+            "https://nekos.life/api/v2/img/tickle"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} tickles {target}",

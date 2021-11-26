@@ -170,13 +170,17 @@ class Utility(commands.Cog):
             return await ctx.send(
                 embed=discord.Embed(
                     title="Available Color List",
-                    description="```apache\n" + ", ".join(sorted(map(str, colors))) + "\n```",
+                    description="```apache\n"
+                    + ", ".join(sorted(map(str, colors)))
+                    + "\n```",
                     color=self.bot.ok_color,
                 )
             )
         if not clr.lower() in colors:
             await ctx.send(
-                embed=discord.Embed(description="Color Not Found", color=self.bot.error_color)
+                embed=discord.Embed(
+                    description="Color Not Found", color=self.bot.error_color
+                )
             )
         else:
             try:
@@ -197,13 +201,16 @@ class Utility(commands.Cog):
                 await ctx.send(
                     file=file,
                     embed=discord.Embed(
-                        description=f"Color: {clr.capitalize()}\n{b}", color=int(a, base=16)
+                        description=f"Color: {clr.capitalize()}\n{b}",
+                        color=int(a, base=16),
                     ).set_image(url="attachment://color.png"),
                 )
 
     @commands.command(aliases=["sinfo", "ginfo", "guildinfo"])
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def serverinfo(self, ctx: commands.Context, guild: discord.Guild = None):
+    async def serverinfo(
+        self, ctx: commands.Context, guild: discord.Guild = None
+    ):
         """Get information about a certain guild"""
         if guild is None:
             guild = ctx.guild
@@ -243,22 +250,40 @@ class Utility(commands.Cog):
         embed = discord.Embed(title=guild.name, color=self.bot.ok_color)
         embed.set_thumbnail(url=guild.icon.url)
         embed.add_field(
-            name="Owner", value=f"Name: **{guild.owner}**\nID: **{guild.owner.id}**", inline=True
+            name="Owner",
+            value=f"Name: **{guild.owner}**\nID: **{guild.owner.id}**",
+            inline=True,
         )
         embed.add_field(
-            name="Creation Time", value=f"<t:{int(guild.created_at.timestamp())}:F>", inline=False
+            name="Creation Time",
+            value=f"<t:{int(guild.created_at.timestamp())}:F>",
+            inline=False,
         )
-        embed.add_field(name="Region", value=str(guild.region).upper(), inline=True)
-        embed.add_field(name="Member Count", value=f"**{guild.member_count}**", inline=True)
-        embed.add_field(name="Role Count", value="**{}**".format(len(guild.roles)), inline=True)
+        embed.add_field(
+            name="Region", value=str(guild.region).upper(), inline=True
+        )
+        embed.add_field(
+            name="Member Count", value=f"**{guild.member_count}**", inline=True
+        )
+        embed.add_field(
+            name="Role Count",
+            value="**{}**".format(len(guild.roles)),
+            inline=True,
+        )
         embed.add_field(
             name="Channel Count",
             value=f"Categories: **{len(guild.categories)}**\nText: **{len(guild.text_channels)}**\nVoice: **{len(guild.voice_channels)}**\nTotal: **{len(guild.text_channels) + len(guild.voice_channels)}**",
             inline=True,
         )
-        embed.add_field(name="Emoji Count", value="**{}**".format(len(guild.emojis)), inline=True)
+        embed.add_field(
+            name="Emoji Count",
+            value="**{}**".format(len(guild.emojis)),
+            inline=True,
+        )
         if guild_features:
-            embed.add_field(name="Features", value="".join(guild_features), inline=False)
+            embed.add_field(
+                name="Features", value="".join(guild_features), inline=False
+            )
         if guild.banner:
             embed.set_image(url=guild.banner.url)
         elif guild.splash:
@@ -270,19 +295,24 @@ class Utility(commands.Cog):
     @commands.command(aliases=["uinfo", "memberinfo", "minfo"])
     @commands.guild_only()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def userinfo(self, ctx: commands.context, user: discord.Member = None):
+    async def userinfo(
+        self, ctx: commands.context, user: discord.Member = None
+    ):
         """Returns info about a user"""
         if user is None:
             user = ctx.author
 
-        user_flags = "\n".join(i.replace("_", " ").title() for i, v in user.public_flags if v)
+        user_flags = "\n".join(
+            i.replace("_", " ").title() for i, v in user.public_flags if v
+        )
         roles = user.roles[-1:0:-1]
         embed = discord.Embed(color=user.color or self.bot.ok_color)
         embed.set_thumbnail(url=user.avatar.url)
         embed.add_field(name="Name", value=user)
         embed.add_field(name="ID", value=user.id)
         embed.add_field(
-            name="Status & Activity", value=f"Status: {user.status}\nActivity: {user.activity}"
+            name="Status & Activity",
+            value=f"Status: {user.status}\nActivity: {user.activity}",
         )
         embed.add_field(
             name="Account Creation",
@@ -302,7 +332,11 @@ class Utility(commands.Cog):
                 inline=False,
             )
         if user_flags:
-            embed.add_field(name="Public User Flags", value=user_flags.upper(), inline=False)
+            embed.add_field(
+                name="Public User Flags",
+                value=user_flags.upper(),
+                inline=False,
+            )
         if not user.bot:
             if banner := (await self.bot.fetch_user(user.id)).banner:
                 embed.set_image(url=banner.url)
@@ -313,10 +347,16 @@ class Utility(commands.Cog):
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role):
         """Returns info about a role"""
         await ctx.send(
-            embed=discord.Embed(title=f"Role info for {role.name}", color=role.color)
+            embed=discord.Embed(
+                title=f"Role info for {role.name}", color=role.color
+            )
             .add_field(name="ID", value=role.id, inline=True)
             .add_field(name="Color", value=role.color, inline=True)
-            .add_field(name="Creation Time", value=role.created_at.strftime("%c"), inline=True)
+            .add_field(
+                name="Creation Time",
+                value=role.created_at.strftime("%c"),
+                inline=True,
+            )
             .add_field(name="Members", value=len(role.members), inline=True)
             .add_field(name="Hoisted", value=role.hoist, inline=True)
             .add_field(name="Mentionable", value=role.mentionable, inline=True)
@@ -333,7 +373,9 @@ class Utility(commands.Cog):
     async def emojiinfo(self, ctx: commands.Context, emoji: discord.Emoji):
         """Returns information about a emoji/emote(Within the current guild)"""
         await ctx.send(
-            embed=discord.Embed(title="Emoji Information", color=self.bot.ok_color)
+            embed=discord.Embed(
+                title="Emoji Information", color=self.bot.ok_color
+            )
             .add_field(name="ID", value=emoji.id, inline=False)
             .add_field(name="Animated", value=emoji.animated, inline=False)
             .add_field(name="Link", value=emoji.url, inline=False)
@@ -346,7 +388,7 @@ class Utility(commands.Cog):
         self,
         ctx: commands.Context,
         emoji: Union[discord.Emoji, discord.PartialEmoji, str],
-    ) -> None:
+    ):
         """
         Get a emoji in big size lol
         """
@@ -361,11 +403,15 @@ class Utility(commands.Cog):
         else:
             try:
                 """https://github.com/glasnt/emojificate/blob/master/emojificate/filter.py"""
-                cdn_fmt = "https://twemoji.maxcdn.com/2/72x72/{codepoint:x}.png"
+                cdn_fmt = (
+                    "https://twemoji.maxcdn.com/2/72x72/{codepoint:x}.png"
+                )
                 url = cdn_fmt.format(codepoint=ord(str(emoji)))
                 filename = "emoji.png"
             except TypeError:
-                return await ctx.send("That doesn't appear to be a valid emoji")
+                return await ctx.send(
+                    "That doesn't appear to be a valid emoji"
+                )
         try:
             async with self.bot.session.get(url) as resp:
                 image = BytesIO(await resp.read())
@@ -377,13 +423,17 @@ class Utility(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    async def avatar(self, ctx: commands.Context, user: Optional[discord.Member]):
+    async def avatar(
+        self, ctx: commands.Context, user: Optional[discord.Member]
+    ):
         """Check your avatars."""
         await ctx.channel.trigger_typing()
         if user is None:
             user = ctx.author
         av = user.avatar
-        e = discord.Embed(title=f"{user.name}'s avatar", color=self.bot.ok_color)
+        e = discord.Embed(
+            title=f"{user.name}'s avatar", color=self.bot.ok_color
+        )
         e.add_field(
             name="File Formations",
             value=f"[jpg]({av.with_format('jpg')}), "
@@ -391,7 +441,9 @@ class Utility(commands.Cog):
             f"[webp]({av.with_format('webp')}){',' if av.is_animated() else ''} "
             f"{f'[gif]({av})' if av.is_animated() else ''}",
         )
-        e.add_field(name="Animated", value="\u2705" if av.is_animated() else ":x:")
+        e.add_field(
+            name="Animated", value="\u2705" if av.is_animated() else ":x:"
+        )
         e.set_image(url=av.with_size(4096))
         e.set_footer(text=f"ID: {user.id}")
         await ctx.send(embed=e)
@@ -403,10 +455,14 @@ class Utility(commands.Cog):
         """Toggle nsfw flag on the current channel"""
         if not ctx.channel.is_nsfw():
             await ctx.channel.edit(nsfw=True)
-            await ctx.send(f"`{ctx.channel.name}` NSFW flag has been toggled to True")
+            await ctx.send(
+                f"`{ctx.channel.name}` NSFW flag has been toggled to True"
+            )
         else:
             await ctx.channel.edit(nsfw=False)
-            await ctx.send(f"`{ctx.channel.name}` NSFW flag has been toggled to False")
+            await ctx.send(
+                f"`{ctx.channel.name}` NSFW flag has been toggled to False"
+            )
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
@@ -440,12 +496,16 @@ class Utility(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     @commands.bot_has_permissions(manage_guild=True)
-    async def setafkchannel(self, ctx: commands.Context, channel: discord.VoiceChannel = None):
+    async def setafkchannel(
+        self, ctx: commands.Context, channel: discord.VoiceChannel = None
+    ):
         """Set the channel to where people go when they hit the AFK timeout. Pass in None for no Inactive Channel"""
         if channel is None:
             await ctx.guild.edit(afk_channel=channel)
             return await ctx.send(
-                embed=discord.Embed(description="Removed AFK channel", color=self.bot.ok_color)
+                embed=discord.Embed(
+                    description="Removed AFK channel", color=self.bot.ok_color
+                )
             )
 
         if channel:
@@ -480,7 +540,8 @@ class Utility(commands.Cog):
         await role.delete()
         await ctx.send(
             embed=discord.Embed(
-                description=f"Successfully deleted role called `{role}`", color=self.bot.ok_color
+                description=f"Successfully deleted role called `{role}`",
+                color=self.bot.ok_color,
             )
         )
 

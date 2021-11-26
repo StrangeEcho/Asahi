@@ -14,8 +14,12 @@ logging.getLogger("main")
 
 def get_prefix(bot: KurisuBot, msg: discord.Message):
     if not msg.guild or not str(msg.guild.id) in bot.prefixes:
-        return commands.when_mentioned_or(bot.get_config("config", "config", "prefix"))(bot, msg)
-    return commands.when_mentioned_or(bot.prefixes.get(str(msg.guild.id)))(bot, msg)
+        return commands.when_mentioned_or(
+            bot.get_config("config", "config", "prefix")
+        )(bot, msg)
+    return commands.when_mentioned_or(bot.prefixes.get(str(msg.guild.id)))(
+        bot, msg
+    )
 
 
 bot = KurisuBot(command_prefix=get_prefix)

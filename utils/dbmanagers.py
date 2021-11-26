@@ -30,7 +30,9 @@ class PrefixManager:
             )
 
     async def startup_caching(self):
-        for g, p in await self.bot.db.fetch_all(query="SELECT guild, prefix FROM guildsettings"):
+        for g, p in await self.bot.db.fetch_all(
+            query="SELECT guild, prefix FROM guildsettings"
+        ):
             self.bot.prefixes.setdefault(str(g), str(p))
             self.bot.logger.info("Prefixes Appended To Cache")
 
@@ -39,7 +41,9 @@ class WarningManager:
     def __init__(self, bot: KurisuBot):
         self.bot = bot
 
-    async def add_warning(self, ctx: commands.Context, userid: int, reason: str):
+    async def add_warning(
+        self, ctx: commands.Context, userid: int, reason: str
+    ):
         """Insert a warning for a user"""
 
         await self.bot.db.execute(
@@ -91,18 +95,21 @@ class AFKManager:
 
         if data[1] == 0:
             await self.bot.db.execute(
-                query="UPDATE afk SET toggled = 1 WHERE user = :user", values={"user": user}
+                query="UPDATE afk SET toggled = 1 WHERE user = :user",
+                values={"user": user},
             )
 
         if data[1] == 1:
             await self.bot.db.execute(
-                query="UPDATE afk SET toggled = 0 WHERE user = :user", values={"user": user}
+                query="UPDATE afk SET toggled = 0 WHERE user = :user",
+                values={"user": user},
             )
 
     async def fetch_afk(self, user: int):
         """Fetch a users afk message from db"""
         data = await self.bot.db.fetch_one(
-            query="SELECT message, toggled FROM afk WHERE user = :user", values={"user": user}
+            query="SELECT message, toggled FROM afk WHERE user = :user",
+            values={"user": user},
         )
         if not data:
             raise UserNotFound

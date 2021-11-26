@@ -48,7 +48,7 @@ class LoggingHandler(logging.StreamHandler):
         level = record.levelno  # noqa F841
         level_name = record.levelname
         if name == "kurisu":
-            split = record.msg.split(";")
+            split = str(record.msg).split(";")
             if len(split) == 1:
                 sub = None
                 message = split[0]
@@ -80,7 +80,9 @@ class LoggingHandler(logging.StreamHandler):
                 first = False
 
             if record.exc_info:
-                exception: Tuple[type, BaseException, TracebackType] = record.exc_info
+                exception: Tuple[
+                    type, BaseException, TracebackType
+                ] = record.exc_info
                 lines = traceback.format_exception(*exception)
                 for line in lines:
                     for msg in line.splitlines():

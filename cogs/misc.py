@@ -33,7 +33,9 @@ class Miscellaneous(commands.Cog):
             value=box(str(round(latency)) + " ms", "nim"),
             inline=True,
         )
-        emb.add_field(name="Typing", value=box("calculating" + " ms", "nim"), inline=True)
+        emb.add_field(
+            name="Typing", value=box("calculating" + " ms", "nim"), inline=True
+        )
         emb.add_field(name="Message", value=box("…", "nim"), inline=True)
 
         before = time.monotonic()
@@ -51,14 +53,24 @@ class Miscellaneous(commands.Cog):
             1,
             name="Message:",
             value=box(
-                str(int((message.created_at - ctx.message.created_at).total_seconds() * 1000))
+                str(
+                    int(
+                        (
+                            message.created_at - ctx.message.created_at
+                        ).total_seconds()
+                        * 1000
+                    )
+                )
                 + " ms",
                 "nim",
             ),
             inline=True,
         )
         emb.set_field_at(
-            2, name="Typing:", value=box(str(round(ping)) + " ms", "nim"), inline=True
+            2,
+            name="Typing:",
+            value=box(str(round(ping)) + " ms", "nim"),
+            inline=True,
         )
         await message.edit(embed=emb)
 
@@ -95,7 +107,8 @@ class Miscellaneous(commands.Cog):
         text_channels = 0
         voice_channels = 0
         owners = [
-            self.bot.get_user(o) for o in self.bot.get_config("config", "config", "owner_ids")
+            self.bot.get_user(o)
+            for o in self.bot.get_config("config", "config", "owner_ids")
         ]
         process = psutil.Process(os.getpid())
         for chan in self.bot.get_all_channels():
@@ -111,7 +124,9 @@ class Miscellaneous(commands.Cog):
         embed.description = "Click [Here](https://discord.com/api/oauth2/authorize?client_id={}&scope=bot) To Invite Me and Click [Here](https://discord.gg/Cs5RdJF9pb) To Join My Support Server".format(
             self.bot.get_config("config", "config", "application_id")
         )
-        embed.add_field(name="Owner(s)", value="\n".join(map(str, owners)), inline=False)
+        embed.add_field(
+            name="Owner(s)", value="\n".join(map(str, owners)), inline=False
+        )
         embed.add_field(
             name="Mention & ID",
             value=f"{self.bot.user.mention}\n`{self.bot.user.id}`",
@@ -128,7 +143,8 @@ class Miscellaneous(commands.Cog):
             inline=False,
         )
         embed.set_footer(
-            icon_url=self.bot.user.avatar.url, text=f"{self.bot.user.name} was made with love <3"
+            icon_url=self.bot.user.avatar.url,
+            text=f"{self.bot.user.name} was made with love <3",
         )
         embed2 = discord.Embed(
             title=f"{self.bot.user.name} Stats",
@@ -142,7 +158,9 @@ class Miscellaneous(commands.Cog):
             inline=False,
         )
         embed2.add_field(
-            name=f"Websocket Latency", value=f"{round(self.bot.latency * 1000)} ms", inline=False
+            name=f"Websocket Latency",
+            value=f"{round(self.bot.latency * 1000)} ms",
+            inline=False,
         )
         embed2.add_field(name="Shard Count", value=len(self.bot.shards))
         embed2.add_field(
@@ -151,7 +169,9 @@ class Miscellaneous(commands.Cog):
             inline=False,
         )
         embed2.add_field(
-            name="Channels", value=f"Text: {text_channels}\nVoice: {voice_channels}", inline=False
+            name="Channels",
+            value=f"Text: {text_channels}\nVoice: {voice_channels}",
+            inline=False,
         )
         embed2.add_field(
             name="Uptime",
@@ -159,11 +179,17 @@ class Miscellaneous(commands.Cog):
             inline=False,
         )
         embed2.add_field(
-            name="Commands Executed Since Startup", value=self.bot.executed_commands, inline=False
+            name="Commands Executed Since Startup",
+            value=self.bot.executed_commands,
+            inline=False,
         )
-        embed3 = discord.Embed(title=f"{self.bot.user.name} Stats", color=self.bot.ok_color)
+        embed3 = discord.Embed(
+            title=f"{self.bot.user.name} Stats", color=self.bot.ok_color
+        )
         embed3.set_author(icon_url=self.bot.user.avatar.url, name="About Me")
-        embed3.add_field(name="Bot Version", value=f"`{self.bot.version}`", inline=False)
+        embed3.add_field(
+            name="Bot Version", value=f"`{self.bot.version}`", inline=False
+        )
         embed3.add_field(
             name="Python Version",
             value=f"[{platform.python_version()}](https://python.org)",
@@ -180,7 +206,9 @@ class Miscellaneous(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pypi(self, ctx: commands.Context, project: str):
         """Get information of a python project from pypi."""
-        async with self.bot.session.get(f"https://pypi.org/pypi/{project}/json") as response:
+        async with self.bot.session.get(
+            f"https://pypi.org/pypi/{project}/json"
+        ) as response:
             try:
                 res = await response.json()
             except aiohttp.client_exceptions.ContentTypeError:
@@ -211,9 +239,16 @@ class Miscellaneous(commands.Cog):
             e.add_field(name="Version", value=info["version"])
             e.add_field(
                 name="Project Links",
-                value="\n".join([f"[{x}]({y})" for x, y in dict(info["project_urls"]).items()]),
+                value="\n".join(
+                    [
+                        f"[{x}]({y})"
+                        for x, y in dict(info["project_urls"]).items()
+                    ]
+                ),
             )
-            e.add_field(name="License", value=info["license"] or "`Not specified.`")
+            e.add_field(
+                name="License", value=info["license"] or "`Not specified.`"
+            )
             await ctx.reply(embed=e, mention_author=False)
 
     @commands.command()
@@ -222,9 +257,13 @@ class Miscellaneous(commands.Cog):
         """Shows bot's uptime."""
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
         delta = discord.utils.utcnow() - self.bot.uptime
-        uptime_text = humanize.time.precisedelta(delta) or "Less than one second."
+        uptime_text = (
+            humanize.time.precisedelta(delta) or "Less than one second."
+        )
         embed = discord.Embed(colour=self.bot.ok_color)
-        embed.add_field(name=f"{self.bot.user.name} has been up for:", value=uptime_text)
+        embed.add_field(
+            name=f"{self.bot.user.name} has been up for:", value=uptime_text
+        )
         embed.set_footer(text=f"Since: {since}")
         await ctx.reply(embed=embed, mention_author=False)
 

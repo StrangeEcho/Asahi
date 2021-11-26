@@ -1,11 +1,12 @@
+from discord.ext import commands
 import discord
 
-from discord.ext import commands
-
-from utils.kurisu import KurisuBot
 from utils.context import KurisuContext
 from utils.dbmanagers import AFKManager
 from utils.errors import UserNotFound
+from utils.kurisu import KurisuBot
+
+
 class AFK(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
@@ -22,19 +23,20 @@ class AFK(commands.Cog):
                 await message.channel.send(
                     delete_after=5,
                     embed=discord.Embed(
-                        title=f"{self.bot.get_user(i)} is AFK right now.",
+                        title=f"{self.bot.get_user(i)} is currently away.",
                         description=data[0],
-                        color=self.bot.ok_color
-                    )
+                        color=self.bot.ok_color,
+                    ),
                 )
-
 
     @commands.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def setafk(self, ctx: KurisuContext, *, msg: str):
         """Set your afk message"""
         if len(msg) > 200:
-            return await ctx.send_error("AFK message cannot be longer than 200 characters!")
+            return await ctx.send_error(
+                "AFK message cannot be longer than 200 characters!"
+            )
         await self.am.insert_or_update(ctx.author.id, msg)
         await ctx.send_ok(
             "Set your afk message to:\n" + "```\n" + msg + "\n```"
@@ -44,7 +46,12 @@ class AFK(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def afktoggle(self, ctx: KurisuContext):
         """Toggle your afk message on or off"""
-        await self.am.toggle_afk(ctx.author.id)
+        try:
+            await self.am.toggle_afk(ctx.author.id)
+        except UserNotFound:
+            await ctx.send_error(
+                f"User Not Found in Database. Setup your afk message first with `{ctx.clean_prefix}setafk`"
+            )
         await ctx.send_ok("Successfully toggled your afk message.")
 
     @commands.command()
@@ -56,13 +63,13 @@ class AFK(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title=f"Current AFK Status For {ctx.author.name}",
-                color=self.bot.ok_color
+                color=self.bot.ok_color,
             )
-        .add_field(name="Toggled", value=bool(afkdata[1]), inline=True)
-        .add_field(
+            .add_field(name="Toggled", value=bool(afkdata[1]), inline=True)
+            .add_field(
                 name="Message",
                 value="```\n" + str(afkdata[0]) + "\n```",
-                inline=True
+                inline=True,
             )
         )
 

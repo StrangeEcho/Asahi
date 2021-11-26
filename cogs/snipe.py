@@ -92,7 +92,9 @@ class Snipe(commands.Cog):
             )
             return await ctx.send(embed=emb, delete_after=5)
 
-        embed = discord.Embed(description=str(snipe["content"]), colour=0xFFCDCD)
+        embed = discord.Embed(
+            description=str(snipe["content"]), colour=0xFFCDCD
+        )
         embed.set_author(
             name="{0.name}#{0.discriminator}".format(snipe["author"]),
             icon_url=snipe["author"].avatar.url,
@@ -105,7 +107,9 @@ class Snipe(commands.Cog):
             async with self.bot.session.get(snipe["attachment"]) as r:
                 file = BytesIO(await r.read())
             embed.set_image(url="attachment://snipe.jpg")
-            await ctx.send(embed=embed, file=discord.File(file, filename="snipe.jpg"))
+            await ctx.send(
+                embed=embed, file=discord.File(file, filename="snipe.jpg")
+            )
             snipe["attachment"] = None
         else:
             await ctx.send(embed=embed)
@@ -127,7 +131,9 @@ class Snipe(commands.Cog):
             )
             return await ctx.send(embed=emb, delete_after=5)
 
-        embed = discord.Embed(description=str(edit_snipe["content"]), colour=0xFFCDCD)
+        embed = discord.Embed(
+            description=str(edit_snipe["content"]), colour=0xFFCDCD
+        )
         embed.set_footer(
             text=f"sniped by {ctx.author.name}#{ctx.author.discriminator}",
             icon_url=ctx.author.avatar.url,

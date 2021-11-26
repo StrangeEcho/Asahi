@@ -51,7 +51,9 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def compliment(self, ctx: commands.Context, member: discord.Member = None):
+    async def compliment(
+        self, ctx: commands.Context, member: discord.Member = None
+    ):
         """Compliment someone or yourself"""
         if member is None:
             member = ctx.author
@@ -90,7 +92,8 @@ class Fun(commands.Cog):
         ]
         await ctx.send(
             embed=discord.Embed(
-                description=f"{member.mention} {choice(compliments)}", color=self.bot.ok_color
+                description=f"{member.mention} {choice(compliments)}",
+                color=self.bot.ok_color,
             ).set_footer(text=f"Compliment from {ctx.author}")
         )
 
@@ -121,22 +124,18 @@ class Fun(commands.Cog):
         if len(txt) > 200:
             await ctx.send(
                 embed=discord.Embed(
-                    description="Text cannot be over 200", color=self.bot.error_color
+                    description="Text cannot be over 200",
+                    color=self.bot.error_color,
                 )
             )
         else:
             async with self.bot.session.get(
                 f"https://nekos.life/api/v2/owoify?text={txt}"
             ) as resp:
-                tup = (await resp.json())["owo"]
-                formatted_tuple = (
-                    str(tup).replace("(", "").replace(")", "").replace("'", "").replace(",", "")
-                )
-
                 await ctx.send(
                     embed=discord.Embed(
                         title="OwO here you go.",
-                        description=formatted_tuple,
+                        description=" ".join((await resp.json())["owo"]),
                         color=self.bot.ok_color,
                     )
                 )
@@ -162,7 +161,9 @@ class Fun(commands.Cog):
                 color=self.bot.ok_color,
             )
             return await ctx.send(embed=emb)
-        e = discord.Embed(title=f"Here's the osu profile for {user}", color=self.bot.ok_color)
+        e = discord.Embed(
+            title=f"Here's the osu profile for {user}", color=self.bot.ok_color
+        )
         if isinstance(pic, BytesIO):
             e.set_image(url="attachment://osu.png")
         elif isinstance(pic, str):
@@ -179,14 +180,17 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def animequote(self, ctx: commands.Context):
         """Recieve an anime quote from the AnimeChan API"""
-        async with self.bot.session.get("https://animechan.vercel.app/api/random") as resp:
+        async with self.bot.session.get(
+            "https://animechan.vercel.app/api/random"
+        ) as resp:
             if resp.status == 200:
                 quote = (await resp.json())["quote"]
                 char = (await resp.json())["character"]
                 anime = (await resp.json())["anime"]
                 await ctx.send(
                     embed=discord.Embed(
-                        description=f"{quote}\n~{char}", color=self.bot.ok_color
+                        description=f"{quote}\n~{char}",
+                        color=self.bot.ok_color,
                     ).set_footer(text=f"Anime: {anime}")
                 )
             else:
@@ -201,57 +205,77 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def img(self, ctx: commands.Context):
         """Return sfw images from the waifu.im api"""
-        await ctx.send(f"Do `{ctx.clean_prefix}help cmd img` for more information on this command")
+        await ctx.send(
+            f"Do `{ctx.clean_prefix}help cmd img` for more information on this command"
+        )
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def all(self, ctx: commands.Context):
         """Retrieve an image from the full image database"""
-        async with self.bot.session.get("https://api.waifu.im/sfw/all") as resp:
+        async with self.bot.session.get(
+            "https://api.waifu.im/sfw/all"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace(
-                            "#", "0x"
-                        ),
+                        str(
+                            (await resp.json())["tags"][0]["images"][0][
+                                "dominant_color"
+                            ]
+                        ).replace("#", "0x"),
                         base=16,
                     )
                     or self.bot.ok_color
-                ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
+                ).set_image(
+                    url=(await resp.json())["tags"][0]["images"][0]["url"]
+                )
             )
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def maid(self, ctx: commands.Context):
         """maids go brrr"""
-        async with self.bot.session.get("https://api.waifu.im/sfw/maid") as resp:
+        async with self.bot.session.get(
+            "https://api.waifu.im/sfw/maid"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace(
-                            "#", "0x"
-                        ),
+                        str(
+                            (await resp.json())["tags"][0]["images"][0][
+                                "dominant_color"
+                            ]
+                        ).replace("#", "0x"),
                         base=16,
                     )
                     or self.bot.ok_color
-                ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
+                ).set_image(
+                    url=(await resp.json())["tags"][0]["images"][0]["url"]
+                )
             )
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def waifu(self, ctx: commands.Context):
         """waifu"""
-        async with self.bot.session.get("https://api.waifu.im/sfw/waifu") as resp:
+        async with self.bot.session.get(
+            "https://api.waifu.im/sfw/waifu"
+        ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     color=int(
-                        str((await resp.json())["tags"][0]["images"][0]["dominant_color"]).replace(
-                            "#", "0x"
-                        ),
+                        str(
+                            (await resp.json())["tags"][0]["images"][0][
+                                "dominant_color"
+                            ]
+                        ).replace("#", "0x"),
                         base=16,
                     )
                     or self.bot.ok_color
-                ).set_image(url=(await resp.json())["tags"][0]["images"][0]["url"])
+                ).set_image(
+                    url=(await resp.json())["tags"][0]["images"][0]["url"]
+                )
             )
 
 

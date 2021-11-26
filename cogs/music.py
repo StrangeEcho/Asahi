@@ -19,13 +19,18 @@ class Music(commands.Cog):
         self.bot.loop.create_task(self.node_init())
         self.ll_ip = self.bot.get_config("config", "music", "ll_host")
         self.ll_ws_port = self.bot.get_config("config", "music", "ll_port")
-        self.ll_password = self.bot.get_config("config", "music", "ll_password")
+        self.ll_password = self.bot.get_config(
+            "config", "music", "ll_password"
+        )
 
     async def node_init(self):
         """Initialize LavaLink Node"""
         try:
             await lavalink.initialize(
-                bot=self.bot, host=self.ll_ip, ws_port=self.ll_ws_port, password=self.ll_password
+                bot=self.bot,
+                host=self.ll_ip,
+                ws_port=self.ll_ws_port,
+                password=self.ll_password,
             )
             self.bot.logger.info(
                 f"Initialized LavaLink Node\nIP: {self.ll_ip}\nPort: {self.ll_ws_port}"
@@ -40,9 +45,13 @@ class Music(commands.Cog):
     async def _conenct(self, ctx: KurisuContext):
         """Connect the bot to your vc"""
         if not ctx.author.voice:
-            return await ctx.send_error("You must be in a vc to use this command.")
+            return await ctx.send_error(
+                "You must be in a vc to use this command."
+            )
         if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            return await ctx.send("I do not have permission to join that channel.")
+            return await ctx.send(
+                "I do not have permission to join that channel."
+            )
         await lavalink.connect(ctx.author.voice.channel, True)
         await ctx.send_ok(f"Connected to {ctx.author.voice.channel.name}")
 
@@ -55,7 +64,9 @@ class Music(commands.Cog):
             return await ctx.send_error("No Activate Players")
         ct = player.current
         if not ct:
-            return await ctx.send_error("There is currently no song playing right now.")
+            return await ctx.send_error(
+                "There is currently no song playing right now."
+            )
         await ctx.send_ok(
             f"Currently Playing [{ct.title}]({ct.uri}) by {ct.author}\nTrack Length: {timedelta(milliseconds=ct.length)}"
         )
@@ -156,9 +167,13 @@ class Music(commands.Cog):
     async def play(self, ctx: KurisuContext, *, query: str):
         """Play a song"""
         if not ctx.author.voice:
-            return await ctx.send_error("You must be in a vc to use this command.")
+            return await ctx.send_error(
+                "You must be in a vc to use this command."
+            )
         if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            return await ctx.send("I do not have permission to join that channel.")
+            return await ctx.send(
+                "I do not have permission to join that channel."
+            )
 
         try:
             player = lavalink.get_player(ctx.guild.id)
@@ -172,7 +187,9 @@ class Music(commands.Cog):
         if len(tracks.tracks) == 1:
             player.add(ctx.author, tracks.tracks[0])
             if player.is_playing:
-                await ctx.send_ok(f"Added {tracks.tracks[0].title} to the queue")
+                await ctx.send_ok(
+                    f"Added {tracks.tracks[0].title} to the queue"
+                )
             else:
                 await ctx.send_ok(f"Now playing {tracks.tracks[0].title}")
             if not player.current:
@@ -204,7 +221,9 @@ class Music(commands.Cog):
             ),
             discord.ui.ActionRow(
                 discord.ui.Button(
-                    label="cancel", style=discord.ui.ButtonStyle.danger, custom_id="CLOSE_MENU"
+                    label="cancel",
+                    style=discord.ui.ButtonStyle.danger,
+                    custom_id="CLOSE_MENU",
                 )
             ),
         )
@@ -224,12 +243,18 @@ class Music(commands.Cog):
             return True
 
         try:
-            payload = await self.bot.wait_for("component_interaction", check=check, timeout=60)
+            payload = await self.bot.wait_for(
+                "component_interaction", check=check, timeout=60
+            )
         except asyncio.TimeoutError:
-            embed.description = "Timed out... Choose an song before Christmas comes."
+            embed.description = (
+                "Timed out... Choose an song before Christmas comes."
+            )
             return await msg.edit(embed=embed, components=None)
         if payload.component.custom_id == "CLOSE_MENU":
-            embed.description = "Why did you try to play a song at the first place?"
+            embed.description = (
+                "Why did you try to play a song at the first place?"
+            )
             return await msg.edit(embed=embed, components=None)
 
         await msg.delete()
@@ -237,7 +262,9 @@ class Music(commands.Cog):
         a_int = int(payload.values[0]) - 1
         player.add(ctx.author, tracks.tracks[a_int])
         if player.is_playing:
-            await ctx.send_ok(f"Added {tracks.tracks[a_int].title} to the queue.")
+            await ctx.send_ok(
+                f"Added {tracks.tracks[a_int].title} to the queue."
+            )
         else:
             await ctx.send_ok(f"Now Playing {tracks.tracks[a_int].title}")
         if not player.current:
@@ -267,7 +294,9 @@ class Music(commands.Cog):
         if not ctx.me.voice:
             return ctx.send_error("I am not connected to any vc.")
         if not ctx.author in ctx.me.voice.channel.members:
-            return await ctx.send_error("You must be in the same vc as me to disconnect me.")
+            return await ctx.send_error(
+                "You must be in the same vc as me to disconnect me."
+            )
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
@@ -298,7 +327,9 @@ class Music(commands.Cog):
                 color=self.bot.ok_color,
             ).add_field(
                 name="Tracks",
-                value="\n".join([f"{x}. {v.title}" for x, v in enumerate(player.queue, 1)]),
+                value="\n".join(
+                    [f"{x}. {v.title}" for x, v in enumerate(player.queue, 1)]
+                ),
             )
         )
 

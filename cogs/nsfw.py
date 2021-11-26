@@ -11,7 +11,9 @@ from utils.kurisu import KurisuBot
 class Embed(discord.Embed):
     def __init__(self, bot: KurisuBot, timestamp=None, **kwargs):
         super(Embed, self).__init__(
-            colour=str(bot.get_config("configoptions", "options", "ok_color")).replace("#", "0x"),
+            colour=str(
+                bot.get_config("configoptions", "options", "ok_color")
+            ).replace("#", "0x"),
             timestamp=timestamp or discord.utils.utcnow(),
             **kwargs,
         )
@@ -19,7 +21,9 @@ class Embed(discord.Embed):
     @classmethod
     def default(cls, ctx, **kwargs):
         instance = cls(**kwargs)
-        instance.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
+        instance.set_footer(
+            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url
+        )
         return instance
 
 
@@ -59,14 +63,23 @@ class NSFW(commands.Cog):
             )
 
         if tag.lower() in available_tags:
-            async with self.bot.session.get(f"https://api.waifu.im/nsfw/{tag}") as resp:
+            async with self.bot.session.get(
+                f"https://api.waifu.im/nsfw/{tag}"
+            ) as resp:
                 await ctx.send(
                     embed=discord.Embed(
                         color=int(
-                            str((await resp.json())["dominant_color"]).replace("#", "0x"), base=16
+                            str(
+                                (await resp.json())["tags"][0]["images"][0][
+                                    "dominant_color"
+                                ]
+                            ).replace("#", "0x"),
+                            base=16,
                         )
                         or self.bot.ok_color
-                    ).set_image(url=(await resp.json())["url"])
+                    ).set_image(
+                        url=(await resp.json())["tags"][0]["images"][0]["url"]
+                    )
                 )
         else:
             return await ctx.send("Tag Not Found.")
@@ -85,14 +98,19 @@ class NSFW(commands.Cog):
             tags = "\n".join(available_tags)
             return await ctx.send(
                 embed=discord.Embed(
-                    title="Available Tags", description=tags, color=self.bot.ok_color
+                    title="Available Tags",
+                    description=tags,
+                    color=self.bot.ok_color,
                 )
             )
 
         if tag is not None and tag.lower() in available_tags:
             async with self.bot.session.post(
                 url=f"https://api.waifu.pics/many/nsfw/{tag}",
-                headers={"Accept": "application/json", "content-type": "application/json"},
+                headers={
+                    "Accept": "application/json",
+                    "content-type": "application/json",
+                },
                 json={"files": ""},
             ) as resp:
                 results = (await resp.json())["files"][:5]
@@ -119,14 +137,19 @@ class NSFW(commands.Cog):
             tags = "\n".join(available_tags)
             return await ctx.send(
                 embed=discord.Embed(
-                    title="Available Tags", description=tags, color=self.bot.ok_color
+                    title="Available Tags",
+                    description=tags,
+                    color=self.bot.ok_color,
                 )
             )
 
         if tag is not None and tag.lower() in available_tags:
             async with self.bot.session.post(
                 url=f"https://api.waifu.pics/many/nsfw/{tag}",
-                headers={"Accept": "application/json", "content-type": "application/json"},
+                headers={
+                    "Accept": "application/json",
+                    "content-type": "application/json",
+                },
                 json={"files": ""},
             ) as resp:
                 step = 5  # the amount of files to display at a time
@@ -188,7 +211,8 @@ class NSFW(commands.Cog):
 
         try:
             doujin = await self.bot.loop.run_in_executor(
-                None, functools.partial(hentai.Hentai, hentai.Utils.get_random_id())
+                None,
+                functools.partial(hentai.Hentai, hentai.Utils.get_random_id()),
             )
         except Exception as e:
             if await self.bot.is_owner(ctx.author):
@@ -231,10 +255,16 @@ class NSFW(commands.Cog):
         embed.title = doujin.title(hentai.Format.Pretty)
         embed.add_field(name="Holy Digits", value=doujin.id, inline=True)
         embed.add_field(
-            name="Languages", value=hentai.Tag.get(doujin.language, "name"), inline=True
+            name="Languages",
+            value=hentai.Tag.get(doujin.language, "name"),
+            inline=True,
         )
         embed.add_field(name="Uploaded", value=doujin.upload_date, inline=True)
-        embed.add_field(name="Number of times liked", value=doujin.num_favorites, inline=True)
+        embed.add_field(
+            name="Number of times liked",
+            value=doujin.num_favorites,
+            inline=True,
+        )
         embed.add_field(name="Tags", value=hentai.Tag.get(doujin.tag, "name"))
         embed.add_field(name="Number of pages", value=doujin.num_pages)
         embed.set_thumbnail(url=doujin.thumbnail)

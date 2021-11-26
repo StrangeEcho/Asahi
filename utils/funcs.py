@@ -15,7 +15,7 @@ async def check_hierarchy(ctx: commands.Context, member: discord.Member):
         return False
     if member.id == ctx.bot.user.id:
         return await ctx.send(
-            f"I can't do this either and you'd really use my own moderation commands on me? >:C"
+            "I can't do this either and you'd really use my own moderation commands on me? >:C"
         )
     if member.id == ctx.guild.owner.id:
         return await ctx.send(
@@ -39,8 +39,10 @@ async def parse_llnode_stat(stats, stat_name: str):
 
 
 def humanize_timedelta(
-    *, timedelta: Optional[datetime.timedelta] = None, seconds: Optional[SupportsInt] = None
-) -> str:
+    *,
+    timedelta: Optional[datetime.timedelta] = None,
+    seconds: Optional[SupportsInt] = None,
+) -> None:
     """
     Get a locale aware human timedelta representation.
     """
@@ -48,7 +50,9 @@ def humanize_timedelta(
     try:
         obj = seconds if seconds is not None else timedelta.total_seconds()
     except AttributeError:
-        raise ValueError("You must provide either a timedelta or a number of seconds")
+        raise ValueError(
+            "You must provide either a timedelta or a number of seconds"
+        )
 
 
 # Credits to https://github.com/Cog-Creators/Red-DiscordBot/blob/ded5aff08cfe443498770e7f27035db694e72c30/redbot/core/utils/chat_formatting.py#L86
