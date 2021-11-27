@@ -116,6 +116,7 @@ class Listeners(commands.Cog):
                     f"**Usage**: `{ctx.message.content}`\n"
                     f"**Guild**: `{ctx.guild}({ctx.guild.id})`\n"
                     f"**User**: `{ctx.author}({ctx.author.id})`\n"
+                    f"Error Type: {error}\n"
                     "**Traceback**:",
                     file=discord.File(
                         io.BytesIO(error_content.encode("utf-8")), "error.py"

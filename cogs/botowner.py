@@ -16,7 +16,7 @@ from utils.kurisu import KurisuBot
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
 
-class BotOwner(commands.Cog):
+class Bot_Owner(commands.Cog):
     """Bot Owner only commands"""
 
     def __init__(self, bot: KurisuBot):
@@ -532,4 +532,4 @@ class BotOwner(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(BotOwner(bot))
+    bot.add_cog(Bot_Owner(bot))

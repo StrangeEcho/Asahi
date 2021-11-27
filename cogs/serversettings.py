@@ -5,7 +5,7 @@ from utils.dbmanagers import PrefixManager
 from utils.kurisu import KurisuBot
 
 
-class ServerSettings(commands.Cog):
+class Server_Settings(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.prefix_manager = PrefixManager(bot=self.bot)
@@ -51,4 +51,4 @@ class ServerSettings(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ServerSettings(bot))
+    bot.add_cog(Server_Settings(bot))

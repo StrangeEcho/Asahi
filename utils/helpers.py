@@ -4,7 +4,7 @@ from textwrap import wrap
 from typing import TYPE_CHECKING, Union
 import asyncio
 
-from discord.ext import menus
+from discord.ext import menus, commands
 import discord
 import toml
 
@@ -47,7 +47,7 @@ class AutoPagiantor:
         self.limit: int = limit
         self.text: str = text
         self.index: int = 0
-        self.ctx: KurisuContext = ctx
+        self.ctx: Union[KurisuContext, commands.Context] = ctx
         self.emojis: list[Union[str, discord.Emoji]] = ["⬅️", "➡️", "❌"]
         self.embeds: list[discord.Embed] = []
 

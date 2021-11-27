@@ -32,7 +32,6 @@ class KurisuBot(commands.AutoShardedBot):
             logging.getLogger(logger).addHandler(LoggingHandler())
         self.logger = logging.getLogger("kurisu")
         super().__init__(
-            help_command=None,
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions(
                 roles=False, everyone=False
