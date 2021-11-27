@@ -23,7 +23,7 @@ class KurisuHelpCommand(commands.HelpCommand):
                 discord.ui.SelectOption(
                     label=cog.replace("_", " "),
                     value=cog,
-                    emoji="⚙️"
+                    emoji="<:kurisucute:914198893628108841>"
                 )
             )
         componets: discord.ui.MessageComponents = discord.ui.MessageComponents(
@@ -40,7 +40,10 @@ class KurisuHelpCommand(commands.HelpCommand):
             components=componets,
             embed=discord.Embed(
                 title=f":wave: Hello there. Im {self.context.bot.user.name}",
-                description="",
+                description="Kurisu is a multi-modular all purpose bot built with Discord.py\n\n"
+                            "Prefix: "
+                            f"{self.context.bot.prefixes.get(str(self.context.guild.id)) or self.context.bot.get_config('config', 'config', 'prefix')} "
+                            f"or {self.context.bot.user.mention}",
                 color=get_color("ok_color")
             ).set_thumbnail(url=self.context.bot.user.avatar.url)
             .set_footer(text=f"Do {self.context.clean_prefix}help <module/command> to for more info.")
@@ -55,12 +58,11 @@ class KurisuHelpCommand(commands.HelpCommand):
                 check=check,
                 timeout=30
             )
+            await self.send_cog_help(self.context.bot.get_cog(payload.values[0]))
+            await msg.delete()
         except asyncio.TimeoutError:
             componets.disable_components()
             await msg.add_reaction("⏰")
-
-        await self.send_cog_help(self.context.bot.get_cog(payload.values[0]))
-        await msg.delete()
 
 
     async def send_command_help(self, command: commands.Command) -> None:
@@ -82,15 +84,16 @@ class KurisuHelpCommand(commands.HelpCommand):
 
 
     async def send_cog_help(self, cog: commands.Cog) -> None:
+        """Override method"""
         chan: Union[discord.TextChannel, discord.DMChannel] = self.get_destination()
         await chan.send(
             embed=discord.Embed(
                 title=f"Info for `{cog.qualified_name.replace('_', ' ')}`",
-                description=f"Description: {cog.description}",
+                description=f"Description: `{cog.description}`",
                 color=get_color("ok_color")
             ).add_field(
                 name="Commands",
-                value="\n".join([f"`{c.qualified_name}`" for c in cog.get_commands()])
+                value="\n".join([f"`{c.qualified_name}`" for c in cog.get_commands() if not c.hidden])
             ).set_footer(text=f"Do {self.context.clean_prefix}help <command> for info on a command")
         )
 
