@@ -260,9 +260,6 @@ class Utility(commands.Cog):
             inline=False,
         )
         embed.add_field(
-            name="Region", value=str(guild.region).upper(), inline=True
-        )
-        embed.add_field(
             name="Member Count", value=f"**{guild.member_count}**", inline=True
         )
         embed.add_field(
@@ -313,6 +310,7 @@ class Utility(commands.Cog):
         embed.add_field(
             name="Status & Activity",
             value=f"Status: {str(user.status).title()}\nActivity: {user.activity.name}",
+            inline=False
         )
         embed.add_field(
             name="Account Creation",
@@ -321,7 +319,7 @@ class Utility(commands.Cog):
         embed.add_field(
             name=f"{ctx.guild} Join Date",
             value=f"<t:{int(user.joined_at.timestamp())}:F>"
-            if user.joined_at != None
+            if user.joined_at
             else "Unknown.",
             inline=False,
         )
@@ -334,7 +332,7 @@ class Utility(commands.Cog):
         if user_flags:
             embed.add_field(
                 name="Public User Flags",
-                value=user_flags.upper(),
+                value=user_flags,
                 inline=False,
             )
         if not user.bot:
