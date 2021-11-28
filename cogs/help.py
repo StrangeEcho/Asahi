@@ -18,14 +18,16 @@ class KurisuHelpCommand(commands.HelpCommand):
 
         dropdown_options: list[discord.ui.SelectOption] = []
 
-        for cog in self.context.bot.cogs:
-            dropdown_options.append(
-                discord.ui.SelectOption(
-                    label=cog.replace("_", " "),
-                    value=cog,
-                    emoji="<:kurisucute:914198893628108841>"
+        for cog in self.context.bot.cogs.values():
+            if cog.get_commands():
+                dropdown_options.append(
+                    discord.ui.SelectOption(
+                        label=cog.qualified_name.replace("_", " "),
+                        emoji="<:kurisucute:914198893628108841>",
+                        value=cog.qualified_name
+                    )
                 )
-            )
+
         componets: discord.ui.MessageComponents = discord.ui.MessageComponents(
             discord.ui.ActionRow(
                 discord.ui.SelectMenu(
@@ -42,7 +44,7 @@ class KurisuHelpCommand(commands.HelpCommand):
                 title=f":wave: Hello there. Im {self.context.bot.user.name}",
                 description="Kurisu is a multi-modular all purpose bot built with Discord.py\n\n"
                             "Prefix: "
-                            f"{self.context.bot.prefixes.get(str(self.context.guild.id)) or self.context.bot.get_config('config', 'config', 'prefix')} "
+                            f"`{self.context.bot.prefixes.get(str(self.context.guild.id)) or self.context.bot.get_config('config', 'config', 'prefix')}` "
                             f"or {self.context.bot.user.mention}",
                 color=get_color("ok_color")
             ).set_thumbnail(url=self.context.bot.user.avatar.url)
@@ -86,16 +88,17 @@ class KurisuHelpCommand(commands.HelpCommand):
     async def send_cog_help(self, cog: commands.Cog) -> None:
         """Override method"""
         chan: Union[discord.TextChannel, discord.DMChannel] = self.get_destination()
-        await chan.send(
-            embed=discord.Embed(
-                title=f"Info for `{cog.qualified_name.replace('_', ' ')}`",
-                description=f"Description: `{cog.description}`",
-                color=get_color("ok_color")
-            ).add_field(
-                name="Commands",
-                value="\n".join([f"`{c.qualified_name}`" for c in cog.get_commands() if not c.hidden])
-            ).set_footer(text=f"Do {self.context.clean_prefix}help <command> for info on a command")
+        embed = discord.Embed(
+            title=f"Info for `{cog.qualified_name}`",
+            description=f"Description: `{cog.description}`",
+            color=get_color("ok_color")
         )
+        if cog.get_commands():
+            embed.add_field(
+                name="Commands",
+                value="\n".join([f"`{c.name}`" for c in cog.get_commands() if not c.hidden])
+            )
+        await chan.send(embed=embed)
 
 
 class Help(commands.Cog):
