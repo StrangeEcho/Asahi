@@ -196,7 +196,7 @@ class Miscellaneous(commands.Cog):
             inline=False,
         )
         embed3.add_field(
-            name="Discord.py Version",
+            name="Novus(Discord.py) Version",
             value=f"[{discord.__version__}](https://discordpy.readthedocs.io/en/master/index.html)",
             inline=False,
         )
