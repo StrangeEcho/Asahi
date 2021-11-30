@@ -42,7 +42,7 @@ class KurisuHelpCommand(commands.HelpCommand):
             components=componets,
             embed=discord.Embed(
                 title=f":wave: Hello there. Im {self.context.bot.user.name}",
-                description="Kurisu is a multi-modular all purpose bot built with Discord.py\n\n"
+                description=f"{self.context.bot.user.name} is a multi-modular all purpose bot built with Discord.py\n\n"
                             "Prefix: "
                             f"`{self.context.bot.prefixes.get(str(self.context.guild.id)) or self.context.bot.get_config('config', 'config', 'prefix')}` "
                             f"or {self.context.bot.user.mention}",
@@ -96,7 +96,7 @@ class KurisuHelpCommand(commands.HelpCommand):
         if cog.get_commands():
             embed.add_field(
                 name="Commands",
-                value="\n".join([f"`{c.name}`" for c in self.filter_commands(cog.get_commands(), sort=True) if c.can_run(self.context)])
+                value="\n".join([f"`{c.qualified_name}`" for c in await self.filter_commands(cog.get_commands(), sort=True) if c.can_run(self.context)])
             )
         await chan.send(embed=embed)
 
