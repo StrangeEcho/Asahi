@@ -1,3 +1,4 @@
+import contextlib
 import asyncio
 from typing import Union, Mapping
 
@@ -96,9 +97,38 @@ class KurisuHelpCommand(commands.HelpCommand):
         if cog.get_commands():
             embed.add_field(
                 name="Commands",
-                value="\n".join([f"`{c.qualified_name}`" for c in await self.filter_commands(cog.walk_commands(), sort=True) if c.can_run(self.context)])
+                value="\n".join([f"`{c.qualified_name}`" for c in await self.filter_commands(cog.walk_commands(), sort=True) if await c.can_run(self.context)])
             )
         await chan.send(embed=embed)
+
+
+    async def send_group_help(self, group: commands.Group) -> None:
+        """Override method"""
+        chan: Union[discord.TextChannel, discord.DMChannel] = self.get_destination()
+        await chan.send(
+            embed=discord.Embed(
+                title=f"Info for Group command `{group.qualified_name}`",
+                description=f"Description: {'`{}`'.format(group.help) if group.help else 'No Description'}",
+                color=get_color("ok_color")
+            ).add_field(
+                name="Subcommands",
+                value="\n".join([f"`{c.qualified_name}`" for c in await self.filter_commands(group.commands, sort=True) if await c.can_run(self.context)])
+            ).set_footer(
+                text=f"Use {self.context.clean_prefix}help <subcommand> for information on a command groups subcommand"
+            )
+        )
+
+    async def command_not_found(self, string: str) -> discord.Embed:
+        """Override method"""
+        return discord.Embed(
+            description=f"Couldn't find a Command/Group/Module[Cog] called `{string}`...",
+            color=get_color("error_color")
+        ).set_footer(text=f"Run {self.context.clean_prefix}help for more info!")
+
+
+    async def send_error_message(self, error) -> None:
+        """Override method"""
+        await self.get_destination().send(embed=error)
 
 
 class Help(commands.Cog):
