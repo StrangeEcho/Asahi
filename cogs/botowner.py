@@ -10,7 +10,6 @@ import traceback
 from discord.ext import commands
 import discord
 
-from utils.helpers import AutoPagiantor
 from utils.kurisu import KurisuBot
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")

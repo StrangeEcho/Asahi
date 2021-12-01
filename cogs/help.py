@@ -73,7 +73,7 @@ class KurisuHelpCommand(commands.HelpCommand):
         await chan.send(
             embed=discord.Embed(
                 title=f"Info for `{command.qualified_name}`",
-                description=f"Command Description: `{command.help}`",
+                description=f"Command Description: {'`{}`'.format(command.help) if command.help else '`No Description`'}",
                 color=get_color("ok_color")
             ).add_field(name="Module/Cog", value=f"`{command.cog_name}`")
             .add_field(name="Usage", value=f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}`")
@@ -90,13 +90,13 @@ class KurisuHelpCommand(commands.HelpCommand):
         chan: Union[discord.TextChannel, discord.DMChannel] = self.get_destination()
         embed = discord.Embed(
             title=f"Info for `{cog.qualified_name}`",
-            description=f"Description: `{cog.description}`",
+            description=f"Description: {'`{}`'.format(cog.description) if cog.description else '`No Description`'}",
             color=get_color("ok_color")
         )
         if cog.get_commands():
             embed.add_field(
                 name="Commands",
-                value="\n".join([f"`{c.qualified_name}`" for c in await self.filter_commands(cog.get_commands(), sort=True) if c.can_run(self.context)])
+                value="\n".join([f"`{c.qualified_name}`" for c in await self.filter_commands(cog.walk_commands(), sort=True) if c.can_run(self.context)])
             )
         await chan.send(embed=embed)
 
@@ -104,7 +104,7 @@ class KurisuHelpCommand(commands.HelpCommand):
 class Help(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
-        self.bot.help_command = KurisuHelpCommand()
+        self.bot.help_command = KurisuHelpCommand(command_attrs={"aliases": ["h"]})
 
 def setup(bot):
     bot.add_cog(Help(bot))
