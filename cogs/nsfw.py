@@ -84,9 +84,9 @@ class NSFW(commands.Cog):
         else:
             return await ctx.send("Tag Not Found.")
 
-    @commands.command(aliases=["hb"])
+    @commands.command(hidden=True, aliases=["hb"])
     @commands.is_nsfw()
-    @commands.cooldown(1, 3, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def hentaibomb(self, ctx: commands.Context, *, tag: str = None):
         """Post 5 hentai images from Waifu.pics API. Run [p]hentaibomb list for available tags"""
         available_tags = ["waifu", "neko", "trap", "blowjob"]
@@ -124,8 +124,8 @@ class NSFW(commands.Cog):
                 )
             )
 
-    @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.command(hidden=True, aliases=["hn"])
+    @commands.cooldown(1, 20, commands.BucketType.user)
     async def hentainuke(self, ctx: commands.Context, *, tag: str = None):
         """Post 30 hentai images from Waifu.pics API. Run [p]hentainuke list for available tags"""
         available_tags = ["waifu", "neko", "trap", "blowjob"]
