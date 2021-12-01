@@ -97,7 +97,7 @@ class KurisuHelpCommand(commands.HelpCommand):
         if cog.get_commands():
             embed.add_field(
                 name="Commands",
-                value="\n".join([f"`{c.qualified_name}`" for c in await self.filter_commands(cog.walk_commands(), sort=True) if await c.can_run(self.context)])
+                value="\n".join([f"`{c.name}`" for c in await self.filter_commands(cog.get_commands(), sort=True) if await c.can_run(self.context)])
             )
         await chan.send(embed=embed)
 

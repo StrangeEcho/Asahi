@@ -205,9 +205,7 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def img(self, ctx: commands.Context):
         """Return sfw images from the waifu.im api"""
-        await ctx.send(
-            f"Do `{ctx.clean_prefix}help cmd img` for more information on this command"
-        )
+        await ctx.send_help(ctx.command)
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
