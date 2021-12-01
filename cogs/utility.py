@@ -269,7 +269,10 @@ class Utility(commands.Cog):
         )
         embed.add_field(
             name="Channel Count",
-            value=f"Categories: **{len(guild.categories)}**\nText: **{len(guild.text_channels)}**\nVoice: **{len(guild.voice_channels)}**\nTotal: **{len(guild.text_channels) + len(guild.voice_channels)}**",
+            value=f"Text: {len(guild.text_channels)}\n"
+                  f"Voice: {len(guild.voice_channels)}\n"
+                  f"Categories: {len(guild.categories)}\n"
+                  f"Total {len(guild.text_channels) + len(guild.voice_channels) + len(guild.categories)}",
             inline=True,
         )
         embed.add_field(
