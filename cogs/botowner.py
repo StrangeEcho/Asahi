@@ -171,7 +171,8 @@ class Bot_Owner(commands.Cog):
         self.bot.owner_ids.remove(user.id)
         await ctx.message.add_reaction("\u2705")
 
-    @commands.command(name="eval")
+    @commands.command(hidden=True, name="eval")
+    @commands.is_owner()
     async def _eval(self, ctx, *, body: str):
         """Evaluates a code"""
 
