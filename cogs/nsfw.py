@@ -6,7 +6,6 @@ import discord
 import hentai
 
 from utils.kurisu import KurisuBot
-from utils.funcs import hex_converter
 
 class Embed(discord.Embed):
     def __init__(self, bot: KurisuBot, timestamp=None, **kwargs):
