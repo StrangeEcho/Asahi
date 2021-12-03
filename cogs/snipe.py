@@ -19,7 +19,7 @@ edit_snipe = {"author": None, "content": None, "guild": None, "channel": None}
 
 
 class Snipe(commands.Cog):
-    """Some snipe related commands xd"""
+    """Commands with helping snipe edited or deleted messages"""
 
     def __init__(self, bot):
         self.bot = bot

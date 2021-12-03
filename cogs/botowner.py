@@ -16,7 +16,7 @@ START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
 
 class Bot_Owner(commands.Cog):
-    """Bot Owner only commands"""
+    """Commands meant to be only used by whoever has owner privileges on the bot."""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot

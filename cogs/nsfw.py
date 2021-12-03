@@ -27,6 +27,7 @@ class Embed(discord.Embed):
 
 
 class NSFW(commands.Cog):
+    """Some kinky yet interesting set of commands meant for those "urges" 😉."""
     def __init__(self, bot: KurisuBot):
         self.bot = bot
 

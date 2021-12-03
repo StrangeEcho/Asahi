@@ -132,6 +132,7 @@ class KurisuHelpCommand(commands.HelpCommand):
 
 
 class Help(commands.Cog):
+    """Module containing the bots help command."""
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.bot.help_command = KurisuHelpCommand(command_attrs={"aliases": ["h"]})

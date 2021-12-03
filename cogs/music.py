@@ -12,7 +12,7 @@ from utils.kurisu import KurisuBot
 
 
 class Music(commands.Cog):
-    """Music Module"""
+    """Play your favorite tunes with these commands!!!"""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot

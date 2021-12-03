@@ -13,7 +13,7 @@ from utils.kurisu import KurisuBot
 
 
 class Miscellaneous(commands.Cog):
-    """Miscellaneous commands"""
+    """A module full of many different misc commands."""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot

@@ -9,7 +9,7 @@ from utils.kurisu import KurisuBot
 
 
 class Fun(commands.Cog):
-    """Fun related commands"""
+    """Many different fun styled commands for your enterainment."""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot

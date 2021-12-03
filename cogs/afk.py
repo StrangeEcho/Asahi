@@ -8,6 +8,7 @@ from utils.kurisu import KurisuBot
 
 
 class AFK(commands.Cog):
+    """Relay a "afk message" back to your friends when they mention you are you are away."""
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.am = AFKManager(self.bot)

@@ -10,7 +10,7 @@ from utils.kurisu import KurisuBot
 
 
 class Utility(commands.Cog):
-    """Some utility commands"""
+    """A module filled with informative commands. Could be info a bout a guild, user, etc"""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot

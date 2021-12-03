@@ -11,7 +11,7 @@ from utils.kurisu import KurisuBot
 
 
 class Moderation(commands.Cog):
-    """Moderation related commands"""
+    """Commands built to help you moderate your server properly."""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot

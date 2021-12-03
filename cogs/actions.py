@@ -7,7 +7,7 @@ np = ""
 
 
 class Actions(commands.Cog):
-    """Commands related to Roleplay"""
+    """Roleplay with your friends with this modules assortment of different commands."""
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot
