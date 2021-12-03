@@ -312,7 +312,7 @@ class Utility(commands.Cog):
         embed.add_field(name="ID", value=user.id)
         embed.add_field(
             name="Status & Activity",
-            value=f"Status: {str(user.status).title()}\nActivity: {user.activity.name}",
+            value=f"Status: {str(user.status).title()}\nActivity: {user.activity.name if user.activity else 'No Activity'}",
             inline=False
         )
         embed.add_field(

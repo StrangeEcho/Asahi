@@ -5,6 +5,7 @@ from discord.ext import commands
 import aiohttp
 import discord
 
+from utils.funcs import hex_converter
 from utils.kurisu import KurisuBot
 
 
@@ -216,17 +217,10 @@ class Fun(commands.Cog):
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
-                    color=int(
-                        str(
-                            (await resp.json())["tags"][0]["images"][0][
-                                "dominant_color"
-                            ]
-                        ).replace("#", "0x"),
-                        base=16,
-                    )
+                    color=hex_converter(await resp.json()["images"][0]["dominant_color"])
                     or self.bot.ok_color
                 ).set_image(
-                    url=(await resp.json())["tags"][0]["images"][0]["url"]
+                    url=(await resp.json())["images"][0]["url"]
                 )
             )
 

@@ -122,6 +122,7 @@ class Listeners(commands.Cog):
                         io.BytesIO(error_content.encode("utf-8")), "error.py"
                     ),
                 )
+            self.bot.logger.error(error_content)
         else:
             self.bot.logger.error("Unhandled exception Caught.\n" + "".join(traceback.format_exception(None, error, error.__traceback__)))
 

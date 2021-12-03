@@ -6,7 +6,7 @@ import discord
 import hentai
 
 from utils.kurisu import KurisuBot
-
+from utils.funcs import hex_converter
 
 class Embed(discord.Embed):
     def __init__(self, bot: KurisuBot, timestamp=None, **kwargs):
@@ -68,17 +68,9 @@ class NSFW(commands.Cog):
             ) as resp:
                 await ctx.send(
                     embed=discord.Embed(
-                        color=int(
-                            str(
-                                (await resp.json())["tags"][0]["images"][0][
-                                    "dominant_color"
-                                ]
-                            ).replace("#", "0x"),
-                            base=16,
-                        )
-                        or self.bot.ok_color
+                        color=hex_converter(await resp.json()["images"][0]["dominant_color"])
                     ).set_image(
-                        url=(await resp.json())["tags"][0]["images"][0]["url"]
+                        url=(await resp.json())["images"][0]["url"]
                     )
                 )
         else:
