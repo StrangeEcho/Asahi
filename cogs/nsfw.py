@@ -68,7 +68,7 @@ class NSFW(commands.Cog):
             ) as resp:
                 await ctx.send(
                     embed=discord.Embed(
-                        color=hex_converter(await resp.json()["images"][0]["dominant_color"])
+                        color=self.bot.ok_color
                     ).set_image(
                         url=(await resp.json())["images"][0]["url"]
                     )

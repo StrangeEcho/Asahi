@@ -71,7 +71,3 @@ def box(text: str, lang: str = "") -> str:
     """
     ret = "```{}\n{}\n```".format(lang, text)
     return ret
-
-
-def hex_converter(hex: str) -> int:
-    return int(hex.replace("#", "0x"), 16)
