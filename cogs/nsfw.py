@@ -7,6 +7,7 @@ import hentai
 
 from utils.kurisu import KurisuBot
 
+
 class Embed(discord.Embed):
     def __init__(self, bot: KurisuBot, timestamp=None, **kwargs):
         super(Embed, self).__init__(
@@ -28,6 +29,7 @@ class Embed(discord.Embed):
 
 class NSFW(commands.Cog):
     """Some kinky yet interesting set of commands meant for those "urges" 😉."""
+
     def __init__(self, bot: KurisuBot):
         self.bot = bot
 
@@ -67,9 +69,7 @@ class NSFW(commands.Cog):
                 f"https://api.waifu.im/nsfw/{tag}"
             ) as resp:
                 await ctx.send(
-                    embed=discord.Embed(
-                        color=self.bot.ok_color
-                    ).set_image(
+                    embed=discord.Embed(color=self.bot.ok_color).set_image(
                         url=(await resp.json())["images"][0]["url"]
                     )
                 )

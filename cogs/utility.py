@@ -270,9 +270,9 @@ class Utility(commands.Cog):
         embed.add_field(
             name="Channel Count",
             value=f"Text: **{len(guild.text_channels)}**\n"
-                  f"Voice: **{len(guild.voice_channels)}**\n"
-                  f"Categories: **{len(guild.categories)}**\n"
-                  f"Total **{len(guild.text_channels) + len(guild.voice_channels) + len(guild.categories)}**",
+            f"Voice: **{len(guild.voice_channels)}**\n"
+            f"Categories: **{len(guild.categories)}**\n"
+            f"Total **{len(guild.text_channels) + len(guild.voice_channels) + len(guild.categories)}**",
             inline=True,
         )
         embed.add_field(
@@ -313,7 +313,7 @@ class Utility(commands.Cog):
         embed.add_field(
             name="Status & Activity",
             value=f"Status: {str(user.status).title()}\nActivity: {user.activity.name if user.activity else 'No Activity'}",
-            inline=False
+            inline=False,
         )
         embed.add_field(
             name="Account Creation",

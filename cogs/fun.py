@@ -215,9 +215,7 @@ class Fun(commands.Cog):
             "https://api.waifu.im/sfw/all"
         ) as resp:
             await ctx.send(
-                embed=discord.Embed(
-                    color=self.bot.ok_color
-                ).set_image(
+                embed=discord.Embed(color=self.bot.ok_color).set_image(
                     url=(await resp.json())["images"][0]["url"]
                 )
             )
@@ -230,9 +228,7 @@ class Fun(commands.Cog):
             "https://api.waifu.im/sfw/maid"
         ) as resp:
             await ctx.send(
-                embed=discord.Embed(
-                    color=self.bot.ok_color
-                ).set_image(
+                embed=discord.Embed(color=self.bot.ok_color).set_image(
                     url=(await resp.json())["images"][0]["url"]
                 )
             )
@@ -245,9 +241,7 @@ class Fun(commands.Cog):
             "https://api.waifu.im/sfw/waifu"
         ) as resp:
             await ctx.send(
-                embed=discord.Embed(
-                    color=self.bot.ok_color
-                ).set_image(
+                embed=discord.Embed(color=self.bot.ok_color).set_image(
                     url=(await resp.json())["images"][0]["url"]
                 )
             )

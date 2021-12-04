@@ -4,7 +4,7 @@ from textwrap import wrap
 from typing import TYPE_CHECKING, Union
 import asyncio
 
-from discord.ext import menus, commands
+from discord.ext import commands, menus
 import discord
 import toml
 

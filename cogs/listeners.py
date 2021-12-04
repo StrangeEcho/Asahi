@@ -124,7 +124,14 @@ class Listeners(commands.Cog):
                 )
             self.bot.logger.error(error_content)
         else:
-            self.bot.logger.error("Unhandled exception Caught.\n" + "".join(traceback.format_exception(None, error, error.__traceback__)))
+            self.bot.logger.error(
+                "Unhandled exception Caught.\n"
+                + "".join(
+                    traceback.format_exception(
+                        None, error, error.__traceback__
+                    )
+                )
+            )
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):

@@ -7,6 +7,7 @@ from utils.kurisu import KurisuBot
 
 class Server_Settings(commands.Cog):
     """A module meant to help manage your servers settings in correlation to this bot."""
+
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.prefix_manager = PrefixManager(bot=self.bot)
