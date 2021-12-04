@@ -97,8 +97,11 @@ class KurisuHelpCommand(commands.HelpCommand):
         if cog.get_commands():
             embed.add_field(
                 name="Commands",
-                value="\n".join([f"`{c.name}`" for c in await self.filter_commands(cog.get_commands(), sort=True) if await c.can_run(self.context)])
+                value="\n".join([f"`{c.name}`" for c in await self.filter_commands(cog.get_commands(), sort=True) if await c.can_run(self.context)]) or "No Usable Commands."
             )
+        embed.set_footer(
+            text="Cog commands are filtered to the commands that are usable by you in the current context."
+        )
         await chan.send(embed=embed)
 
 
