@@ -61,8 +61,8 @@ class KurisuHelpCommand(commands.HelpCommand):
                 check=check,
                 timeout=30
             )
-            await self.send_cog_help(self.context.bot.get_cog(payload.values[0]))
             await msg.delete()
+            await self.send_cog_help(self.context.bot.get_cog(payload.values[0]))
         except asyncio.TimeoutError:
             componets.disable_components()
             await msg.add_reaction("⏰")
