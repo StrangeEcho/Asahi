@@ -324,54 +324,82 @@ class Bot_Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def load(self, ctx: commands.Context, extension):
+    async def load(self, ctx: commands.Context, *extensions):
         """Load bot extensions"""
-        try:
-            self.bot.load_extension(extension)
-            await ctx.send(
-                embed=discord.Embed(
-                    description=f":inbox_tray: Loaded `{extension}`",
-                    color=self.bot.ok_color,
-                )
+        success_list: list[str] = []
+        failed_extensions: list[str] = []
+        for ext in extensions:
+            try:
+                self.bot.load_extension(ext)
+                success_list.append(f":inbox_tray: `{ext[5:].capitalize()}`")
+            except commands.ExtensionError as e:
+                failed_extensions.append(f":x: `{ext[5:].capitalize()}` - `{e}`")
+        await ctx.send(
+            embed=discord.Embed(
+                title="Summary",
+                color=self.bot.ok_color
+            ).add_field(
+                name="Loaded Successfully",
+                value="\n".join(success_list) or "None"
+            ).add_field(
+                name="Failed To Load",
+                value="\n".join(failed_extensions) or "None",
+                inline=False
             )
-        except commands.ExtensionError as e:
-            await ctx.send(
-                embed=discord.Embed(description=e, color=self.bot.error_color)
-            )
-
+        )
     @commands.command()
     @commands.is_owner()
-    async def unload(self, ctx: commands.Context, extension):
+    async def unload(self, ctx: commands.Context, *extensions):
         """Unload bot extensions"""
-        try:
-            self.bot.unload_extension(extension)
-            await ctx.send(
-                embed=discord.Embed(
-                    description=f":outbox_tray: Unloaded `{extension}`",
-                    color=self.bot.ok_color,
-                )
+        success_list: list[str] = []
+        failed_extensions: list[str] = []
+        for ext in extensions:
+            try:
+                self.bot.unload_extension(ext)
+                success_list.append(f":outbox_tray: `{ext[5:].capitalize()}`")
+            except commands.ExtensionError as e:
+                failed_extensions.append(f":x: `{ext[5:].capitalize()}` - `{e}`")
+        await ctx.send(
+            embed=discord.Embed(
+                title="Summary",
+                color=self.bot.ok_color
+            ).add_field(
+                name="Unloaded Successfully",
+                value="\n".join(success_list) or "None"
+            ).add_field(
+                name="Failed To Unload",
+                value="\n".join(failed_extensions) or "None",
+                inline=False
             )
-        except commands.ExtensionError as e:
-            await ctx.send(
-                embed=discord.Embed(description=e, color=self.bot.error_color)
-            )
+        )
+
 
     @commands.command(name="reload")
     @commands.is_owner()
-    async def _reload(self, ctx: commands.Context, extension):
+    async def _reload(self, ctx: commands.Context, *extensions):
         """Reload bot extensions"""
-        try:
-            self.bot.reload_extension(extension)
-            await ctx.send(
-                embed=discord.Embed(
-                    description=f":repeat: Reloaded `{extension}`",
-                    color=self.bot.ok_color,
-                )
+        success_list: list[str] = []
+        failed_extensions: list[str] = []
+        for ext in extensions:
+            try:
+                self.bot.reload_extension(ext)
+                success_list.append(f":repeat: `{ext[5:].capitalize()}`")
+            except commands.ExtensionError as e:
+                failed_extensions.append(f":x: `{ext[5:].capitalize()}` - `{e}`")
+        await ctx.send(
+            embed=discord.Embed(
+                title="Summary",
+                color=self.bot.ok_color
+            ).add_field(
+                name="Reloaded Successfully",
+                value="\n".join(success_list) or "None"
+            ).add_field(
+                name="Failed To Reload",
+                value="\n".join(failed_extensions) or "None",
+                inline=False
             )
-        except commands.ExtensionError as e:
-            await ctx.send(
-                embed=discord.Embed(description=e, color=self.bot.error_color)
-            )
+        )
+
 
     @commands.command()
     @commands.is_owner()

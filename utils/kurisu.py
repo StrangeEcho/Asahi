@@ -183,7 +183,7 @@ class KurisuBot(commands.AutoShardedBot):
         if ctx:
             await ctx.send(
                 embed=discord.Embed(
-                    description=f"Successfully reloaded {success} cog(s)\n Failed reloading {failed} cog(s)",
+                    description=f"Successfully reloaded {success} cog(s)\n Failed reloading {failed - 1} cog(s)",
                     color=self.ok_color,
                 ).set_footer(
                     text="If any cogs failed to reload, check console for feedback."
