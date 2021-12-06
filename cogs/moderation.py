@@ -251,9 +251,7 @@ class Moderation(commands.Cog):
     @commands.group(invoke_without_command=True)
     async def warn(self, ctx: commands.Context):
         """Warning related commands"""
-        await ctx.send(
-            f"Do `{ctx.clean_prefix}help cmd warn` for help about this command."
-        )
+        await ctx.send_help(ctx.command)
 
     @warn.command()
     @commands.has_permissions(kick_members=True)

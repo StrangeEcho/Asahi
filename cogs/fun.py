@@ -209,19 +209,6 @@ class Fun(commands.Cog):
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def all(self, ctx: commands.Context):
-        """Retrieve an image from the full image database"""
-        async with self.bot.session.get(
-            "https://api.waifu.im/sfw/all"
-        ) as resp:
-            await ctx.send(
-                embed=discord.Embed(color=self.bot.ok_color).set_image(
-                    url=(await resp.json())["images"][0]["url"]
-                )
-            )
-
-    @img.command()
-    @commands.cooldown(1, 3, commands.BucketType.user)
     async def maid(self, ctx: commands.Context):
         """maids go brrr"""
         async with self.bot.session.get(
