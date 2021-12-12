@@ -4,13 +4,16 @@ from textwrap import wrap
 from typing import TYPE_CHECKING, Union
 import asyncio
 
-from discord.ext import commands, menus
+from discord.ext import commands, menus, vbu
 import discord
 import toml
+
+from .funcs import box
 
 if TYPE_CHECKING:
     from .context import KurisuContext
     from .kurisu import KurisuBot
+
 
 
 class EmbedListMenu(menus.ListPageSource):
@@ -31,7 +34,7 @@ class EmbedListMenu(menus.ListPageSource):
         return embeds
 
 
-def get_color(color: str):
+def get_color(color: str) -> int:
     if color not in ["ok_color", "error_color"]:
         return discord.Color.default()
 
@@ -39,77 +42,16 @@ def get_color(color: str):
     return int(str(t["options"][color]).replace("#", "0x"), base=16)
 
 
-class AutoPagiantor:
-    def __init__(
-        self, bot: KurisuBot, ctx: KurisuContext, text: str, limit: int = 100
-    ):
-        self.bot: KurisuBot = bot
-        self.limit: int = limit
-        self.text: str = text
-        self.index: int = 0
-        self.ctx: Union[KurisuContext, commands.Context] = ctx
-        self.emojis: list[Union[str, discord.Emoji]] = ["⬅️", "➡️", "❌"]
-        self.embeds: list[discord.Embed] = []
+async def autopaginate(text: str, limit: int, ctx: Union[commands.Context, KurisuContext], codeblock: bool = False):
+    """Automatic Paginator"""
+    wrapped_text: list[str] = wrap(text, limit)
+    embeds: list[discord.Embed] = []
 
-    async def start(self) -> None:
-        "Start the paginator"
-        if len(self.text) < self.limit:
-            await self.ctx.send(self.text)
-
-        wrapped_text: list = wrap(self.text, self.limit)
-        for t in wrapped_text:
-            self.embeds.append(
-                discord.Embed(
-                    description=t, color=get_color("ok_color")
-                ).set_footer(
-                    text=f"Page {wrapped_text.index(t) + 1} out of {len(wrapped_text)}"
-                )
-            )
-
-        global msg
-        msg = await self.ctx.send(embed=self.embeds[0])
-
-        await msg.edit(embed=self.embeds[self.index])
-        for e in self.emojis:
-            await msg.add_reaction(e)
-
-        def check(reaction: discord.Reaction, user: discord.Member):
-            return (
-                user == self.ctx.author
-                and reaction.message == msg
-                and user != self.bot
-            )
-
-        while True:
-            try:
-                reaction: discord.Reaction
-                user: discord.Member
-                reaction, user = await self.bot.wait_for(
-                    "reaction_add", check=check, timeout=10
-                )
-
-                if str(reaction.emoji) == "⬅️":
-                    await self.page_left()
-
-                if str(reaction.emoji) == "➡️":
-                    await self.page_right()
-
-                if str(reaction.emoji) == "❌":
-                    await msg.clear_reactions()
-                    break
-            except asyncio.TimeoutError:
-                await msg.clear_reactions()
-                await msg.channel.send("Paginator Timed Out!")
-                break
-
-    async def page_left(self) -> None:
-        """Decrease the page index by one"""
-        if self.index == 0:
-            return
-        self.index -= 1
-        await msg.edit(embed=self.embeds[self.index])
-
-    async def page_right(self) -> None:
-        """Increase the page index by one"""
-        self.index += 1
-        await msg.edit(embed=self.embeds[self.index])
+    for t in wrapped_text:
+        embeds.append(
+            discord.Embed(
+                description=box(t, "py") if codeblock else t,
+                color=get_color("ok_color")
+            ).set_footer(text=f"Page {wrapped_text.index(t) + 1} out of {len(wrapped_text)}")
+        )
+    await vbu.Paginator(embeds, per_page=1).start(ctx)

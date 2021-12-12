@@ -340,10 +340,10 @@ class Bot_Owner(commands.Cog):
                 color=self.bot.ok_color
             ).add_field(
                 name="Loaded Successfully",
-                value="\n".join(success_list) or "None"
+                value="\n".join(success_list) or "`None`"
             ).add_field(
                 name="Failed To Load",
-                value="\n".join(failed_extensions) or "None",
+                value="\n".join(failed_extensions) or "`None`",
                 inline=False
             )
         )
