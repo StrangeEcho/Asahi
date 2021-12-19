@@ -276,7 +276,7 @@ class Music(commands.Cog):
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
-            await ctx.send_error("No player found")
+            return await ctx.send_error("No player found")
         await player.stop()
 
     @commands.command()
@@ -285,7 +285,7 @@ class Music(commands.Cog):
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
-            await ctx.send_error("No player found")
+            return await ctx.send_error("No player found")
         await player.resume(player.current)
 
     @commands.command()
