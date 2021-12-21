@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 
@@ -6,7 +5,6 @@ from aiohttp import ClientSession
 from databases import Database
 from discord.ext import commands
 import discord
-import lavalink
 import toml
 
 from .context import KurisuContext
