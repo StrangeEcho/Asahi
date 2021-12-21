@@ -55,3 +55,4 @@ async def autopaginate(text: str, limit: int, ctx: Union[commands.Context, Kuris
             ).set_footer(text=f"Page {wrapped_text.index(t) + 1} out of {len(wrapped_text)}")
         )
     await vbu.Paginator(embeds, per_page=1).start(ctx)
+

@@ -6,6 +6,7 @@ import re
 import subprocess
 import textwrap
 import traceback
+from discord.errors import HTTPException
 
 from discord.ext import commands
 import discord
@@ -554,9 +555,12 @@ class Bot_Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def leave(self, ctx: commands.Context, guild: discord.Guild):
-        await guild.leave()
-        await ctx.send(f"Successfully left {guild.name}")
+    async def leaveguild(self, ctx: commands.Context, id: int):
+        try:
+            await self.bot.get_guild(id).leave()
+            await ctx.send(":ok_hand:")
+        except HTTPException as e:
+            await ctx.send(e)
 
 
 def setup(bot):

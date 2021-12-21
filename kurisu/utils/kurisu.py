@@ -58,7 +58,7 @@ class KurisuBot(commands.AutoShardedBot):
         self._session = None
         self.startup_time = discord.utils.utcnow()
         self.version = "3.2.2"
-        self.db = Database("sqlite:///kurisu.db")
+        self.db = Database("sqlite:///kurisu/kurisu.db")
         self.executed_commands = 0
         self.prefixes = {}
 
@@ -110,7 +110,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger.info("ATTEMPTING TO MOUNT COG EXTENSIONS!")
         loaded_cogs = 0
         unloaded_cogs = 0
-        for cog in os.listdir("./cogs"):
+        for cog in os.listdir("./kurisu/cogs"):
             if cog.endswith(".py"):
                 try:
                     self.load_extension(f"cogs.{cog[:-3]}")
@@ -147,31 +147,38 @@ class KurisuBot(commands.AutoShardedBot):
 
     async def close(self):
         """Logs out bot and closes any active connections. Method is used to restart bot."""
-        await super().close()
-        await lavalink.close(self)
-        self.logger.info("Severed LL Connections.")
+        for g in self.guilds:
+            if g.voice_client:
+                await g.voice_client.destroy()
+        self.logger.info("Destroyed all activate LL players")
         if self._session:
-            await self._session.close()
-            self.logger.info("HTTP Client Session(s) closed")
+            self._session.close()
+            self.logger.info("Terminated HTTP sessions.")
         await self.db.disconnect()
-        self.logger.info("Database Connection Closed")
-        await asyncio.sleep(1)
+        self.logger.info("Closed all connections in the DB connection pool.")
+        self.logger.info("Proceeding to normal shutdown")
+        await super().close()
+
 
     async def full_exit(self):
         """Completely kills the process and closes all connections. However, it will continue to restart if being ran with PM2"""
-        await lavalink.close(self)
+        for g in self.guilds:
+            if g.voice_client:
+                await g.voice_client.destroy()
+        self.logger.info("Destroyed all activate LL players")
         if self._session:
-            await self._session.close()
-            self.logger.info("HTTP Client Session Closed.")
+            self._session.close()
+            self.logger.info("Terminated HTTP sessions.")
         await self.db.disconnect()
-        self.logger.info("Database Connection Closed")
-        exit(code=26)
+        self.logger.info("Closed all connections in the DB connection pool.")
+        self.logger.info("Proceeding to normal shutdown")
+        exit(26)
 
     async def reload_all_extensions(self, ctx: commands.Context = None):
         self.logger.info("Signal recieved to reload all bot extensions")
         success = 0
         failed = 0
-        for cog in os.listdir("./cogs"):
+        for cog in os.listdir("./kurisu/cogs"):
             if cog.endswith(".py"):
                 try:
                     self.reload_extension(f"cogs.{cog[:-3]}")

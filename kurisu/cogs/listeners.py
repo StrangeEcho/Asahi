@@ -99,15 +99,19 @@ class Listeners(commands.Cog):
                 )
 
         elif isinstance(error, commands.CommandInvokeError):
+            error_content = "".join(
+                traceback.format_exception(None, error, error.__traceback__)
+            )
+            file = discord.File(io.BytesIO(error_content.encode("utf-8")), "error.py")
             await ctx.send(
                 embed=discord.Embed(
                     title="Oopsie!!!",
-                    description="Looks like this command errored out. I've notified this bots ownership regarding this command. Hopefully it will be fixed in due time!!!",
+                    description="Looks like this command errored out. "
+                                "I've contacted this bots ownership about thie issue. "
+                                "Hopefully soon the issue will be fixed!!!"
+                                f"\n\nError: `{error}`",
                     color=self.bot.error_color,
                 )
-            )
-            error_content = "".join(
-                traceback.format_exception(None, error, error.__traceback__)
             )
             for owner in self.bot.get_config("config", "config", "owner_ids"):
                 await self.bot.get_user(owner).send(
@@ -118,9 +122,7 @@ class Listeners(commands.Cog):
                     f"**User**: `{ctx.author}({ctx.author.id})`\n"
                     f"**Error Type**: `{error}`\n"
                     "**Traceback**:",
-                    file=discord.File(
-                        io.BytesIO(error_content.encode("utf-8")), "error.py"
-                    ),
+                    file=file
                 )
             self.bot.logger.error(error_content)
         else:
