@@ -11,3 +11,4 @@ humanize
 hentai
 colorama
 toml
+voxelbotutils
