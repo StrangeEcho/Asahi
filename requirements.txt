@@ -1,0 +1,12 @@
+git+https://github.com/Voxel-Fox-Ltd/Novus
+databases
+pillow
+psutil
+jishaku
+PyNacl
+databases
+git+https://github.com/Rapptz/discord-ext-menus
+humanize
+hentai
+colorama
+toml
