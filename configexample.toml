@@ -7,5 +7,7 @@ owner_ids = [] # Everyone you want to have ownership over the bot
 
 [music]
 ll_host = "" # IP
-ll_port = 1234 # Port
-ll_password = "Super Secret Password" # Password
+ll_port = "" # Port
+ll_password = "" # Password
+spot_client_id = "" # Spotify Client ID
+spot_client_sec = "" # Spotify Client Secret
