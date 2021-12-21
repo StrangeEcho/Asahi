@@ -24,7 +24,7 @@
 - The rest is me and excerpts from bots I've wrote in the past.
 
 
-# Selhost Docs
+# Selfhost Docs
 Can be found [here](https://github.com/Yat-o/Kurisu/tree/rewrite/docs/selfhosting)
 
 # Supporters
