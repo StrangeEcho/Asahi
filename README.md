@@ -23,6 +23,10 @@
 - [@6days9weeks](https://www.github.com/6days9weeks/) (Help with code, few cogs and questions)
 - The rest is me and excerpts from bots I've wrote in the past.
 
+
+# Selhost Docs
+Can be found [here](https://github.com/Yat-o/Kurisu/tree/rewrite/docs/selfhosting)
+
 # Supporters
 
 [![Stargazers repo roster for @Yat-o/Kurisu](https://reporoster.com/stars/Yat-o/Kurisu)](https://github.com/Yat-o/Kurisu/stargazers)
