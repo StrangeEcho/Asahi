@@ -2,7 +2,7 @@
 ## Debian/Ubuntu Distros:
 ### Prerequisites:
 **Please make sure you have all of the following**:
-* Python>=3.8
+* Python>=3.9
 * PIP
 * git
 ### Step 1:
