@@ -12,3 +12,4 @@ hentai
 colorama
 toml
 voxelbotutils
+tabulate
