@@ -5,7 +5,7 @@ psutil
 jishaku
 PyNacl
 databases
-git+https://github.com/PredaaA/Red-Lavalink
+https://github.com/6days9weeks/pomice
 git+https://github.com/Rapptz/discord-ext-menus
 humanize
 hentai
