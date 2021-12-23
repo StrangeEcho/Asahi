@@ -113,7 +113,7 @@ class Music(commands.Cog):
             for track in results.tracks:
                 player.queue.append(track)
             await ctx.send_ok(f"Added {results.track_count} to the queue")
-            await player.play(results.tracks[0])
+            await player.play(results.tracks[player.queue.pop(0)])
             return
 
         if len(results) == 1:
