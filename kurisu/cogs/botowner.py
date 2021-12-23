@@ -12,6 +12,7 @@ from discord.ext import commands
 import discord
 
 from utils.kurisu import KurisuBot
+from utils.dbmanagers import ErrorSuppressionHandler
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
@@ -21,6 +22,7 @@ class Bot_Owner(commands.Cog):
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot
+        self.esh = ErrorSuppressionHandler(self.bot)
         self._last_result = None
         self.sessions = set()
 
@@ -561,6 +563,32 @@ class Bot_Owner(commands.Cog):
             await ctx.send(":ok_hand:")
         except HTTPException as e:
             await ctx.send(e)
+        
+    @commands.group(invoke_without_command=True)
+    @commands.is_owner()
+    async def suppress(self, ctx: commands.Context):
+        """Guild error suppression commands"""
+        await ctx.send_help(ctx.command)
+    
+    @suppress.command()
+    async def add(self, ctx: commands.Context, guild: int):
+        """Add a guild to the suppressed guilds list"""
+        await self.esh.insert(guild)
+        await ctx.send(":ok_hand:")
+
+    @suppress.command()
+    async def list(self, ctx: commands.Context):
+        """Add a guild to the suppressed guilds list"""
+        await ctx.send(
+            "\n".join([f"{n}. {v}" for n, v in enumerate((await self.esh.fetch_all())[0], 1)] if await self.esh.fetch_all() else "None")
+        )
+
+    @suppress.command()
+    async def remove(self, ctx: commands.Context, guild: int):
+        """Add a guild to the suppressed guilds list"""
+        await self.esh.remove(guild)
+        await ctx.send(":ok_hand:")
+     
 
 
 def setup(bot):

@@ -5,7 +5,7 @@ import traceback
 from discord.ext import commands
 import discord
 
-from utils.dbmanagers import PrefixManager
+from utils.dbmanagers import PrefixManager, ErrorSuppressionHandler
 from utils.kurisu import KurisuBot
 
 logging.getLogger("listeners")
@@ -15,7 +15,8 @@ class Listeners(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.timeout = 60
-        self.prefix_manager = PrefixManager(bot=self.bot)
+        self.prefix_manager = PrefixManager(self.bot)
+        self.esh = ErrorSuppressionHandler(self.bot)
 
     @commands.Cog.listener()
     async def on_command_error(
@@ -113,27 +114,28 @@ class Listeners(commands.Cog):
                     color=self.bot.error_color,
                 )
             )
-            for owner in self.bot.get_config("config", "config", "owner_ids"):
-                await self.bot.get_user(owner).send(
-                    content=f"**You Idiot!!! A command threw an unhandled exception!!!**\n\n"
-                    f"**Command Name**: `{ctx.command.qualified_name}`\n"
-                    f"**Usage**: `{ctx.message.content}`\n"
-                    f"**Guild**: `{ctx.guild}({ctx.guild.id})`\n"
-                    f"**User**: `{ctx.author}({ctx.author.id})`\n"
-                    f"**Error Type**: `{error}`\n"
-                    "**Traceback**:",
-                    file=file
-                )
-            self.bot.logger.error(error_content)
-        else:
-            self.bot.logger.error(
-                "Unhandled exception Caught.\n"
-                + "".join(
-                    traceback.format_exception(
-                        None, error, error.__traceback__
+            if not await self.esh.fetch_all() or ctx.guild.id in (await self.esh.fetch_all())[0]:   
+                for owner in self.bot.get_config("config", "config", "owner_ids"):
+                    await self.bot.get_user(owner).send(
+                        content=f"**You Idiot!!! A command threw an unhandled exception!!!**\n\n"
+                        f"**Command Name**: `{ctx.command.qualified_name}`\n"
+                        f"**Usage**: `{ctx.message.content}`\n"
+                        f"**Guild**: `{ctx.guild}({ctx.guild.id})`\n"
+                        f"**User**: `{ctx.author}({ctx.author.id})`\n"
+                        f"**Error Type**: `{error}`\n"
+                        "**Traceback**:",
+                        file=file
+                    )
+                self.bot.logger.error(error_content)
+            else:
+                self.bot.logger.error(
+                    "Unhandled exception Caught.\n"
+                    + "".join(
+                        traceback.format_exception(
+                            None, error, error.__traceback__
+                        )
                     )
                 )
-            )
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):

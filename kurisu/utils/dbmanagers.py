@@ -1,3 +1,4 @@
+from discord import guild
 from discord.ext import commands
 
 from .errors import UserNotFound
@@ -112,5 +113,34 @@ class AFKManager:
             values={"user": user},
         )
         if not data:
-            raise UserNotFound
+            raise UserNotFound("No Data found for this user")
         return data
+
+class ErrorSuppressionHandler:
+    def __init__(self, bot: KurisuBot):
+        self.bot = bot
+    
+    async def insert(self, id: int) -> None:
+        """Insert a guild id into suppressed guilds list"""
+        await self.bot.db.execute(
+            query="INSERT INTO suppressed (guild) VALUES (:guild)",
+            values={
+                "guild": id
+            }
+        )
+    
+    async def fetch_all(self) -> list[tuple[int]]:
+        """Reteive a list of IDS of all guilds that are suppressed"""
+        return await self.bot.db.fetch_all(
+            query="SELECT * FROM suppressed",
+        )   
+
+    async def remove(self, id: int) -> None:
+        """Remove a guild id into suppressed guilds list"""
+        await self.bot.db.execute(
+            query="DELETE FROM suppressed WHERE guild = :guild",
+            values={
+                "guild": id
+            }
+        )
+    
