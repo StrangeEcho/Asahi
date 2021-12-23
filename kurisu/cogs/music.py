@@ -40,6 +40,14 @@ class Music(commands.Cog):
         except pomice.NodeCreationError as e:
             self.bot.logger.error(f"Error while creating LL nodes\nError:\n{e}")
             self.cog_unload()
+    
+    def check_connection_perms(ctx: KurisuContext):
+        if not ctx.author.voice:
+            return False
+        if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
+            return False
+        else:
+            return True
 
     @commands.Cog.listener()
     async def on_pomice_track_end(self, player: Player, track, _):
@@ -66,6 +74,7 @@ class Music(commands.Cog):
     
 
     @commands.command(aliases=["summon", "connect"])
+    @commands.check(check_connection_perms)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def join(self, ctx: KurisuContext):
         """Have the bot join your voice channel"""
@@ -189,6 +198,7 @@ class Music(commands.Cog):
         player: Player = ctx.voice_client
         
         await player.stop()
+        await ctx.send("Skipping to the next song" if player.queue != 0 else "Skipped. No more songs in queue")
     
 
     @commands.command(aliases=["stop"])
@@ -220,7 +230,6 @@ class Music(commands.Cog):
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
         player: Player = ctx.voice_client
-
         await ctx.send(
             embed=discord.Embed(
                 title=player.current.title,
@@ -232,6 +241,8 @@ class Music(commands.Cog):
             ).add_field(
                 name="Length",
                 value=str(timedelta(milliseconds=player.current.length))
+            ).set_thumbnail(
+                url=player.current.thumbnail if player.current.thumbnail else player.current.requester.avatar.url
             )
         )
 
@@ -249,6 +260,38 @@ class Music(commands.Cog):
             return await ctx.send_error("Queue is currently empty")
 
         await ctx.send_ok("\n".join([f"{n}. {t.title} - {t.author}" for n, t in enumerate(player.queue, 1)]))
+    
+    @commands.command(aliases=["qc"])
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def queueclear(self, ctx: KurisuContext):
+        """Clears the current music queue"""
+        if not ctx.voice_client:
+            return await ctx.send_error("There is no activate player.")
+        
+        player: Player = ctx.voice_client
+
+        if len(player.queue) == 0:
+            return await ctx.send_error("Queue is currently empty")
+        
+        player.queue.clear()
+        await ctx.send_ok("Removed all items from the queue.")
+    
+    @commands.command(aliases=["remtrack"])
+    @commands.cooldown(1, 2.5, commands.BucketType.user)
+    async def removetrack(self, ctx: KurisuContext, index: int = 1):
+        """Remove a single track from the music queue. If no index is provied, the first track in queue will be removed"""
+        if not ctx.voice_client:
+            return await ctx.send_error("There is no activate player.")
+        
+        player: Player = ctx.voice_client
+
+        if len(player.queue) == 0:
+            return await ctx.send_error("Queue is currently empty")
+        try:
+            item = player.queue.pop(index-1)
+            await ctx.send_ok(f"Removed {item.title[:92]}")
+        except IndexError:
+            return await ctx.send_error("Error: You tried to remove an item from the queue that doesnt exist.")
 
 def setup(bot: KurisuBot):
     bot.add_cog(Music(bot))
