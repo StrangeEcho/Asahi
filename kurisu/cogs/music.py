@@ -99,7 +99,7 @@ class Music(commands.Cog):
         
         player: Player = ctx.voice_client
         
-        results = await player.get_tracks(query=query)
+        results = await player.get_tracks(query=query, ctx=ctx)
         
         if not results:
             return await ctx.send_error("No results matching that query")
