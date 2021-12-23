@@ -110,10 +110,10 @@ class Music(commands.Cog):
         if len(results) == 1:
             if player.current:
                 player.queue.append(results[0])
-                await ctx.send_ok(f"Added {results[0].title} to the queue.")
+                await ctx.send_ok(f"Added {results[0].title[:80]} to the queue.")
                 return
             await player.play(results[0])
-            await ctx.send_ok(f"Now playing {results[0].title}")
+            await ctx.send_ok(f"Now playing {results[0].title[:87]}")
             return
 
 
@@ -122,7 +122,7 @@ class Music(commands.Cog):
         for num, track in enumerate(results[:5], 1):
             dropdown_options.append(
                 discord.ui.SelectOption(
-                    label=f"{num}. {track.title}",
+                    label=f"{num}. {track.title[:93]}",
                     value=str(num)
                 )
             )
@@ -155,7 +155,7 @@ class Music(commands.Cog):
             await msg.delete()
             if player.current:
                 player.queue.append(actual_track)
-                await ctx.send_ok(f"Added {actual_track.title}")
+                await ctx.send_ok(f"Added {actual_track.title[:93]}")
                 return
             await player.play(results[int(payload.values[0]) - 1])
             await ctx.send_ok(f"Now playing {player.current}")
