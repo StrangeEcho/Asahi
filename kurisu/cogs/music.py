@@ -41,7 +41,7 @@ class Music(commands.Cog):
             self.bot.logger.error(f"Error while creating LL nodes\nError:\n{e}")
             self.cog_unload()
     
-    def check_connection_perms(ctx: KurisuContext):
+    def check_connection_perms(ctx: KurisuContext) -> bool:
         if not ctx.author.voice:
             return False
         if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
