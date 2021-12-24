@@ -314,11 +314,12 @@ class Music(commands.Cog):
     @commands.command(aliases=["ff"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def fastfoward(self, ctx: KurisuContext, queueposistion: int):
+        """Fast foward to a specific spot in the queue. Will resume back to the least posistion in the queue after playing the fast-fowarded song"""
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
         
         player: Player = ctx
-        
+
         try:
             await player.play(player.queue[queueposistion-1])
         except IndexError:

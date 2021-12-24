@@ -114,7 +114,7 @@ class KurisuHelpCommand(commands.HelpCommand):
                 name="Commands",
                 value="\n".join(
                     [
-                        f"`{c.name}`"
+                        f"`{c.name}` `{c.aliases}`"
                         for c in await self.filter_commands(
                             cog.get_commands(), sort=True
                         )
