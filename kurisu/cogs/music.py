@@ -232,7 +232,7 @@ class Music(commands.Cog):
         player: Player = ctx.voice_client
         await ctx.send(
             embed=discord.Embed(
-                title=player.current.title,
+                title=f"[{player.current.title}]({player.current.uri})",
                 description=f"Requested by {player.current.requester}",
                 color=self.bot.ok_color
             ).add_field(
@@ -261,6 +261,7 @@ class Music(commands.Cog):
 
         await ctx.send_ok("\n".join([f"{n}. {t.title} - {t.author}" for n, t in enumerate(player.queue, 1)]))
     
+
     @commands.command(aliases=["qc"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def queueclear(self, ctx: KurisuContext):
@@ -276,6 +277,7 @@ class Music(commands.Cog):
         player.queue.clear()
         await ctx.send_ok("Removed all items from the queue.")
     
+
     @commands.command(aliases=["remtrack"])
     @commands.cooldown(1, 2.5, commands.BucketType.user)
     async def removetrack(self, ctx: KurisuContext, index: int = 1):
@@ -292,6 +294,36 @@ class Music(commands.Cog):
             await ctx.send_ok(f"Removed {item.title[:92]}")
         except IndexError:
             return await ctx.send_error("Error: You tried to remove an item from the queue that doesnt exist.")
+    
+
+    @commands.command(aliases=["vol"])
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def volume(self, ctx: KurisuContext, vol: int):
+        """Set the volume of the current music player"""
+        if not ctx.voice_client:
+            return await ctx.send_error("There is no activate player.")
+        
+        player: Player = ctx
+
+        if vol < 0 or vol > 100:
+            return await ctx.send_error("Volume must be between 1 or 100")
+        await player.set_volume(vol)
+        await ctx.send_ok(f"Set player volume to {player.volume}")
+
+
+    @commands.command(aliases=["ff"])
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def fastfoward(self, ctx: KurisuContext, queueposistion: int):
+        if not ctx.voice_client:
+            return await ctx.send_error("There is no activate player.")
+        
+        player: Player = ctx
+        
+        try:
+            await player.play(player.queue[queueposistion-1])
+        except IndexError:
+            return await ctx.send_error("You tried to fast forward to a song thats not in the queue.")
+
 
 def setup(bot: KurisuBot):
     bot.add_cog(Music(bot))
