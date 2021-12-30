@@ -103,7 +103,6 @@ class Listeners(commands.Cog):
             error_content = "".join(
                 traceback.format_exception(None, error, error.__traceback__)
             )
-            file = discord.File(io.BytesIO(error_content.encode("utf-8")), "error.py")
             await ctx.send(
                 embed=discord.Embed(
                     title="Oopsie!!!",
@@ -114,7 +113,8 @@ class Listeners(commands.Cog):
                     color=self.bot.error_color,
                 )
             )
-            if not await self.esh.fetch_all() or ctx.guild.id in (await self.esh.fetch_all())[0]:   
+            suppressed_guilds = await self.esh.fetch_all()
+            if not suppressed_guilds or not ctx.guild.id in [item[0] for item in suppressed_guilds]:
                 for owner in self.bot.get_config("config", "config", "owner_ids"):
                     await self.bot.get_user(owner).send(
                         content=f"**You Idiot!!! A command threw an unhandled exception!!!**\n\n"
@@ -124,18 +124,9 @@ class Listeners(commands.Cog):
                         f"**User**: `{ctx.author}({ctx.author.id})`\n"
                         f"**Error Type**: `{error}`\n"
                         "**Traceback**:",
-                        file=file
+                        file=discord.File(io.BytesIO(error_content.encode("utf-8")), "error.py")
                     )
-                self.bot.logger.error(error_content)
-            else:
-                self.bot.logger.error(
-                    "Unhandled exception Caught.\n"
-                    + "".join(
-                        traceback.format_exception(
-                            None, error, error.__traceback__
-                        )
-                    )
-                )
+            self.bot.logger.error(error_content)
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx: commands.Context):
