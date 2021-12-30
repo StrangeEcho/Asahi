@@ -3,11 +3,10 @@ import logging
 import os
 
 from discord.ext import commands
-import discord
-
 from utils.dbmanagers import PrefixManager
 from utils.kurisu import KurisuBot
 from utils.schema import schema
+import discord
 
 logging.getLogger("main")
 

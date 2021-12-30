@@ -1,10 +1,9 @@
 from discord.ext import commands
-import discord
-
 from utils.context import KurisuContext
 from utils.dbmanagers import AFKManager
 from utils.errors import UserNotFound
 from utils.kurisu import KurisuBot
+import discord
 
 
 class AFK(commands.Cog):

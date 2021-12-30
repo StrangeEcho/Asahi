@@ -1,8 +1,8 @@
 from discord.ext import commands
-import discord
-
 from utils.dbmanagers import PrefixManager
 from utils.kurisu import KurisuBot
+from utils.kurisu import KurisuContext
+import discord
 
 
 class Server_Settings(commands.Cog):
@@ -13,7 +13,7 @@ class Server_Settings(commands.Cog):
         self.prefix_manager = PrefixManager(bot=self.bot)
 
     @commands.group(name="prefix", invoke_without_command=True)
-    async def prefix(self, ctx: commands.Context):
+    async def prefix(self, ctx: KurisuContext):
         """Guild prefixes related commands"""
         g_prefix = self.bot.prefixes.get(
             str(ctx.guild.id)
@@ -42,7 +42,7 @@ class Server_Settings(commands.Cog):
 
     @prefix.command(aliases=["reset"])
     @commands.has_permissions(manage_guild=True)
-    async def default(self, ctx: commands.Context):
+    async def default(self, ctx: KurisuContext):
         """Set the current prefix for this server back to default"""
         await self.prefix_manager.remove_prefix(ctx.guild.id)
         await ctx.send(

@@ -1,7 +1,7 @@
 from discord.ext import commands
-import discord
-
 from utils.kurisu import KurisuBot
+from utils.context import KurisuContext
+import discord
 
 np = ""
 
@@ -14,7 +14,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def hug(self, ctx: commands.Context, *, target=np):
+    async def hug(self, ctx: KurisuContext, *, target=np):
         """Hug someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/hug"
@@ -28,7 +28,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def kiss(self, ctx: commands.Context, *, target=np):
+    async def kiss(self, ctx: KurisuContext, *, target=np):
         """Kiss someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/hug"
@@ -42,7 +42,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def pat(self, ctx: commands.Context, *, target=np):
+    async def pat(self, ctx: KurisuContext, *, target=np):
         """Pat someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/pat"
@@ -56,7 +56,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def cuddle(self, ctx: commands.Context, *, target=np):
+    async def cuddle(self, ctx: KurisuContext, *, target=np):
         """Cuddle with someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/cuddle"
@@ -70,7 +70,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def lick(self, ctx: commands.Context, *, target=np):
+    async def lick(self, ctx: KurisuContext, *, target=np):
         """Lick someone"""
         async with self.bot.session.get(
             "https://api.waifu.pics/sfw/lick"
@@ -84,7 +84,7 @@ class Actions(commands.Cog):
 
     @commands.command(aliases=["bulli"])
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def bully(self, ctx: commands.Context, *, target=np):
+    async def bully(self, ctx: KurisuContext, *, target=np):
         """Bully someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/bully"
@@ -98,7 +98,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def poke(self, ctx: commands.Context, *, target=np):
+    async def poke(self, ctx: KurisuContext, *, target=np):
         """Poke someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/poke"
@@ -112,7 +112,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def slap(self, ctx: commands.Context, *, target=np):
+    async def slap(self, ctx: KurisuContext, *, target=np):
         """Slap someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/slap"
@@ -128,7 +128,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def smug(self, ctx: commands.Context):
+    async def smug(self, ctx: KurisuContext):
         """Smugly look at someone"""
         async with self.bot.session.get(
             url="https://api.waifu.pics/sfw/smug"
@@ -142,7 +142,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def baka(self, ctx: commands.Context, *, target=np):
+    async def baka(self, ctx: KurisuContext, *, target=np):
         """Call someone an idiot"""
         async with self.bot.session.get(
             url="https://nekos.life/api/v2/img/baka"
@@ -158,7 +158,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def feed(self, ctx: commands.Context, *, target=np):
+    async def feed(self, ctx: KurisuContext, *, target=np):
         """Feed someone"""
         async with self.bot.session.get(
             url="https://nekos.life/api/v2/img/feed"
@@ -172,7 +172,7 @@ class Actions(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def tickle(self, ctx: commands.Context, *, target=np):
+    async def tickle(self, ctx: KurisuContext, *, target=np):
         """Tickle someone"""
         async with self.bot.session.get(
             "https://nekos.life/api/v2/img/tickle"

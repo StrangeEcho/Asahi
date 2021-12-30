@@ -2,10 +2,10 @@ from io import BytesIO
 from random import choice, randint
 
 from discord.ext import commands
+from utils.kurisu import KurisuBot
+from utils.context import KurisuContext
 import aiohttp
 import discord
-
-from utils.kurisu import KurisuBot
 
 
 class Fun(commands.Cog):
@@ -16,7 +16,7 @@ class Fun(commands.Cog):
 
     @commands.command(name="8ball")
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def _8ball(self, ctx: commands.Context, *, question):
+    async def _8ball(self, ctx: KurisuContext, *, question):
         """Ask the mystical 8 ball anything."""
         answers = [
             "As I see it, yes.",
@@ -52,7 +52,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def compliment(
-        self, ctx: commands.Context, member: discord.Member = None
+        self, ctx: KurisuContext, member: discord.Member = None
     ):
         """Compliment someone or yourself"""
         if member is None:
@@ -119,7 +119,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def owoify(self, ctx: commands.Context, *, txt):
+    async def owoify(self, ctx: KurisuContext, *, txt):
         """Owoify some text"""
         if len(txt) > 200:
             await ctx.send(
@@ -144,7 +144,7 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @commands.max_concurrency(1, commands.BucketType.user)
-    async def osu(self, ctx: commands.Context, *, user):
+    async def osu(self, ctx: KurisuContext, *, user):
         """Get osu information about someone."""
         try:
             async with self.bot.session.get(
@@ -178,7 +178,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=["aq"])
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def animequote(self, ctx: commands.Context):
+    async def animequote(self, ctx: KurisuContext):
         """Recieve an anime quote from the AnimeChan API"""
         async with self.bot.session.get(
             "https://animechan.vercel.app/api/random"
@@ -203,13 +203,13 @@ class Fun(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def img(self, ctx: commands.Context):
+    async def img(self, ctx: KurisuContext):
         """Return sfw images from the waifu.im api"""
         await ctx.send_help(ctx.command)
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def maid(self, ctx: commands.Context):
+    async def maid(self, ctx: KurisuContext):
         """maids go brrr"""
         async with self.bot.session.get(
             "https://api.waifu.im/sfw/maid"
@@ -222,7 +222,7 @@ class Fun(commands.Cog):
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def waifu(self, ctx: commands.Context):
+    async def waifu(self, ctx: KurisuContext):
         """waifu"""
         async with self.bot.session.get(
             "https://api.waifu.im/sfw/waifu"

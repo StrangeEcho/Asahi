@@ -3,10 +3,9 @@ import logging
 import traceback
 
 from discord.ext import commands
-import discord
-
-from utils.dbmanagers import PrefixManager, ErrorSuppressionHandler
+from utils.dbmanagers import ErrorSuppressionHandler, PrefixManager
 from utils.kurisu import KurisuBot
+import discord
 
 logging.getLogger("listeners")
 
@@ -107,15 +106,19 @@ class Listeners(commands.Cog):
                 embed=discord.Embed(
                     title="Oopsie!!!",
                     description="Looks like this command errored out. "
-                                "I've contacted this bots ownership about thie issue. "
-                                "Hopefully soon the issue will be fixed!!!"
-                                f"\n\nError: `{error}`",
+                    "I've contacted this bots ownership about thie issue. "
+                    "Hopefully soon the issue will be fixed!!!"
+                    f"\n\nError: `{error}`",
                     color=self.bot.error_color,
                 )
             )
             suppressed_guilds = await self.esh.fetch_all()
-            if not suppressed_guilds or not ctx.guild.id in [item[0] for item in suppressed_guilds]:
-                for owner in self.bot.get_config("config", "config", "owner_ids"):
+            if not suppressed_guilds or not ctx.guild.id in [
+                item[0] for item in suppressed_guilds
+            ]:
+                for owner in self.bot.get_config(
+                    "config", "config", "owner_ids"
+                ):
                     await self.bot.get_user(owner).send(
                         content=f"**You Idiot!!! A command threw an unhandled exception!!!**\n\n"
                         f"**Command Name**: `{ctx.command.qualified_name}`\n"
@@ -124,7 +127,10 @@ class Listeners(commands.Cog):
                         f"**User**: `{ctx.author}({ctx.author.id})`\n"
                         f"**Error Type**: `{error}`\n"
                         "**Traceback**:",
-                        file=discord.File(io.BytesIO(error_content.encode("utf-8")), "error.py")
+                        file=discord.File(
+                            io.BytesIO(error_content.encode("utf-8")),
+                            "error.py",
+                        ),
                     )
             self.bot.logger.error(error_content)
 

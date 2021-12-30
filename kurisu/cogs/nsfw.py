@@ -2,10 +2,10 @@ import functools
 import random
 
 from discord.ext import commands, vbu
+from utils.kurisu import KurisuBot
+from utils.context import KurisuContext
 import discord
 import hentai
-
-from utils.kurisu import KurisuBot
 
 
 class Embed(discord.Embed):
@@ -36,7 +36,7 @@ class NSFW(commands.Cog):
     @commands.command()
     @commands.is_nsfw()
     @commands.cooldown(1, 2.5, commands.BucketType.user)
-    async def hentai(self, ctx: commands.Context, tag=None):
+    async def hentai(self, ctx: KurisuContext, tag=None):
         """Hentai command using waifu.im API. Use [p]hentai list for a list of available tags"""
         available_tags = [
             "ass",
@@ -79,7 +79,7 @@ class NSFW(commands.Cog):
     @commands.command(hidden=True, aliases=["hb"])
     @commands.is_nsfw()
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def hentaibomb(self, ctx: commands.Context, *, tag: str = None):
+    async def hentaibomb(self, ctx: KurisuContext, *, tag: str = None):
         """Post 5 hentai images from Waifu.pics API. Run [p]hentaibomb list for available tags"""
         available_tags = ["waifu", "neko", "trap", "blowjob"]
 
@@ -118,7 +118,7 @@ class NSFW(commands.Cog):
 
     @commands.command(hidden=True, aliases=["hn"])
     @commands.cooldown(1, 20, commands.BucketType.user)
-    async def hentainuke(self, ctx: commands.Context, *, tag: str = None):
+    async def hentainuke(self, ctx: KurisuContext, *, tag: str = None):
         """Post 30 hentai images from Waifu.pics API. Run [p]hentainuke list for available tags"""
         available_tags = ["waifu", "neko", "trap", "blowjob"]
 
@@ -163,11 +163,11 @@ class NSFW(commands.Cog):
     @commands.group()
     @commands.cooldown(1, 5, commands.BucketType.member)
     @commands.is_nsfw()
-    async def nhentai(self, ctx: commands.Context):
+    async def nhentai(self, ctx: KurisuContext):
         """Some nhentai related commands."""
 
     @nhentai.command()
-    async def read(self, ctx: commands.Context, digits):
+    async def read(self, ctx: KurisuContext, digits):
         """Read doujins."""
         try:
             result = await self.bot.loop.run_in_executor(
@@ -198,7 +198,7 @@ class NSFW(commands.Cog):
         await vbu.Paginator(embed_list, per_page=1).start(ctx)
 
     @nhentai.command(aliases=["random"])
-    async def rnd(self, ctx: commands.Context):
+    async def rnd(self, ctx: KurisuContext):
         """Random hentais from nhentai"""
 
         try:
@@ -220,7 +220,7 @@ class NSFW(commands.Cog):
         await vbu.Paginator(embed_list, per_page=1).start(ctx)
 
     @nhentai.command(aliases=["info"])
-    async def lookup(self, ctx: commands.Context, doujin: int):
+    async def lookup(self, ctx: KurisuContext, doujin: int):
         """Info about a doujin."""
 
         try:

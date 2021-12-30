@@ -6,13 +6,13 @@ import re
 import subprocess
 import textwrap
 import traceback
+
 from discord.errors import HTTPException
-
 from discord.ext import commands
-import discord
-
-from utils.kurisu import KurisuBot
 from utils.dbmanagers import ErrorSuppressionHandler
+from utils.kurisu import KurisuBot
+from utils.context import KurisuContext
+import discord
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
@@ -59,7 +59,7 @@ class Bot_Owner(commands.Cog):
         return list(filter(lambda a: a != "", pages))
 
     @commands.command()
-    async def elevate(self, ctx: commands.Context, user: discord.User = None):
+    async def elevate(self, ctx: KurisuContext, user: discord.User = None):
         """Elevate a user or yourself to ownership privilege"""
         if not ctx.author.id in self.bot.get_config(
             "config", "config", "owner_ids"
@@ -151,7 +151,7 @@ class Bot_Owner(commands.Cog):
         loop.call_later(120, remove_owner)
 
     @commands.command()
-    async def delevate(self, ctx: commands.Context, user: discord.User = None):
+    async def delevate(self, ctx: KurisuContext, user: discord.User = None):
         """Delevate a users ownership privilege"""
         if not ctx.author.id in self.bot.get_config(
             "config", "config", "owner_ids"
@@ -224,7 +224,7 @@ class Bot_Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def restart(self, ctx: commands.Context):
+    async def restart(self, ctx: KurisuContext):
         """Restarts the bot"""
         embed = discord.Embed(
             title="Are you sure you want me to restart?",
@@ -276,7 +276,7 @@ class Bot_Owner(commands.Cog):
 
     @commands.command(aliases=["shutdown", "logout", "sleep"])
     @commands.is_owner()
-    async def die(self, ctx: commands.Context):
+    async def die(self, ctx: KurisuContext):
         """Kills the bot process. IF BOT IS RUNNING WITH PM2 IT WILL RESTART REGARDLESS."""
 
         embed = discord.Embed(title="Are you sure you want me to shutdown?")
@@ -327,7 +327,7 @@ class Bot_Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def load(self, ctx: commands.Context, *extensions):
+    async def load(self, ctx: KurisuContext, *extensions):
         """Load bot extensions"""
         success_list: list[str] = []
         failed_extensions: list[str] = []
@@ -336,23 +336,25 @@ class Bot_Owner(commands.Cog):
                 self.bot.load_extension(ext)
                 success_list.append(f":inbox_tray: `{ext[5:].capitalize()}`")
             except commands.ExtensionError as e:
-                failed_extensions.append(f":x: `{ext[5:].capitalize()}` - `{e}`")
+                failed_extensions.append(
+                    f":x: `{ext[5:].capitalize()}` - `{e}`"
+                )
         await ctx.send(
-            embed=discord.Embed(
-                title="Summary",
-                color=self.bot.ok_color
-            ).add_field(
+            embed=discord.Embed(title="Summary", color=self.bot.ok_color)
+            .add_field(
                 name="Loaded Successfully",
-                value="\n".join(success_list) or "`None`"
-            ).add_field(
+                value="\n".join(success_list) or "`None`",
+            )
+            .add_field(
                 name="Failed To Load",
                 value="\n".join(failed_extensions) or "`None`",
-                inline=False
+                inline=False,
             )
         )
+
     @commands.command()
     @commands.is_owner()
-    async def unload(self, ctx: commands.Context, *extensions):
+    async def unload(self, ctx: KurisuContext, *extensions):
         """Unload bot extensions"""
         success_list: list[str] = []
         failed_extensions: list[str] = []
@@ -361,25 +363,25 @@ class Bot_Owner(commands.Cog):
                 self.bot.unload_extension(ext)
                 success_list.append(f":outbox_tray: `{ext[5:].capitalize()}`")
             except commands.ExtensionError as e:
-                failed_extensions.append(f":x: `{ext[5:].capitalize()}` - `{e}`")
+                failed_extensions.append(
+                    f":x: `{ext[5:].capitalize()}` - `{e}`"
+                )
         await ctx.send(
-            embed=discord.Embed(
-                title="Summary",
-                color=self.bot.ok_color
-            ).add_field(
+            embed=discord.Embed(title="Summary", color=self.bot.ok_color)
+            .add_field(
                 name="Unloaded Successfully",
-                value="\n".join(success_list) or "None"
-            ).add_field(
+                value="\n".join(success_list) or "None",
+            )
+            .add_field(
                 name="Failed To Unload",
                 value="\n".join(failed_extensions) or "None",
-                inline=False
+                inline=False,
             )
         )
 
-
     @commands.command(name="reload")
     @commands.is_owner()
-    async def _reload(self, ctx: commands.Context, *extensions):
+    async def _reload(self, ctx: KurisuContext, *extensions):
         """Reload bot extensions"""
         success_list: list[str] = []
         failed_extensions: list[str] = []
@@ -388,25 +390,25 @@ class Bot_Owner(commands.Cog):
                 self.bot.reload_extension(ext)
                 success_list.append(f":repeat: `{ext[5:].capitalize()}`")
             except commands.ExtensionError as e:
-                failed_extensions.append(f":x: `{ext[5:].capitalize()}` - `{e}`")
+                failed_extensions.append(
+                    f":x: `{ext[5:].capitalize()}` - `{e}`"
+                )
         await ctx.send(
-            embed=discord.Embed(
-                title="Summary",
-                color=self.bot.ok_color
-            ).add_field(
+            embed=discord.Embed(title="Summary", color=self.bot.ok_color)
+            .add_field(
                 name="Reloaded Successfully",
-                value="\n".join(success_list) or "None"
-            ).add_field(
+                value="\n".join(success_list) or "None",
+            )
+            .add_field(
                 name="Failed To Reload",
                 value="\n".join(failed_extensions) or "None",
-                inline=False
+                inline=False,
             )
         )
 
-
     @commands.command()
     @commands.is_owner()
-    async def reloadall(self, ctx: commands.Context):
+    async def reloadall(self, ctx: KurisuContext):
         """Reloads everysingle cog the bot has"""
         await ctx.send(
             embed=discord.Embed(
@@ -418,7 +420,7 @@ class Bot_Owner(commands.Cog):
 
     @commands.is_owner()
     @commands.command()
-    async def update(self, ctx: commands.Context):
+    async def update(self, ctx: KurisuContext):
         """Update to the latest version of the master repo or whatever the latest commit of your fork is"""
         await ctx.send(
             embed=discord.Embed(
@@ -470,7 +472,7 @@ class Bot_Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def dm(self, ctx: commands.Context, user: discord.User, *, msg):
+    async def dm(self, ctx: KurisuContext, user: discord.User, *, msg):
         """Direct Message A User"""
         try:
             await user.send(
@@ -494,7 +496,7 @@ class Bot_Owner(commands.Cog):
     @commands.command(name="frick", aliases=["sho"])
     @commands.is_owner()
     @commands.guild_only()
-    async def frick(self, ctx: commands.Context, limit: int = 50) -> None:
+    async def frick(self, ctx: KurisuContext, limit: int = 50) -> None:
         """
         Cleans up the bots messages.
         `limit`: The amount of messages to check back through. Defaults to 50.
@@ -526,7 +528,7 @@ class Bot_Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def fetch(self, ctx: commands.Context, id: int):
+    async def fetch(self, ctx: KurisuContext, id: int):
         user = await self.bot.fetch_user(id)
 
         user_flags = "\n".join(
@@ -557,38 +559,44 @@ class Bot_Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def leaveguild(self, ctx: commands.Context, id: int):
+    async def leaveguild(self, ctx: KurisuContext, id: int):
         try:
             await self.bot.get_guild(id).leave()
             await ctx.send(":ok_hand:")
         except HTTPException as e:
             await ctx.send(e)
-        
+
     @commands.group(invoke_without_command=True)
     @commands.is_owner()
-    async def suppress(self, ctx: commands.Context):
+    async def suppress(self, ctx: KurisuContext):
         """Guild error suppression commands"""
         await ctx.send_help(ctx.command)
-    
+
     @suppress.command()
-    async def add(self, ctx: commands.Context, guild: int):
+    async def add(self, ctx: KurisuContext, guild: int):
         """Add a guild to the suppressed guilds list"""
         await self.esh.insert(guild)
         await ctx.send(":ok_hand:")
 
     @suppress.command()
-    async def list(self, ctx: commands.Context):
+    async def list(self, ctx: KurisuContext):
         """Add a guild to the suppressed guilds list"""
         await ctx.send(
-            "\n".join([f"{n}. {v}" for n, v in enumerate((await self.esh.fetch_all())[0], 1)] if await self.esh.fetch_all() else "None")
+            "\n".join(
+                [
+                    f"{n}. {v}"
+                    for n, v in enumerate((await self.esh.fetch_all())[0], 1)
+                ]
+                if await self.esh.fetch_all()
+                else "None"
+            )
         )
 
     @suppress.command()
-    async def remove(self, ctx: commands.Context, guild: int):
+    async def remove(self, ctx: KurisuContext, guild: int):
         """Add a guild to the suppressed guilds list"""
         await self.esh.remove(guild)
         await ctx.send(":ok_hand:")
-     
 
 
 def setup(bot):

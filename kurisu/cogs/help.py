@@ -3,10 +3,9 @@ import asyncio
 import contextlib
 
 from discord.ext import commands
-import discord
-
 from utils.helpers import get_color
 from utils.kurisu import KurisuBot
+import discord
 
 
 class KurisuHelpCommand(commands.HelpCommand):

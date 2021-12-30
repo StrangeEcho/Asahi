@@ -2,9 +2,9 @@ from io import BytesIO
 import asyncio
 
 from discord.ext import commands
-import discord
-
 from utils.kurisu import KurisuBot
+from utils.context import KurisuContext
+import discord
 
 snipe = {
     "id": None,
@@ -77,7 +77,7 @@ class Snipe(commands.Cog):
 
     @commands.command(aliases=["imagesnipe"])
     @commands.cooldown(1, 10, commands.BucketType.member)
-    async def snipe(self, ctx: commands.Context):
+    async def snipe(self, ctx: KurisuContext):
         """Snipe the last deleted message, works with images"""
         global snipe
 
@@ -117,7 +117,7 @@ class Snipe(commands.Cog):
 
     @commands.command(aliases=["esnipe"])
     @commands.cooldown(1, 10, commands.BucketType.member)
-    async def editsnipe(self, ctx: commands.Context):
+    async def editsnipe(self, ctx: KurisuContext):
         """Sneaky Sneaky snipe the edited message"""
 
         if (

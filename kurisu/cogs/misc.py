@@ -3,13 +3,13 @@ import platform
 import time
 
 from discord.ext import commands, vbu
+from utils.funcs import box
+from utils.kurisu import KurisuBot
+from utils.context import KurisuContext
 import aiohttp
 import discord
 import humanize
 import psutil
-
-from utils.funcs import box
-from utils.kurisu import KurisuBot
 
 
 class Miscellaneous(commands.Cog):
@@ -23,7 +23,7 @@ class Miscellaneous(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def ping(
         self,
-        ctx: commands.Context,
+        ctx: KurisuContext,
     ):
         """Just a ping command"""
         latency = self.bot.latency * 1000
@@ -76,7 +76,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def invite(self, ctx: commands.Context):
+    async def invite(self, ctx: KurisuContext):
         """Invite the bot to your server."""
         embed = discord.Embed(color=self.bot.ok_color, title="<3")
         embed.description = f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=413893192823&scope=bot"
@@ -92,7 +92,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def support(self, ctx: commands.Context):
+    async def support(self, ctx: KurisuContext):
         await ctx.send(
             embed=discord.Embed(
                 description=f"Come see me and my master and the rest of my robotic brothers and sisters [here](https://discord.gg/Cs5RdJF9pb)",
@@ -102,7 +102,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def stats(self, ctx: commands.Context):
+    async def stats(self, ctx: KurisuContext):
         """Some stats about me."""
         text_channels = 0
         voice_channels = 0
@@ -204,7 +204,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command(usage="(project name)")
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def pypi(self, ctx: commands.Context, project: str):
+    async def pypi(self, ctx: KurisuContext, project: str):
         """Get information of a python project from pypi."""
         async with self.bot.session.get(
             f"https://pypi.org/pypi/{project}/json"
@@ -253,7 +253,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def uptime(self, ctx: commands.Context):
+    async def uptime(self, ctx: KurisuContext):
         """Shows bot's uptime."""
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
         delta = discord.utils.utcnow() - self.bot.uptime
