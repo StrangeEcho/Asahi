@@ -40,7 +40,7 @@ class Music(commands.Cog):
         except pomice.NodeCreationError as e:
             self.bot.logger.error(f"Error while creating LL nodes\nError:\n{e}")
             self.cog_unload()
-    
+
     def check_connection_perms(ctx: KurisuContext) -> bool:
         if not ctx.author.voice:
             return False
@@ -71,14 +71,14 @@ class Music(commands.Cog):
             await player.play(player.queue.pop(0))
         except IndexError:
             await player.destroy()
-    
+
 
     @commands.command(aliases=["summon", "connect"])
     @commands.check(check_connection_perms)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def join(self, ctx: KurisuContext):
         """Have the bot join your voice channel"""
-        
+
         if ctx.voice_client:
             return await ctx.send_error("Im already connected to a VC.")
 
@@ -91,16 +91,17 @@ class Music(commands.Cog):
 
 
     @commands.command(aliases=["queue"])
+    @commands.check(check_connection_perms)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def play(self, ctx: KurisuContext, *, query: str):
         """Play a song"""
         if not ctx.guild.voice_client:
             await ctx.invoke(self.join)
-        
+
         player: Player = ctx.voice_client
-        
+
         results = await player.get_tracks(query=query, ctx=ctx)
-        
+
         if not results:
             return await ctx.send_error("No results matching that query")
 
@@ -127,7 +128,7 @@ class Music(commands.Cog):
 
 
         dropdown_options: list[discord.ui.SelectOption] = []
-        
+
         for num, track in enumerate(results[:5], 1):
             dropdown_options.append(
                 discord.ui.SelectOption(
@@ -150,7 +151,7 @@ class Music(commands.Cog):
                 color=self.bot.ok_color
             ),
             components=components)
-        
+
         def check(p: discord.Interaction):
             return p.message.id == msg.id and p.user.id == ctx.author.id
 
@@ -160,7 +161,7 @@ class Music(commands.Cog):
                 check=check,
                 timeout=20
             )
-            actual_track = results[int(payload.values[0]) - 1] 
+            actual_track = results[int(payload.values[0]) - 1]
             await msg.delete()
             if player.current:
                 player.queue.append(actual_track)
@@ -179,12 +180,12 @@ class Music(commands.Cog):
         """Disconnect from my current vc"""
         if not ctx.guild.voice_client:
             return await ctx.send_error("Currently not connected to any VCs right now.")
-        
+
         player: Player = ctx.voice_client
-        
+
         await player.disconnect()
         await ctx.send(":ok_hand:")
-    
+
 
     @commands.command(aliases=["next"])
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -196,10 +197,10 @@ class Music(commands.Cog):
             return await ctx.send_error("You must be in the same voice chat as me to use this command.")
 
         player: Player = ctx.voice_client
-        
+
         await player.stop()
         await ctx.send("Skipping to the next song" if player.queue != 0 else "Skipped. No more songs in queue")
-    
+
 
     @commands.command(aliases=["stop"])
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -221,7 +222,7 @@ class Music(commands.Cog):
         player: Player = ctx.voice_client
         await player.set_pause(False)
         await ctx.send_ok("Unpaused current track")
-    
+
 
     @commands.command(aliases=["np"])
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -246,21 +247,21 @@ class Music(commands.Cog):
             )
         )
 
-    
+
     @commands.command(aliases=["songlist", "lq"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def listqueue(self, ctx: KurisuContext):
         """Shows the current playing track"""
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
-        
+
         player: Player = ctx.voice_client
 
         if len(player.queue) == 0:
             return await ctx.send_error("Queue is currently empty")
 
         await ctx.send_ok("\n".join([f"{n}. {t.title} - {t.author}" for n, t in enumerate(player.queue, 1)]))
-    
+
 
     @commands.command(aliases=["qc"])
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -268,15 +269,15 @@ class Music(commands.Cog):
         """Clears the current music queue"""
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
-        
+
         player: Player = ctx.voice_client
 
         if len(player.queue) == 0:
             return await ctx.send_error("Queue is currently empty")
-        
+
         player.queue.clear()
         await ctx.send_ok("Removed all items from the queue.")
-    
+
 
     @commands.command(aliases=["remtrack"])
     @commands.cooldown(1, 2.5, commands.BucketType.user)
@@ -284,7 +285,7 @@ class Music(commands.Cog):
         """Remove a single track from the music queue. If no index is provied, the first track in queue will be removed"""
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
-        
+
         player: Player = ctx.voice_client
 
         if len(player.queue) == 0:
@@ -294,7 +295,7 @@ class Music(commands.Cog):
             await ctx.send_ok(f"Removed {item.title[:92]}")
         except IndexError:
             return await ctx.send_error("Error: You tried to remove an item from the queue that doesnt exist.")
-    
+
 
     @commands.command(aliases=["vol"])
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -302,7 +303,7 @@ class Music(commands.Cog):
         """Set the volume of the current music player"""
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
-        
+
         player: Player = ctx
 
         if vol < 0 or vol > 100:
@@ -317,7 +318,7 @@ class Music(commands.Cog):
         """Fast foward to a specific spot in the queue. Will resume back to the least posistion in the queue after playing the fast-fowarded song"""
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
-        
+
         player: Player = ctx
 
         try:
