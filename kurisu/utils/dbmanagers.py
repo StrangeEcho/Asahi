@@ -9,7 +9,7 @@ class PrefixManager:
     def __init__(self, bot: KurisuBot):
         self.bot = bot
 
-    async def add_prefix(self, guild: int, prefix: str):
+    async def add_prefix(self, guild: int, prefix: str) -> None:
         await self.bot.db.execute(
             query="INSERT INTO guildsettings (guild, prefix) VALUES (:guild, :prefix) ON CONFLICT(guild) DO UPDATE SET prefix = :update_prefix",
             values={
@@ -20,7 +20,7 @@ class PrefixManager:
         )
         self.bot.prefixes[str(guild)] = prefix
 
-    async def remove_prefix(self, guild: int):
+    async def remove_prefix(self, guild: int) -> None:
         if str(guild) in self.bot.prefixes:
             self.bot.prefixes.pop(str(guild))
             await self.bot.db.execute(
@@ -30,7 +30,7 @@ class PrefixManager:
                 },
             )
 
-    async def startup_caching(self):
+    async def startup_caching(self) -> None:
         for g, p in await self.bot.db.fetch_all(
             query="SELECT guild, prefix FROM guildsettings"
         ):
@@ -44,7 +44,7 @@ class WarningManager:
 
     async def add_warning(
         self, ctx: commands.Context, userid: int, reason: str
-    ):
+    ) -> None:
         """Insert a warning for a user"""
 
         await self.bot.db.execute(
@@ -84,14 +84,14 @@ class AFKManager:
     def __init__(self, bot: KurisuBot):
         self.bot = bot
 
-    async def insert_or_update(self, user: int, afk_message: str):
+    async def insert_or_update(self, user: int, afk_message: str) -> None:
         """Insert or Update a users afk message in DB"""
         await self.bot.db.execute(
             query="INSERT INTO afk (user, message) VALUES (:user, :message) ON CONFLICT(user) DO UPDATE set message = :msg",
             values={"user": user, "message": afk_message, "msg": afk_message},
         )
 
-    async def toggle_afk(self, user: int):
+    async def toggle_afk(self, user: int) -> None | UserNotFound:
         data = await self.fetch_afk(user)
 
         if data[1] == 0:
@@ -106,7 +106,7 @@ class AFKManager:
                 values={"user": user},
             )
 
-    async def fetch_afk(self, user: int):
+    async def fetch_afk(self, user: int) -> tuple[str, int]:
         """Fetch a users afk message from db"""
         data = await self.bot.db.fetch_one(
             query="SELECT message, toggled FROM afk WHERE user = :user",
@@ -116,31 +116,61 @@ class AFKManager:
             raise UserNotFound("No Data found for this user")
         return data
 
+
 class ErrorSuppressionHandler:
     def __init__(self, bot: KurisuBot):
         self.bot = bot
-    
+
     async def insert(self, id: int) -> None:
         """Insert a guild id into suppressed guilds list"""
         await self.bot.db.execute(
             query="INSERT INTO suppressed (guild) VALUES (:guild)",
-            values={
-                "guild": id
-            }
+            values={"guild": id},
         )
-    
+
     async def fetch_all(self) -> list[tuple[int]]:
         """Reteive a list of IDS of all guilds that are suppressed"""
         return await self.bot.db.fetch_all(
             query="SELECT * FROM suppressed",
-        )   
+        )
 
     async def remove(self, id: int) -> None:
         """Remove a guild id into suppressed guilds list"""
         await self.bot.db.execute(
             query="DELETE FROM suppressed WHERE guild = :guild",
-            values={
-                "guild": id
-            }
+            values={"guild": id},
+        )
+
+
+class TodoManager:
+    def __init__(self, bot: KurisuBot):
+        self.bot = bot
+
+    async def add_todo(self, user: int, item: str) -> None:
+        """Insert a todo item"""
+        await self.bot.db.execute(
+            query="INSERT INTO todo (user, item) VALUES (:user, :item)",
+            values={"user": user, "item": item},
+        )
+
+    async def fetch_todos(self, user: int):
+        """Fetch all todo items for a user"""
+        return await self.bot.db.fetch_all(
+            query="SELECT item FROM todo WHERE user = :user",
+            values={"user": user},
         )
     
+    async def remove_todo(self, user: int, item_number: int):
+        tuplist = await self.fetch_todos(user)
+
+        try:
+            target_tup = tuplist[item_number - 1]
+        except IndexError:
+            raise commands.BadArgument("You tried to clear a invalid warning")
+
+        await self.bot.db.execute(
+            query="DELETE FROM todo WHERE user = :user AND item = :item",
+            values={"user": user, "item": target_tup[0]},
+        )
+
+
