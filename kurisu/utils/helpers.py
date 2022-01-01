@@ -9,6 +9,7 @@ import discord
 import toml
 
 from .funcs import box
+from .errors import UrbanDictionaryError
 
 if TYPE_CHECKING:
     from .context import KurisuContext
@@ -66,6 +67,6 @@ async def get_ud_results(term: str, max: int = 5):
     async with aiohttp.ClientSession() as session:
         async with session.get(f"https://api.urbandictionary.com/v0/define?term={term}") as resp:
             try:
-                return resp["list"][:max]
+                return (await resp.json())["list"][:max]
             except (IndexError, KeyError) as e:
-                raise QueryError("Error while querying Urban Dictionary API with that term")
+                raise UrbanDictionaryError("Error while querying Urban Dictionary API with that term")

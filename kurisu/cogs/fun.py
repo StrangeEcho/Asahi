@@ -1,9 +1,10 @@
 from io import BytesIO
 from random import choice, randint
 
-from discord.ext import commands
+from discord.ext import commands, vbu
 from utils.context import KurisuContext
 from utils.kurisu import KurisuBot
+from utils.helpers import get_ud_results
 import aiohttp
 import discord
 
@@ -13,6 +14,7 @@ class Fun(commands.Cog):
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot
+
 
     @commands.command(name="8ball")
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -48,6 +50,7 @@ class Fun(commands.Cog):
                 color=self.bot.ok_color,
             ).set_footer(text=f"Question asked by {ctx.author}")
         )
+
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -97,6 +100,7 @@ class Fun(commands.Cog):
             ).set_footer(text=f"Compliment from {ctx.author}")
         )
 
+
     @commands.command(aliases=["rng"])
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def randomnumber(self, ctx, int1: int, int2: int):
@@ -116,6 +120,7 @@ class Fun(commands.Cog):
                     color=self.bot.error_color,
                 )
             )
+
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -139,6 +144,7 @@ class Fun(commands.Cog):
                         color=self.bot.ok_color,
                     )
                 )
+
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -176,6 +182,7 @@ class Fun(commands.Cog):
         if isinstance(pic, BytesIO):
             pic.close()
 
+
     @commands.command(aliases=["aq"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def animequote(self, ctx: KurisuContext):
@@ -201,11 +208,13 @@ class Fun(commands.Cog):
                     )
                 )
 
+
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def img(self, ctx: KurisuContext):
         """Return sfw images from the waifu.im api"""
         await ctx.send_help(ctx.command)
+
 
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
@@ -220,6 +229,7 @@ class Fun(commands.Cog):
                 )
             )
 
+
     @img.command()
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def waifu(self, ctx: KurisuContext):
@@ -232,6 +242,32 @@ class Fun(commands.Cog):
                     url=(await resp.json())["images"][0]["url"]
                 )
             )
+
+
+    @commands.command()
+    @commands.cooldown(1, 4.5, commands.BucketType.user)
+    async def ud(self, ctx: KurisuContext, *, term: str):
+        """Query the Urban Dictionary API with a term"""
+        results = await get_ud_results(term)
+        embeds: list[discord.Embed] = []
+
+        for i in results:
+            embeds.append(
+                discord.Embed(
+                    title=f"Definition for {term}",
+                    description=f"Definition: {i['definition']}",
+                    color=self.bot.ok_color
+                ).set_footer(
+                    text=f"👍: {i['thumbs_up']}"
+                ).add_field(
+                    name="Author",
+                    value=i["author"]
+                )
+            )
+
+        await vbu.Paginator(data=embeds, per_page=1).start(ctx)
+
+
 
 
 def setup(bot):
