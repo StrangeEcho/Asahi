@@ -261,7 +261,7 @@ class Fun(commands.Cog):
                     text=f"👍: {i['thumbs_up']}"
                 ).add_field(
                     name="Author",
-                    value=i["author"]
+                    value=i["author"] or "No Author For This One"
                 )
             )
 
