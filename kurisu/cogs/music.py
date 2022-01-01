@@ -182,8 +182,8 @@ class Music(commands.Cog):
     @commands.command(aliases=["leave", "gtfo", "fuckoff"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def disconnect(
-        self,
-        ctx: KurisuContext,
+            self,
+            ctx: KurisuContext,
     ):
         """Disconnect from my current vc"""
         if not ctx.guild.voice_client:
@@ -249,12 +249,12 @@ class Music(commands.Cog):
                 description=f"Requested by {player.current.requester}",
                 color=self.bot.ok_color,
             )
-            .add_field(name="Author", value=player.current.author)
-            .add_field(
+                .add_field(name="Author", value=player.current.author)
+                .add_field(
                 name="Length",
                 value=str(timedelta(milliseconds=player.current.length)),
             )
-            .set_thumbnail(
+                .set_thumbnail(
                 url=player.current.thumbnail
                 if player.current.thumbnail
                 else player.current.requester.avatar.url

@@ -1,7 +1,6 @@
 from discord.ext import commands
 from utils.dbmanagers import PrefixManager
-from utils.kurisu import KurisuBot
-from utils.kurisu import KurisuContext
+from utils.kurisu import KurisuBot, KurisuContext
 import discord
 
 

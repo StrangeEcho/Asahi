@@ -75,7 +75,7 @@ class LoggingHandler(logging.StreamHandler):
                         else ""
                     )
                     + f"» "
-                    f"{colors[level_name]}{line}{Style.RESET_ALL}"
+                      f"{colors[level_name]}{line}{Style.RESET_ALL}"
                 )
                 first = False
 
@@ -98,5 +98,5 @@ class LoggingHandler(logging.StreamHandler):
                                 else ""
                             )
                             + f"» "
-                            f"{colors[level_name]}{msg}{Style.RESET_ALL}"
+                              f"{colors[level_name]}{msg}{Style.RESET_ALL}"
                         )

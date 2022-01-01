@@ -2,8 +2,8 @@ import functools
 import random
 
 from discord.ext import commands, vbu
-from utils.kurisu import KurisuBot
 from utils.context import KurisuContext
+from utils.kurisu import KurisuBot
 import discord
 import hentai
 
@@ -66,7 +66,7 @@ class NSFW(commands.Cog):
 
         if tag.lower() in available_tags:
             async with self.bot.session.get(
-                f"https://api.waifu.im/nsfw/{tag}"
+                    f"https://api.waifu.im/nsfw/{tag}"
             ) as resp:
                 await ctx.send(
                     embed=discord.Embed(color=self.bot.ok_color).set_image(
@@ -98,12 +98,12 @@ class NSFW(commands.Cog):
 
         if tag is not None and tag.lower() in available_tags:
             async with self.bot.session.post(
-                url=f"https://api.waifu.pics/many/nsfw/{tag}",
-                headers={
-                    "Accept": "application/json",
-                    "content-type": "application/json",
-                },
-                json={"files": ""},
+                    url=f"https://api.waifu.pics/many/nsfw/{tag}",
+                    headers={
+                        "Accept": "application/json",
+                        "content-type": "application/json",
+                    },
+                    json={"files": ""},
             ) as resp:
                 results = (await resp.json())["files"][:5]
                 await ctx.send("\n".join(results))
@@ -137,18 +137,18 @@ class NSFW(commands.Cog):
 
         if tag is not None and tag.lower() in available_tags:
             async with self.bot.session.post(
-                url=f"https://api.waifu.pics/many/nsfw/{tag}",
-                headers={
-                    "Accept": "application/json",
-                    "content-type": "application/json",
-                },
-                json={"files": ""},
+                    url=f"https://api.waifu.pics/many/nsfw/{tag}",
+                    headers={
+                        "Accept": "application/json",
+                        "content-type": "application/json",
+                    },
+                    json={"files": ""},
             ) as resp:
                 step = 5  # the amount of files to display at a time
                 idx = 5  # set the index to start with
                 files = (await resp.json())["files"]
                 while idx < len(files):
-                    sublist = files[idx - step : idx]  # [0:5], [5:10], etc
+                    sublist = files[idx - step: idx]  # [0:5], [5:10], etc
                     await ctx.send("\n".join(map(str, sublist)))
                     idx += step
         else:

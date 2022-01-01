@@ -125,7 +125,7 @@ class KurisuBot(commands.AutoShardedBot):
             msg
         )
         time_difference = (
-            (self.startup_time - discord.utils.utcnow()) * 1000
+                (self.startup_time - discord.utils.utcnow()) * 1000
         ).total_seconds()
         formatted_time_difference = str(time_difference).replace("-", "")
         self.logger.info(

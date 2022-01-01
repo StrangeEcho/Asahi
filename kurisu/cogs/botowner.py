@@ -9,9 +9,9 @@ import traceback
 
 from discord.errors import HTTPException
 from discord.ext import commands
+from utils.context import KurisuContext
 from utils.dbmanagers import ErrorSuppressionHandler
 from utils.kurisu import KurisuBot
-from utils.context import KurisuContext
 import discord
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
@@ -62,7 +62,7 @@ class Bot_Owner(commands.Cog):
     async def elevate(self, ctx: KurisuContext, user: discord.User = None):
         """Elevate a user or yourself to ownership privilege"""
         if not ctx.author.id in self.bot.get_config(
-            "config", "config", "owner_ids"
+                "config", "config", "owner_ids"
         ):
             return await ctx.send(
                 embed=discord.Embed(
@@ -101,7 +101,7 @@ class Bot_Owner(commands.Cog):
             if payload.message.id != msg.id:
                 return False
             if payload.user.id not in self.bot.get_config(
-                "config", "config", "owner_ids"
+                    "config", "config", "owner_ids"
             ):
                 self.bot.loop.create_task(
                     payload.response.send_message(
@@ -154,7 +154,7 @@ class Bot_Owner(commands.Cog):
     async def delevate(self, ctx: KurisuContext, user: discord.User = None):
         """Delevate a users ownership privilege"""
         if not ctx.author.id in self.bot.get_config(
-            "config", "config", "owner_ids"
+                "config", "config", "owner_ids"
         ):
             return await ctx.send(
                 embed=discord.Embed(
@@ -341,11 +341,11 @@ class Bot_Owner(commands.Cog):
                 )
         await ctx.send(
             embed=discord.Embed(title="Summary", color=self.bot.ok_color)
-            .add_field(
+                .add_field(
                 name="Loaded Successfully",
                 value="\n".join(success_list) or "`None`",
             )
-            .add_field(
+                .add_field(
                 name="Failed To Load",
                 value="\n".join(failed_extensions) or "`None`",
                 inline=False,
@@ -368,11 +368,11 @@ class Bot_Owner(commands.Cog):
                 )
         await ctx.send(
             embed=discord.Embed(title="Summary", color=self.bot.ok_color)
-            .add_field(
+                .add_field(
                 name="Unloaded Successfully",
                 value="\n".join(success_list) or "None",
             )
-            .add_field(
+                .add_field(
                 name="Failed To Unload",
                 value="\n".join(failed_extensions) or "None",
                 inline=False,
@@ -395,11 +395,11 @@ class Bot_Owner(commands.Cog):
                 )
         await ctx.send(
             embed=discord.Embed(title="Summary", color=self.bot.ok_color)
-            .add_field(
+                .add_field(
                 name="Reloaded Successfully",
                 value="\n".join(success_list) or "None",
             )
-            .add_field(
+                .add_field(
                 name="Failed To Reload",
                 value="\n".join(failed_extensions) or "None",
                 inline=False,
@@ -458,7 +458,7 @@ class Bot_Owner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def say(
-        self, ctx, chan: Optional[discord.TextChannel] = None, *, msg
+            self, ctx, chan: Optional[discord.TextChannel] = None, *, msg
     ):
         """Say something with the bot."""
         try:
@@ -507,7 +507,7 @@ class Bot_Owner(commands.Cog):
         if ctx.channel.permissions_for(ctx.me).manage_messages:
             messages = await ctx.channel.purge(
                 check=lambda message: message.author == ctx.me
-                or message.content.startswith(prefix),
+                                      or message.content.startswith(prefix),
                 bulk=True,
                 limit=limit,
             )

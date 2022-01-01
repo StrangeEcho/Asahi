@@ -1,6 +1,6 @@
 from discord.ext import commands
-from utils.kurisu import KurisuBot
 from utils.context import KurisuContext
+from utils.kurisu import KurisuBot
 import discord
 
 np = ""
@@ -17,7 +17,7 @@ class Actions(commands.Cog):
     async def hug(self, ctx: KurisuContext, *, target=np):
         """Hug someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/hug"
+                url="https://api.waifu.pics/sfw/hug"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -31,7 +31,7 @@ class Actions(commands.Cog):
     async def kiss(self, ctx: KurisuContext, *, target=np):
         """Kiss someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/hug"
+                url="https://api.waifu.pics/sfw/hug"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -45,7 +45,7 @@ class Actions(commands.Cog):
     async def pat(self, ctx: KurisuContext, *, target=np):
         """Pat someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/pat"
+                url="https://api.waifu.pics/sfw/pat"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -59,7 +59,7 @@ class Actions(commands.Cog):
     async def cuddle(self, ctx: KurisuContext, *, target=np):
         """Cuddle with someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/cuddle"
+                url="https://api.waifu.pics/sfw/cuddle"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -73,7 +73,7 @@ class Actions(commands.Cog):
     async def lick(self, ctx: KurisuContext, *, target=np):
         """Lick someone"""
         async with self.bot.session.get(
-            "https://api.waifu.pics/sfw/lick"
+                "https://api.waifu.pics/sfw/lick"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -87,7 +87,7 @@ class Actions(commands.Cog):
     async def bully(self, ctx: KurisuContext, *, target=np):
         """Bully someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/bully"
+                url="https://api.waifu.pics/sfw/bully"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -101,7 +101,7 @@ class Actions(commands.Cog):
     async def poke(self, ctx: KurisuContext, *, target=np):
         """Poke someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/poke"
+                url="https://api.waifu.pics/sfw/poke"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -115,15 +115,15 @@ class Actions(commands.Cog):
     async def slap(self, ctx: KurisuContext, *, target=np):
         """Slap someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/slap"
+                url="https://api.waifu.pics/sfw/slap"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{ctx.author.mention} slaps {target}",
                     color=ctx.author.color or self.bot.ok_color,
                 )
-                .set_image(url=(await resp.json())["url"])
-                .set_footer(text="ouch")
+                    .set_image(url=(await resp.json())["url"])
+                    .set_footer(text="ouch")
             )
 
     @commands.command()
@@ -131,7 +131,7 @@ class Actions(commands.Cog):
     async def smug(self, ctx: KurisuContext):
         """Smugly look at someone"""
         async with self.bot.session.get(
-            url="https://api.waifu.pics/sfw/smug"
+                url="https://api.waifu.pics/sfw/smug"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -145,15 +145,15 @@ class Actions(commands.Cog):
     async def baka(self, ctx: KurisuContext, *, target=np):
         """Call someone an idiot"""
         async with self.bot.session.get(
-            url="https://nekos.life/api/v2/img/baka"
+                url="https://nekos.life/api/v2/img/baka"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
                     description=f"{target} YOU BAKA!",
                     color=ctx.author.color or self.bot.ok_color,
                 )
-                .set_image(url=(await resp.json())["url"])
-                .set_footer(text=f"{ctx.author.name} says so themselves")
+                    .set_image(url=(await resp.json())["url"])
+                    .set_footer(text=f"{ctx.author.name} says so themselves")
             )
 
     @commands.command()
@@ -161,7 +161,7 @@ class Actions(commands.Cog):
     async def feed(self, ctx: KurisuContext, *, target=np):
         """Feed someone"""
         async with self.bot.session.get(
-            url="https://nekos.life/api/v2/img/feed"
+                url="https://nekos.life/api/v2/img/feed"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(
@@ -175,7 +175,7 @@ class Actions(commands.Cog):
     async def tickle(self, ctx: KurisuContext, *, target=np):
         """Tickle someone"""
         async with self.bot.session.get(
-            "https://nekos.life/api/v2/img/tickle"
+                "https://nekos.life/api/v2/img/tickle"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(

@@ -1,4 +1,3 @@
-from discord import guild
 from discord.ext import commands
 
 from .errors import UserNotFound
@@ -32,7 +31,7 @@ class PrefixManager:
 
     async def startup_caching(self) -> None:
         for g, p in await self.bot.db.fetch_all(
-            query="SELECT guild, prefix FROM guildsettings"
+                query="SELECT guild, prefix FROM guildsettings"
         ):
             self.bot.prefixes.setdefault(str(g), str(p))
             self.bot.logger.info("Prefixes Appended To Cache")
@@ -43,7 +42,7 @@ class WarningManager:
         self.bot = bot
 
     async def add_warning(
-        self, ctx: commands.Context, userid: int, reason: str
+            self, ctx: commands.Context, userid: int, reason: str
     ) -> None:
         """Insert a warning for a user"""
 
@@ -159,7 +158,7 @@ class TodoManager:
             query="SELECT item FROM todo WHERE user = :user",
             values={"user": user},
         )
-    
+
     async def remove_todo(self, user: int, item_number: int):
         tuplist = await self.fetch_todos(user)
 
@@ -172,5 +171,3 @@ class TodoManager:
             query="DELETE FROM todo WHERE user = :user AND item = :item",
             values={"user": user, "item": target_tup[0]},
         )
-
-

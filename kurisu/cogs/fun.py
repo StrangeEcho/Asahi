@@ -2,8 +2,8 @@ from io import BytesIO
 from random import choice, randint
 
 from discord.ext import commands
-from utils.kurisu import KurisuBot
 from utils.context import KurisuContext
+from utils.kurisu import KurisuBot
 import aiohttp
 import discord
 
@@ -52,7 +52,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def compliment(
-        self, ctx: KurisuContext, member: discord.Member = None
+            self, ctx: KurisuContext, member: discord.Member = None
     ):
         """Compliment someone or yourself"""
         if member is None:
@@ -130,7 +130,7 @@ class Fun(commands.Cog):
             )
         else:
             async with self.bot.session.get(
-                f"https://nekos.life/api/v2/owoify?text={txt}"
+                    f"https://nekos.life/api/v2/owoify?text={txt}"
             ) as resp:
                 await ctx.send(
                     embed=discord.Embed(
@@ -148,11 +148,11 @@ class Fun(commands.Cog):
         """Get osu information about someone."""
         try:
             async with self.bot.session.get(
-                "https://api.martinebot.com/v1/imagesgen/osuprofile",
-                params={
-                    "player_username": user,
-                },
-                raise_for_status=True,
+                    "https://api.martinebot.com/v1/imagesgen/osuprofile",
+                    params={
+                        "player_username": user,
+                    },
+                    raise_for_status=True,
             ) as r:
                 pic = BytesIO(await r.read())
         except aiohttp.ClientResponseError as e:
@@ -181,7 +181,7 @@ class Fun(commands.Cog):
     async def animequote(self, ctx: KurisuContext):
         """Recieve an anime quote from the AnimeChan API"""
         async with self.bot.session.get(
-            "https://animechan.vercel.app/api/random"
+                "https://animechan.vercel.app/api/random"
         ) as resp:
             if resp.status == 200:
                 quote = (await resp.json())["quote"]
@@ -212,7 +212,7 @@ class Fun(commands.Cog):
     async def maid(self, ctx: KurisuContext):
         """maids go brrr"""
         async with self.bot.session.get(
-            "https://api.waifu.im/sfw/maid"
+                "https://api.waifu.im/sfw/maid"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(color=self.bot.ok_color).set_image(
@@ -225,7 +225,7 @@ class Fun(commands.Cog):
     async def waifu(self, ctx: KurisuContext):
         """waifu"""
         async with self.bot.session.get(
-            "https://api.waifu.im/sfw/waifu"
+                "https://api.waifu.im/sfw/waifu"
         ) as resp:
             await ctx.send(
                 embed=discord.Embed(color=self.bot.ok_color).set_image(

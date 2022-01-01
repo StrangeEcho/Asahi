@@ -39,9 +39,9 @@ async def parse_llnode_stat(stats, stat_name: str):
 
 
 def humanize_timedelta(
-    *,
-    timedelta: Optional[datetime.timedelta] = None,
-    seconds: Optional[SupportsInt] = None,
+        *,
+        timedelta: Optional[datetime.timedelta] = None,
+        seconds: Optional[SupportsInt] = None,
 ) -> None:
     """
     Get a locale aware human timedelta representation.

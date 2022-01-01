@@ -2,8 +2,8 @@ from io import BytesIO
 import asyncio
 
 from discord.ext import commands
-from utils.kurisu import KurisuBot
 from utils.context import KurisuContext
+from utils.kurisu import KurisuBot
 import discord
 
 snipe = {
@@ -82,9 +82,9 @@ class Snipe(commands.Cog):
         global snipe
 
         if (
-            snipe["guild"] != ctx.guild
-            or snipe["channel"] != ctx.channel
-            or snipe["content"] == None
+                snipe["guild"] != ctx.guild
+                or snipe["channel"] != ctx.channel
+                or snipe["content"] == None
         ):
             emb = discord.Embed(
                 color=self.bot.ok_color,
@@ -121,9 +121,9 @@ class Snipe(commands.Cog):
         """Sneaky Sneaky snipe the edited message"""
 
         if (
-            edit_snipe["guild"] != ctx.guild
-            or edit_snipe["channel"] != ctx.channel
-            or edit_snipe["content"] == None
+                edit_snipe["guild"] != ctx.guild
+                or edit_snipe["channel"] != ctx.channel
+                or edit_snipe["content"] == None
         ):
             emb = discord.Embed(
                 color=self.bot.ok_color,

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from textwrap import wrap
 from typing import TYPE_CHECKING, Union
-import asyncio
 
 from discord.ext import commands, menus, vbu
+import aiohttp
 import discord
 import toml
 
@@ -12,7 +12,6 @@ from .funcs import box
 
 if TYPE_CHECKING:
     from .context import KurisuContext
-    from .kurisu import KurisuBot
 
 
 class EmbedListMenu(menus.ListPageSource):
@@ -42,10 +41,10 @@ def get_color(color: str) -> int:
 
 
 async def autopaginate(
-    text: str,
-    limit: int,
-    ctx: Union[commands.Context, KurisuContext],
-    codeblock: bool = False,
+        text: str,
+        limit: int,
+        ctx: Union[commands.Context, KurisuContext],
+        codeblock: bool = False,
 ):
     """Automatic Paginator"""
     wrapped_text: list[str] = wrap(text, limit)
@@ -61,3 +60,12 @@ async def autopaginate(
             )
         )
     await vbu.Paginator(embeds, per_page=1).start(ctx)
+
+
+async def get_ud_results(term: str, max: int = 5):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"https://api.urbandictionary.com/v0/define?term={term}") as resp:
+            try:
+                return resp["list"][:max]
+            except (IndexError, KeyError) as e:
+                raise QueryError("Error while querying Urban Dictionary API with that term")
