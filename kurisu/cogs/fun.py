@@ -258,7 +258,7 @@ class Fun(commands.Cog):
                     description=f"Definition: {i['definition']}",
                     color=self.bot.ok_color
                 ).set_footer(
-                    text=f"👍: {i['thumbs_up']}"
+                    text=f"👍: {i['thumbs_up']} | Page Index {embeds.index(i) + 1}/{len(embeds)}"
                 ).add_field(
                     name="Author",
                     value=i["author"] or "No Author For This One"
