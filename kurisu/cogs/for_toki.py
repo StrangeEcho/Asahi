@@ -25,7 +25,7 @@ class ImSorry(commands.Cog):
     @commands.command()
     async def google(self, ctx: KurisuContext, * query):
         """Search stuff up on google"""
-        results = await self.client_session.search(query, safesearch=True, image_search=False)
+        results = await self.client_session.search(str(query), safesearch=True, image_search=False)
         if not results:
             return await ctx.send_error("No Results Found")
         
