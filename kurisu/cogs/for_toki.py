@@ -23,7 +23,7 @@ class ImSorry(commands.Cog):
 
 
     @commands.command()
-    async def google(self, ctx: KurisuContext, * query):
+    async def google(self, ctx: KurisuContext, * query: str):
         """Search stuff up on google"""
         results = await self.client_session.search(str(query), safesearch=True, image_search=False)
         if not results:
@@ -34,7 +34,7 @@ class ImSorry(commands.Cog):
                 title=str(query),
                 description="\n".join([f"{n}. [{v.title}]({v.url})" for n, v in enumerate(results[:10], 1)]),
                 color=self.bot.ok_color 
-            ).set_footer(text=f"Requested by {ctx.author}" if not ctx.author.id != 595493378062548994 else "sorry.")
+            ).set_footer(text=f"Requested by {ctx.author}" if ctx.author.id != 595493378062548994 else "sorry.")
         )
 
 
