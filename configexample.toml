@@ -11,3 +11,6 @@ ll_port = "" # Port
 ll_password = "" # Password
 spot_client_id = "" # Spotify Client ID
 spot_client_sec = "" # Spotify Client Secret
+
+[search]
+google_api_key = ""
