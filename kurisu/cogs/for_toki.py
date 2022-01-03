@@ -25,14 +25,14 @@ class ImSorry(commands.Cog):
     @commands.command()
     async def google(self, ctx: KurisuContext, * query):
         """Search stuff up on google"""
-        results = self.client_session.search(query, safesearch=True, image_search=False)
+        results = await self.client_session.search(query, safesearch=True, image_search=False)
         if not results:
             return await ctx.send_error("No Results Found")
         
         await ctx.send(
             embed=discord.Embed(
                 title=str(query),
-                description="\n".join([f"{n}. [{v.title}]({v.url})" for n, v in enumerate(results, 1)]),
+                description="\n".join([f"{n}. [{v.title}]({v.url})" for n, v in enumerate(results[:10], 1)]),
                 color=self.bot.ok_color 
             ).set_footer(text=f"Requested by {ctx.author}" if not ctx.author.id != 595493378062548994 else "sorry.")
         )
