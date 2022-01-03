@@ -32,7 +32,7 @@ class ImSorry(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title=str(query),
-                description="\n".join([f"{n}. [{v.title}]({v.url})" for n, v in enumerate(results[:10], 1)]),
+                description="\n".join([f"{n}. [{v.title}]({v.url})" for n, v in enumerate(results, 1)]),
                 color=self.bot.ok_color 
             ).set_footer(text=f"Requested by {ctx.author}" if not ctx.author.id != 595493378062548994 else "sorry.")
         )
