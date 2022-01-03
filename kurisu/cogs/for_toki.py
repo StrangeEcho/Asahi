@@ -11,13 +11,16 @@ class ImSorry(commands.Cog):
         self.bot = bot
         self.api_key = self.bot.get_config("config", "search", "google_api_key")
         self.client_session = async_cse.Search(self.api_key)
-    
+
+
     def cog_unload(self) -> None:
         self.bot.loop.create_task(self.cleanup())
         super().cog_unload()
 
+
     async def cleanup(self) -> None:
         await self.client_session.close()
+
 
     @commands.command()
     async def google(self, ctx: KurisuContext, * query):
@@ -33,3 +36,7 @@ class ImSorry(commands.Cog):
                 color=self.bot.ok_color 
             ).set_footer(text=f"Requested by {ctx.author}" if not ctx.author.id != 595493378062548994 else "sorry.")
         )
+
+
+def setup(bot: KurisuBot):
+    bot.add_cog(ImSorry(bot))
