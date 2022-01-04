@@ -3,7 +3,7 @@ from __future__ import annotations
 from textwrap import wrap
 from typing import TYPE_CHECKING, Union
 
-from discord.ext import commands, menus, vbu
+from discord.ext import commands, vbu
 import aiohttp
 import discord
 import toml
@@ -12,24 +12,6 @@ from .funcs import box
 
 if TYPE_CHECKING:
     from .context import KurisuContext
-
-
-class EmbedListMenu(menus.ListPageSource):
-    """
-    Paginated embed menu.
-    """
-
-    def __init__(self, data):
-        """
-        Initializes the EmbedListMenu.
-        """
-        super().__init__(data, per_page=1)
-
-    async def format_page(self, menu, embeds):
-        """
-        Formats the page.
-        """
-        return embeds
 
 
 def get_color(color: str) -> int:
