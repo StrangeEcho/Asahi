@@ -23,18 +23,24 @@ class ImSorry(commands.Cog):
 
 
     @commands.command()
-    async def google(self, ctx: KurisuContext, * query: str):
+    async def google(self, ctx: KurisuContext, *, query: str):
         """Search stuff up on google"""
-        results = await self.client_session.search(str(query), safesearch=True, image_search=False)
+        results = await self.client_session.search(query, safesearch=True, image_search=False)
         if not results:
             return await ctx.send_error("No Results Found")
-        
+
         await ctx.send(
             embed=discord.Embed(
-                title=str(query),
-                description="\n".join([f"{n}. [{v.title}]({v.url})" for n, v in enumerate(results[:10], 1)]),
-                color=self.bot.ok_color 
-            ).set_footer(text=f"Requested by {ctx.author}" if ctx.author.id != 595493378062548994 else "sorry.")
+                title=f"Query: {query}"
+                description="\n".join([f"[{res.title}]({res.url})\n{res.description}\n\n" for res in results[:5]]),
+                color=self.bot.ok_color
+            ).set_footer(
+                text=f"Requested by {ctx.author}" if ctx.author.id != 595493378062548994 else "ily <3",
+                icon_url=ctx.author.display_avatar
+            ).set_author(
+                name=str(ctx.author),
+                icon_url="https://staffordonline.org/wp-content/uploads/2019/01/Google.jpg"
+            )
         )
 
 
