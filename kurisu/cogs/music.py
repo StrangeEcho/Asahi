@@ -245,8 +245,7 @@ class Music(commands.Cog):
         player: Player = ctx.voice_client
         await ctx.send(
             embed=discord.Embed(
-                title=f"[{player.current.title}]({player.current.uri})",
-                description=f"Requested by {player.current.requester}",
+                description=f"[{player.current.title}]({player.current.uri})\n\nRequested by {player.current.requester}",
                 color=self.bot.ok_color,
             )
                 .add_field(name="Author", value=player.current.author)
