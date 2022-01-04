@@ -31,7 +31,7 @@ class ImSorry(commands.Cog):
 
         await ctx.send(
             embed=discord.Embed(
-                title=f"Query: {query}"
+                title=f"Query: {query}",
                 description="\n".join([f"[{res.title}]({res.url})\n{res.description}\n\n" for res in results[:5]]),
                 color=self.bot.ok_color
             ).set_footer(
