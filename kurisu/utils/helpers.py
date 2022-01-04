@@ -9,7 +9,6 @@ import discord
 import toml
 
 from .funcs import box
-from .errors import UrbanDictionaryError
 
 if TYPE_CHECKING:
     from .context import KurisuContext
@@ -69,4 +68,4 @@ async def get_ud_results(term: str, max: int = 5):
             try:
                 return (await resp.json())["list"][:max]
             except (IndexError, KeyError) as e:
-                raise UrbanDictionaryError("Error while querying Urban Dictionary API with that term")
+                pass
