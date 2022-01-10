@@ -2,6 +2,7 @@ from typing import Mapping, Union
 import asyncio
 
 from discord.ext import commands
+from discord.ext.commands.core import command
 from utils.helpers import get_color
 from utils.kurisu import KurisuBot
 import discord
@@ -174,7 +175,10 @@ class Help(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.bot.help_command = KurisuHelpCommand(
-            command_attrs={"aliases": ["h"]}
+            command_attrs={
+                "cooldown": commands.CooldownMapping.from_cooldown(1, 3.5, commands.BucketType.user),
+                "aliases": ["h"]
+            }
         )
 
 

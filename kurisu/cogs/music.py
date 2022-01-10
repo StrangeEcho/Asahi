@@ -322,7 +322,7 @@ class Music(commands.Cog):
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
 
-        player: Player = ctx
+        player: Player = ctx.voice_client
 
         if vol < 0 or vol > 100:
             return await ctx.send_error("Volume must be between 1 or 100")
@@ -336,7 +336,7 @@ class Music(commands.Cog):
         if not ctx.voice_client:
             return await ctx.send_error("There is no activate player.")
 
-        player: Player = ctx
+        player: Player = ctx.voice_client
 
         try:
             await player.play(player.queue[queueposistion - 1])
