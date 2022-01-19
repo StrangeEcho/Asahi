@@ -6,7 +6,7 @@ from utils.kurisu import KurisuBot
 from utils.context import KurisuContext
 from discord.ext import commands
 
-class ImSorry(commands.Cog):
+class Searches(commands.Cog):
     def __init__(self, bot: KurisuBot):
         self.bot = bot
         self.api_key = self.bot.get_config("config", "search", "google_api_key")
@@ -25,10 +25,11 @@ class ImSorry(commands.Cog):
     @commands.command()
     async def google(self, ctx: KurisuContext, *, query: str):
         """Search stuff up on google"""
-        results = await self.client_session.search(query, safesearch=True, image_search=False)
-        if not results:
-            return await ctx.send_error("No Results Found")
-
+        try:    
+            results = await self.client_session.search(query, safesearch=True, image_search=False)
+        except async_cse.NoResults:
+            return await ctx.send_error(f"No Results Found For `{query}`")
+            
         await ctx.send(
             embed=discord.Embed(
                 title=f"Query: {query}",
@@ -45,4 +46,4 @@ class ImSorry(commands.Cog):
 
 
 def setup(bot: KurisuBot):
-    bot.add_cog(ImSorry(bot))
+    bot.add_cog(Searches(bot))
