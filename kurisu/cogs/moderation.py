@@ -20,64 +20,49 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
-    @commands.cooldown(1, 3, commands.BucketType.guild)
-    async def ban(
-            self,
-            ctx: KurisuContext,
-            member: Union[discord.Member, int],
-            *,
-            reason: str = None,
-    ):
-        """Ban users from the current server"""
-
-        if reason is None:
-            reason = "No reason passed"
-
-        actionembed = discord.Embed(
-            description=f" :red_circle: Banned {member} for {reason}",
-            color=self.bot.ok_color,
-        )
-        actionembed.set_footer(text=f"Moderator: {ctx.author}")
-
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def ban(self, ctx: KurisuContext, member: Union[discord.Member, int], *, reason=None):
+        if not reason:
+            reason = "No Reason Added"
+        
         if isinstance(member, discord.Member):
             if await check_hierarchy(ctx, member):
                 return
-            try:
-                await member.send(
-                    embed=discord.Embed(
-                        title=f"You were banned from {ctx.guild}",
-                        description=f"Reason: {reason}",
-                        color=self.bot.ok_color,
-                    ).set_footer(text=f"Moderator: {ctx.author}")
-                )
-            except (discord.Forbidden, discord.HTTPException):
+            else:
+                succeed = True
+                try:
+                    await member.send(
+                        embed=discord.Embed(
+                            title=f"You were banned from {ctx.guild.name}",
+                            description=f"Reason: {reason}",
+                            color=discord.Color.red()
+                        ).set_footer(
+                            icon_url=ctx.author.display_avatar.url,
+                            text=f"Moderator: {ctx.author}"
+                        )
+                    )    
+                except (discord.Forbidden, discord.HTTPException):
+                    succeed = False
+                await member.ban(reason=f"{reason} - {ctx.author}")
                 await ctx.send(
                     embed=discord.Embed(
-                        description=f"Failed sending punishment DM to {member.mention}\nProceeding with Ban regardless.",
-                        color=self.bot.error_color,
-                    )
+                        description=f":red_circle: Banned `{member}` for `{reason}`",
+                        color=self.bot.ok_color
+                    ).set_footer(
+                        text=f"DM Status: {'⚠️' if not succeed else '✅'}"
+                    ).set_author(name=ctx.author, icon_url=ctx.author.display_avatar.url)
                 )
-            await member.ban(
-                reason=f"Reason: {reason} | Moderator: {ctx.author}"
-            )
-            await ctx.send(
-                embed=discord.Embed(
-                    description=f":red_circle: Successfully banned {member.mention} for {reason}",
-                    color=self.bot.ok_color,
-                )
-            )
 
         if isinstance(member, int):
             user = await self.bot.fetch_user(member)
-            await ctx.guild.ban(
-                user, reason=f"{reason} | Moderator: {ctx.author}"
-            )
+            await ctx.guild.ban(user, reason=f"{reason} - {ctx.author}")
             await ctx.send(
                 embed=discord.Embed(
-                    description=f":red_circle: Banned {user} for {reason}",
-                    color=self.bot.ok_color,
+                    description=f":red_circle: Banned `{user}` for `{reason}`",
+                    color=self.bot.ok_color
                 ).set_footer(text=f"Moderator: {ctx.author}")
             )
+
 
     @commands.command()
     @commands.guild_only()
