@@ -1,0 +1,13 @@
+[flake8]
+exclude=venv
+max-complexity = 10
+max-line-length = 120
+
+# F401 F403 ignore unused imports
+# E402 module level imports not at top
+# E127 E126 continuation line indent
+# W504 line break after binary op
+# W503 line break before binary op
+# E203 whitespace before :
+# W291 trailing whitespace
+ignore = F401,F403,E402,E127,W504,W503,E126,E203,W291

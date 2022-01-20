@@ -69,20 +69,14 @@ class LoggingHandler(logging.StreamHandler):
                     f"{colors2[level_name]}{styles[level_name]}[{level_name[:3]}]{Style.RESET_ALL}"
                     f" "
                     f"{Style.BRIGHT}{names[name]}{name}{Style.RESET_ALL} "
-                    + (
-                        f"» {Style.BRIGHT}{Fore.LIGHTBLUE_EX}{sub}{Style.RESET_ALL} "
-                        if sub
-                        else ""
-                    )
+                    + (f"» {Style.BRIGHT}{Fore.LIGHTBLUE_EX}{sub}{Style.RESET_ALL} " if sub else "")
                     + f"» "
-                      f"{colors[level_name]}{line}{Style.RESET_ALL}"
+                    f"{colors[level_name]}{line}{Style.RESET_ALL}"
                 )
                 first = False
 
             if record.exc_info:
-                exception: Tuple[
-                    type, BaseException, TracebackType
-                ] = record.exc_info
+                exception: Tuple[type, BaseException, TracebackType] = record.exc_info
                 lines = traceback.format_exception(*exception)
                 for line in lines:
                     for msg in line.splitlines():
@@ -92,11 +86,7 @@ class LoggingHandler(logging.StreamHandler):
                             f"{colors2[level_name]}{styles[level_name]}[{level_name[:3]}]{Style.RESET_ALL}"
                             f" "
                             f"{Style.BRIGHT}{names[name]}{name}{Style.RESET_ALL} "
-                            + (
-                                f"» {Style.BRIGHT}{Fore.LIGHTBLUE_EX}{sub}{Style.RESET_ALL} "
-                                if sub
-                                else ""
-                            )
+                            + (f"» {Style.BRIGHT}{Fore.LIGHTBLUE_EX}{sub}{Style.RESET_ALL} " if sub else "")
                             + f"» "
-                              f"{colors[level_name]}{msg}{Style.RESET_ALL}"
+                            f"{colors[level_name]}{msg}{Style.RESET_ALL}"
                         )

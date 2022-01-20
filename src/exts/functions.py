@@ -8,11 +8,13 @@ from data.database import SCHEMA, PrefixManager
 
 from discord import Message
 
+
 def get_prefix(bot: Kurisu, msg: Message):
-    if not msg.guild or msg.guild.id not in bot.prefixes.keys(): 
+    if not msg.guild or msg.guild.id not in bot.prefixes.keys():
         return bot.config.get("prefix")
     else:
         return bot.prefixes[msg.guild.id]
+
 
 async def database_init(bot: Kurisu, schema=SCHEMA):
     for i in schema.split(";;"):
@@ -25,4 +27,3 @@ async def database_init(bot: Kurisu, schema=SCHEMA):
         await bot.close()
     bot.logger.info("Loaded guild prefixes into memory.")
     bot.logger.info("Database Init Finished.")
-
