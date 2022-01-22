@@ -52,7 +52,7 @@ class KurisuContext(commands.Context):
 
 
     async def _trash(self, message: discord.Message):
-        await msg.add_reaction("🗑️")
+        await message.add_reaction("🗑️")
         
         def check(reaction: discord.Reaction, user: discord.User):
             return reaction.message.id == message.id and user == message.author
