@@ -153,3 +153,4 @@ cython_debug/
 
 # Some More Extras
 config.toml
+*db

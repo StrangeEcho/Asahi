@@ -4,7 +4,7 @@ import os
 import discord
 from databases import Database
 from discord.ext import commands
-from exts.functions import get_prefix, database_init
+from exts.functions import get_prefix, database_init, color_convert
 from helpers.confighandler import Config
 from helpers.loghandler import LoggingHandler
 
@@ -24,14 +24,17 @@ class Kurisu(commands.AutoShardedBot):
         ]:
             logging.getLogger(logger).setLevel(logging.DEBUG if logger == "kurisu" else logging.INFO)
             logging.getLogger(logger).addHandler(LoggingHandler())
-        self.logger = logging.getLogger("kurisu")
         super().__init__(command_prefix=get_prefix, intents=discord.Intents.all(), *args, **kwargs)
+        self.logger = logging.getLogger("kurisu")
         self._config = Config()
         self.logger = logging.getLogger("kurisu")
         self.owner_ids = self.config.get("owner_ids") or super().owner_ids
         self.prefixes = {}
         self._db = Database("sqlite:///src/data/kurisu.db")
-
+        self.ok_color = color_convert(self._config.get("ok_color"))
+        self.info_color = color_convert(self._config.get("info_color"))
+        self.error_color = color_convert(self._config.get("error_color"))
+        
     @property
     def config(self) -> Config:
         return self._config
@@ -45,6 +48,9 @@ class Kurisu(commands.AutoShardedBot):
 
     async def on_ready(self) -> None:
         self.logger.info("Ready!")
+
+    async def on_message(msg: discord.Message) -> None:
+        await self.invoke(await self.get_context(msg))
 
     def startup(self) -> None:
         self.logger.info("Starting Now!")

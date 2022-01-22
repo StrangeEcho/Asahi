@@ -27,3 +27,12 @@ async def database_init(bot: Kurisu, schema=SCHEMA):
         await bot.close()
     bot.logger.info("Loaded guild prefixes into memory.")
     bot.logger.info("Database Init Finished.")
+
+
+def color_convert(color: str) -> int:
+    """Convert colors from config file"""
+    
+    if color.startswith("0x"):
+        return color
+    else:
+        return int(color.replace("#", "0x"), 16)
