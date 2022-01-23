@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from kurisu.bot import Kurisu
+    from kurisu import Kurisu
 
 
 SCHEMA = """

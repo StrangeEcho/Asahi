@@ -3,17 +3,18 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from kurisu.bot import Kurisu
+    from kurisu import Kurisu, KurisuContext
 from data.database import SCHEMA, PrefixManager
 
-from discord import Message
+import discord
+from discord.ext.commands import when_mentioned_or
 
 
-def get_prefix(bot: Kurisu, msg: Message):
+def get_prefix(bot: Kurisu, msg: discord.Message):
     if not msg.guild or msg.guild.id not in bot.prefixes.keys():
-        return bot.config.get("prefix")
+        return when_mentioned_or(bot.config.get("prefix"))(bot, msg)
     else:
-        return bot.prefixes[msg.guild.id]
+        return when_mentioned_or(bot.prefixes[msg.guild.id])(bot, msg)
 
 
 async def database_init(bot: Kurisu, schema=SCHEMA):
@@ -31,7 +32,7 @@ async def database_init(bot: Kurisu, schema=SCHEMA):
 
 def color_convert(color: str) -> int:
     """Convert colors from config file"""
-    
+
     if color.startswith("0x"):
         return color
     else:

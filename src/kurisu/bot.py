@@ -34,7 +34,7 @@ class Kurisu(commands.AutoShardedBot):
         self.ok_color = color_convert(self._config.get("ok_color"))
         self.info_color = color_convert(self._config.get("info_color"))
         self.error_color = color_convert(self._config.get("error_color"))
-        
+
     @property
     def config(self) -> Config:
         return self._config
@@ -49,7 +49,7 @@ class Kurisu(commands.AutoShardedBot):
     async def on_ready(self) -> None:
         self.logger.info("Ready!")
 
-    async def on_message(msg: discord.Message) -> None:
+    async def on_message(self, msg: discord.Message) -> None:
         await self.invoke(await self.get_context(msg))
 
     def startup(self) -> None:
