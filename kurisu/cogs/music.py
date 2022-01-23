@@ -49,14 +49,6 @@ class Music(commands.Cog):
             )
             self.cog_unload()
 
-    def check_connection_perms(ctx: KurisuContext) -> bool:
-        if not ctx.author.voice:
-            return False
-        if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            return False
-        else:
-            return True
-
     @commands.Cog.listener()
     async def on_pomice_track_end(self, player: Player, track, _):
         try:
@@ -79,10 +71,10 @@ class Music(commands.Cog):
             await player.destroy()
 
     @commands.command(aliases=["summon", "connect"])
-    @commands.check(check_connection_perms)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def join(self, ctx: KurisuContext):
         """Have the bot join your voice channel"""
+
 
         if ctx.voice_client:
             return await ctx.send_error("Im already connected to a VC.")
@@ -91,13 +83,15 @@ class Music(commands.Cog):
             return await ctx.send_error(
                 "You are currently not in a Voice Channel"
             )
+        
+        if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
+            return await ctx.send_error("I have no permission to join that voice channel.")
 
         await ctx.author.voice.channel.connect(cls=Player)
         await ctx.guild.me.edit(deafen=True)
         await ctx.send(f"Sucessfully joined `{ctx.author.voice.channel.name}`")
 
     @commands.command(aliases=["queue"])
-    @commands.check(check_connection_perms)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def play(self, ctx: KurisuContext, *, query: str):
         """Play a song"""
