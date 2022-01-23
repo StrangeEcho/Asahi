@@ -1,5 +1,6 @@
 import logging
 import os
+import traceback
 
 import discord
 from databases import Database
@@ -52,6 +53,12 @@ class Kurisu(commands.AutoShardedBot):
 
     async def on_message(self, msg: discord.Message) -> None:
         await self.invoke(await self.get_context(msg, cls=KurisuContext))
+
+    async def on_command_error(self, ctx: KurisuContext, error: commands.CommandError) -> None:
+        if isinstance(error, commands.CommandInvokeError):
+            self.logger.error("".join(traceback.format_exception(None, error, error.__traceback__)))
+
+        await ctx.send_error(error)
 
     def startup(self) -> None:
         self.logger.info("Starting Now!")
