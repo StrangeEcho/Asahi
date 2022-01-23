@@ -26,6 +26,21 @@ class Miscellaneous(commands.Cog):
         embed.add_field(name="Shards", value="```nim\n" + "\n".join(shards) + "\n```", inline=False)
         await msg.edit(embed=embed)
 
+    @commands.command(aliases=["inv"])
+    async def invite(self, ctx: KurisuContext):
+        """Invite me to your server!"""
+        try:
+            await ctx.author.send(
+                embed=discord.Embed(
+                    title="Thank you for invite me <3",
+                    url="https://discord.com/oauth2/authorize?client_id=755599763474219129&permissions=413893192823&scope=bot",  # noqa e501
+                    color=self.bot.ok_color,
+                ).set_thumbnail(url=self.bot.user.display_avatar.url)
+            )
+            await ctx.send_ok("DMed you with Invite Link!")
+        except (discord.Forbidden, discord.HTTPException):
+            await ctx.send_error("Could not DM you with my invite link", trash=True)
+
 
 def setup(bot: Kurisu):
     bot.add_cog(Miscellaneous(bot))

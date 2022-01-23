@@ -7,6 +7,7 @@ from discord.ext import commands
 from exts.functions import get_prefix, database_init, color_convert
 from helpers.confighandler import Config
 from helpers.loghandler import LoggingHandler
+from .context import KurisuContext
 
 
 class Kurisu(commands.AutoShardedBot):
@@ -50,7 +51,7 @@ class Kurisu(commands.AutoShardedBot):
         self.logger.info("Ready!")
 
     async def on_message(self, msg: discord.Message) -> None:
-        await self.invoke(await self.get_context(msg))
+        await self.invoke(await self.get_context(msg, cls=KurisuContext))
 
     def startup(self) -> None:
         self.logger.info("Starting Now!")

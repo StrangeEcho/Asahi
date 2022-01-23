@@ -42,7 +42,7 @@ class KurisuContext(commands.Context):
         await message.add_reaction("🗑️")
 
         def check(reaction: discord.Reaction, user: discord.User):
-            return reaction.message.id == message.id and user == message.author
+            return reaction.message.id == message.id and user == self.author and not user.bot
 
         try:
             reaction, user = await self.bot.wait_for("reaction_add", check=check, timeout=60)

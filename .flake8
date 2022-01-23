@@ -10,4 +10,5 @@ max-line-length = 120
 # W503 line break before binary op
 # E203 whitespace before :
 # W291 trailing whitespace
-ignore = F401,F403,E402,E127,W504,W503,E126,E203,W291
+# E501 line too long
+ignore = F401,F403,E402,E127,W504,W503,E126,E203,W291,E501
