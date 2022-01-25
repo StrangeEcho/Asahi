@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  kurisu:
+    image: kurisu:latest
+    volumes:
+       # The SQLite database is saved here, so we make a docker volume for persistent data
+     - kurisu-data:/app/src/data
+       # 
+     - ./config.toml:/app/src/data/config.toml:ro
+
+volumes:
+  kurisu-data: {}
