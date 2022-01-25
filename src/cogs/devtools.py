@@ -14,9 +14,17 @@ class DevTools(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot = bot
 
-    async def yes_no_prompt(self, ctx: KurisuContext, *, action: Coroutine) -> Optional[discord.Message]:
+    async def yes_no_prompt(
+        self,
+        ctx: KurisuContext,
+        action: Coroutine,
+        *,
+        prompt: str = "Are you sure you want to do this?",
+        confirm_str: str = "Action Confirmed",
+        cancelled_str: str = "Action Cancelled",
+    ) -> Optional[discord.Message]:
         """Confirmation prompt"""
-        edit_embed = discord.Embed(title="Are you sure you want to do this?", color=self.bot.info_color)
+        edit_embed = discord.Embed(title=prompt, color=self.bot.info_color)
         components = discord.ui.MessageComponents(
             discord.ui.ActionRow(
                 discord.ui.Button(emoji="✅", custom_id="ACTION_CONFIRMED"),
@@ -42,11 +50,11 @@ class DevTools(commands.Cog):
         try:
             payload = await self.bot.wait_for("component_interaction", check=check, timeout=15.0)
             if payload.component.custom_id == "ACTION_CONFIRMED":
-                edit_embed.title = "Action confirmed"
+                edit_embed.title = confirm_str
                 await msg.edit(embed=edit_embed, components=None)
                 await action()
             else:
-                edit_embed.title = "Action cancelled"
+                edit_embed.title = cancelled_str
                 await msg.edit(embed=edit_embed, components=None)
         except asyncio.TimeoutError:
             edit_embed.title = "Timed out."
@@ -154,7 +162,12 @@ class DevTools(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def restart(self, ctx: KurisuContext):
-        await self.yes_no_prompt(ctx, action=self.bot.close)
+        await self.yes_no_prompt(
+            ctx,
+            self.bot.close,
+            confirm_str="Restarting now. Cya Around :wave:",
+            cancelled_str="I guess I'll stay then.",
+        )
 
 
 def setup(bot: Kurisu):
