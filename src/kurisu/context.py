@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 import asyncio
 
 from discord.ext import commands
@@ -12,7 +12,7 @@ class KurisuContext(commands.Context):
 
     config = Config()
 
-    async def send_info(self, content: Any) -> None:
+    async def send_info(self, content: Any) -> Optional[discord.Message]:
         """Send INFO embed"""
         await super().send(
             embed=discord.Embed(
@@ -20,7 +20,7 @@ class KurisuContext(commands.Context):
             ).set_footer(text=str(self.author), icon_url=self.author.display_avatar.url)
         )
 
-    async def send_ok(self, content: Any) -> None:
+    async def send_ok(self, content: Any) -> Optional[discord.Message]:
         """Send OK embed"""
         await super().send(
             embed=discord.Embed(description=str(content), color=color_convert(self.config.get("ok_color"))).set_footer(
@@ -28,7 +28,7 @@ class KurisuContext(commands.Context):
             )
         )
 
-    async def send_error(self, content: Any, *, trash: bool) -> None:
+    async def send_error(self, content: Any, *, trash: bool = False) -> Optional[discord.Message]:
         """Send ERROR embed"""
         msg = await super().send(
             embed=discord.Embed(
