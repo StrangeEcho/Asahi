@@ -7,7 +7,7 @@ FROM base as builder
 
 
 RUN apt-get update \
-    && apt-get install -y git \
+    && apt-get install -y git gcc \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -15,7 +15,7 @@ COPY . /app/
 
 COPY requirements.txt /requirements.txt
 
-RUN pip install --target=/dependencies -r /requirements.txt
+RUN pip install --no-cache-dir --target=/dependencies -r /requirements.txt
 
 
 FROM base as final
@@ -29,8 +29,5 @@ ENV PYTHONPATH=/usr/local
 COPY . /app/
 
 WORKDIR /app/
-
-# The file must exist to be overriden
-RUN touch /app/config.toml
 
 ENTRYPOINT [ "python3", "/app/src/__main__.py" ]
