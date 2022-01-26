@@ -7,6 +7,7 @@ import discord
 from databases import Database
 from discord.ext import commands
 from exts.functions import get_prefix, database_init, color_convert
+from exts import clean_closeout
 from helpers.confighandler import Config
 from helpers.loghandler import LoggingHandler
 
@@ -93,9 +94,9 @@ class Kurisu(commands.AutoShardedBot):
     async def close(self) -> None:
         """Closes bot. Prone to restart"""
         if self._session:
-            self._session.close()
+            await self._session.close()
         if self._db.connection:
-            self._db.disconnect()
+            await self._db.disconnect()
         await super().close()
 
     async def full_close(self) -> None:
@@ -103,17 +104,4 @@ class Kurisu(commands.AutoShardedBot):
         Does the same exact thing as the close method.
         However cleanly and fully exits without being prone to restart
         """
-        if self._session:
-            self._session.close()
-        if self._db.connection:
-            self._db.disconnect()
-
-        for voice in self.voice_clients:
-            await voice.disconnect(force=True)
-
-        if self.ws and self.ws.open:
-            await self.ws.close(code=1000)
-
-        await self.http.close()
-        self._ready.clear()
-        exit(26)
+        await clean_closeout(self)

@@ -6,7 +6,7 @@ from typing import Optional, Coroutine, TYPE_CHECKING
 import discord
 
 if TYPE_CHECKING:
-    from kurisu import KurisuContext
+    from kurisu import KurisuContext, Kurisu
 
 
 async def confirm_prompt(
@@ -51,3 +51,24 @@ async def confirm_prompt(
     except asyncio.TimeoutError:
         edit_embed.title = "Timed out."
         await msg.edit(embed=edit_embed, components=None)
+
+
+async def clean_closeout(bot: Kurisu) -> None:
+    """Utility function for a clean process exit"""
+    for ext in tuple(bot.__extensions):
+        bot.unload_extension(ext)
+    for cog in tuple(bot.__cogs):
+        bot.remove_cog(cog)
+    for vc in bot.voice_clients:
+        await vc.disconnect(force=True)
+
+    if bot._session:
+        await bot._session.close()
+    if bot._db.connection:
+        await bot._db.disconnect()
+    if bot.ws and bot.ws.open:
+        await bot.ws.close(2000)
+
+    await bot.http.close()
+    bot._ready.clear()
+    exit(26)

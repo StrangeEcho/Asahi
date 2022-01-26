@@ -1,6 +1,9 @@
 import io
 import os
 import traceback
+import subprocess
+import asyncio
+from datetime import datetime
 
 import discord
 from discord.ext import commands
@@ -114,6 +117,7 @@ class DevTools(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def restart(self, ctx: KurisuContext):
+        """Restart the bot"""
         await confirm_prompt(
             ctx,
             self.bot.close,
@@ -124,11 +128,47 @@ class DevTools(commands.Cog):
     @commands.command(aliases=["exit", "fullexit"])
     @commands.is_owner()
     async def die(self, ctx: KurisuContext):
+        """Completely close the bot process"""
         await confirm_prompt(
             ctx,
             self.bot.full_close,
             confirm_str="Completely shutting down. Cya around.",
             cancelled_str="I guess I'll stay then.",
+        )
+
+    @commands.command()
+    async def update(self, ctx: KurisuContext):
+        """Update the bot"""
+        before = datetime.now()
+        await ctx.trigger_typing()
+        old_version = str(
+            (
+                await (
+                    await asyncio.create_subprocess_shell("git describe --always", stdout=subprocess.PIPE)
+                ).communicate()
+            )[0],
+            "utf-8",
+        ).replace("\n", "")
+        await ctx.send_info(f"Now attempting to update {self.bot.user.name} to the latest version.")
+        await ctx.trigger_typing()
+        pull_output = str(
+            (await (await asyncio.create_subprocess_shell("git pull", stdout=subprocess.PIPE)).communicate())[0][:1000],
+            "utf-8",
+        ).replace("\n", "")
+        await ctx.send_info(pull_output)
+        new_version = str(
+            (
+                await (
+                    await asyncio.create_subprocess_shell("git describe --always", stdout=subprocess.PIPE)
+                ).communicate()
+            )[0],
+            "utf-8",
+        ).replace("\n", "")
+        after = datetime.now()
+        difference = after - before
+        await ctx.send_ok(
+            f"Finished `{old_version} -> {new_version}`\n"
+            f"Took: `{difference.seconds}.{difference.microseconds // 1000}`"
         )
 
 
