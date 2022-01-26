@@ -1,14 +1,21 @@
-from typing import Any, Optional
+from __future__ import annotations
+
 import asyncio
+from typing import Any, Optional, TYPE_CHECKING
 
 from discord.ext import commands
-from helpers.confighandler import Config
 from exts.functions import color_convert
+from helpers.confighandler import Config
+
+if TYPE_CHECKING:
+    from .bot import Kurisu
 import discord
 
 
 class KurisuContext(commands.Context):
     """Subclass for added functionality"""
+
+    bot: Kurisu
 
     config = Config()
 

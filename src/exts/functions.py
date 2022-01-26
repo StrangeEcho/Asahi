@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from kurisu import Kurisu, KurisuContext
+    from kurisu import Kurisu
 from data.database import SCHEMA, PrefixManager
 
 import discord
