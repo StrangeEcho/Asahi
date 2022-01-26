@@ -4,7 +4,6 @@ pillow
 psutil
 jishaku
 PyNacl
-databases
 git+https://github.com/6days9weeks/pomice
 humanize
 hentai
