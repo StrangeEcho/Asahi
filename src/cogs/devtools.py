@@ -118,7 +118,17 @@ class DevTools(commands.Cog):
             ctx,
             self.bot.close,
             confirm_str="Restarting now... Cya later :wave:",
-            cancelled_str="I guess i'll stay then...",
+            cancelled_str="I guess I'll stay then...",
+        )
+
+    @commands.command(aliases=["exit", "fullexit"])
+    @commands.is_owner()
+    async def die(self, ctx: KurisuContext):
+        await confirm_prompt(
+            ctx,
+            self.bot.full_close,
+            confirm_str="Completely shutting down. Cya around.",
+            cancelled_str="I guess I'll stay then.",
         )
 
 

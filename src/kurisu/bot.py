@@ -1,6 +1,7 @@
 import logging
 import os
 import traceback
+import aiohttp
 
 import discord
 from databases import Database
@@ -30,10 +31,11 @@ class Kurisu(commands.AutoShardedBot):
         super().__init__(command_prefix=get_prefix, intents=discord.Intents.all(), *args, **kwargs)
         self.logger = logging.getLogger("kurisu")
         self._config = Config()
+        self._db = Database("sqlite:///src/data/kurisu.db")
+        self._session = aiohttp.ClientSession()
         self.logger = logging.getLogger("kurisu")
         self.owner_ids = self.config.get("owner_ids") or super().owner_ids
         self.prefixes = {}
-        self._db = Database("sqlite:///src/data/kurisu.db")
         self.ok_color = color_convert(self._config.get("ok_color"))
         self.info_color = color_convert(self._config.get("info_color"))
         self.error_color = color_convert(self._config.get("error_color"))
@@ -45,6 +47,10 @@ class Kurisu(commands.AutoShardedBot):
     @property
     def db(self) -> Database:
         return self._db
+
+    @property
+    def session(self) -> aiohttp.ClientSession:
+        return self._session
 
     async def on_connect(self) -> None:
         self.logger.info(f"Logged in as {self.user}")
@@ -83,3 +89,31 @@ class Kurisu(commands.AutoShardedBot):
         self.logger.info(f"Loaded Cogs: {loaded}")
         self.logger.warn(f"Unloaded Cogs {unloaded}") if unloaded > 0 else self.logger.info(f"Unloaded Cogs {unloaded}")
         super().run(self.config.get("token"))
+
+    async def close(self) -> None:
+        """Closes bot. Prone to restart"""
+        if self._session:
+            self._session.close()
+        if self._db.connection:
+            self._db.disconnect()
+        await super().close()
+
+    async def full_close(self) -> None:
+        """
+        Does the same exact thing as the close method.
+        However cleanly and fully exits without being prone to restart
+        """
+        if self._session:
+            self._session.close()
+        if self._db.connection:
+            self._db.disconnect()
+
+        for voice in self.voice_clients:
+            await voice.disconnect(force=True)
+
+        if self.ws and self.ws.open:
+            await self.ws.close(code=1000)
+
+        await self.http.close()
+        self._ready.clear()
+        exit(26)
