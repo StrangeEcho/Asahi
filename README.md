@@ -1,1 +1,1 @@
-# Kurisu
+# Kurisu Bot
