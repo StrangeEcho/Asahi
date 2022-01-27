@@ -68,7 +68,7 @@ class DevTools(commands.Cog):
             value = stdout.getvalue()
             try:
                 await ctx.message.add_reaction("\u2705")
-            except:  # noqa e722
+            except discord.Forbidden:
                 pass
             difference = datetime.now() - before
 
@@ -285,6 +285,35 @@ class DevTools(commands.Cog):
             await ctx.send_ok("Left that guild.")
         except discord.HTTPException as error:
             await ctx.send_error(error)
+
+    @commands.group(invoke_without_command=True)
+    @commands.is_owner()
+    async def suppress(self, ctx: KurisuContext):
+        """Guild error suppression commands"""
+        await ctx.send_help(ctx.command)
+
+    @suppress.command()
+    async def add(self, ctx: KurisuContext, guild: int):
+        """Add a guild to the suppressed guilds list"""
+        await self.esh.insert(guild)
+        await ctx.send(":ok_hand:")
+
+    @suppress.command()
+    async def list(self, ctx: KurisuContext):
+        """Add a guild to the suppressed guilds list"""
+        await ctx.send(
+            "\n".join(
+                [f"{n}. {v}" for n, v in enumerate((await self.esh.fetch_all())[0], 1)]
+                if await self.esh.fetch_all()
+                else "None"
+            )
+        )
+
+    @suppress.command()
+    async def remove(self, ctx: KurisuContext, guild: int):
+        """Add a guild to the suppressed guilds list"""
+        await self.esh.remove(guild)
+        await ctx.send(":ok_hand:")
 
 
 def setup(bot: Kurisu):

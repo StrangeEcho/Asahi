@@ -43,8 +43,8 @@ class PrefixManager:
 
         del self.bot.prefixes[guild]
         await self.bot.db.execute(
-            query="DELETE FROM guildsettings WHERE guild = :guild",
-            values={"guild": guild},
+            "DELETE FROM guildsettings WHERE guild = :guild",
+            {"guild": guild},
         )
 
     async def startup_caching(self):
@@ -52,3 +52,28 @@ class PrefixManager:
         for g, p in await self.bot.db.fetch_all("SELECT guild, prefix FROM guildsettings"):
             self.bot.prefixes.setdefault(g, p)
             self.bot.logger.info("Finished appending prefixes into memory.")
+
+
+class ErrorSuppressionHandler:
+    def __init__(self, bot: Kurisu):
+        self.bot = bot
+
+    async def insert(self, id: int) -> None:
+        """Insert a guild id into suppressed guilds list"""
+        await self.bot.db.execute(
+            "INSERT INTO suppressed (guild) VALUES (:guild)",
+            {"guild": id},
+        )
+
+    async def fetch_all(self) -> list[tuple[int]]:
+        """Reteive a list of IDS of all guilds that are suppressed"""
+        return await self.bot.db.fetch_all(
+            "SELECT * FROM suppressed",
+        )
+
+    async def remove(self, id: int) -> None:
+        """Remove a guild id into suppressed guilds list"""
+        await self.bot.db.execute(
+            "DELETE FROM suppressed WHERE guild = :guild",
+            {"guild": id},
+        )
