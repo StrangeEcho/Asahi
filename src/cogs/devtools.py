@@ -4,6 +4,7 @@ import traceback
 import subprocess
 import asyncio
 from datetime import datetime
+from typing import Optional
 
 import discord
 from discord.ext import commands
@@ -137,6 +138,7 @@ class DevTools(commands.Cog):
         )
 
     @commands.command()
+    @commands.is_owner()
     async def update(self, ctx: KurisuContext):
         """Update the bot"""
         before = datetime.now()
@@ -170,6 +172,52 @@ class DevTools(commands.Cog):
             f"Finished `{old_version} -> {new_version}`\n"
             f"Took: `{difference.seconds}.{difference.microseconds // 1000}`"
         )
+
+    @commands.command()
+    @commands.is_owner()
+    async def say(self, ctx: KurisuContext, chan: Optional[discord.TextChannel], *, msg):
+        """Say something with the bot"""
+        chan = chan or ctx.channel
+        try:
+            await ctx.message.delete()
+        except discord.Forbidden:
+            pass
+        await chan.send(msg)
+
+    @commands.command(aliases=["frick"])
+    @commands.is_owner()
+    async def sho(self, ctx: KurisuContext, limit: int = 50):
+        """Cleans the bots messages"""
+        messages = await ctx.channel.purge(
+            check=lambda message: message.author == ctx.me, bulk=True if limit > 20 else False, limit=limit
+        )
+        await ctx.send_ok(f"Deleted {len(messages)} of my message(s) out of the last {limit} messages")
+
+    @commands.command()
+    @commands.is_owner()
+    async def fetch(self, ctx: KurisuContext, _id: int):
+        user = await self.bot.fetch_user(_id)
+        flags = [v.replace("_", " ").title() for v, b in user.public_flags if b]
+        if not user:
+            raise commands.BadArgument(f"Failed converting {_id} to user.")
+        await ctx.send(
+            embed=discord.Embed(title=f"Information for {user}", color=self.bot.info_color)
+            .set_thumbnail(url=user.display_avatar.url)
+            .add_field(name="ID", value=user.id)
+            .add_field(name="Avatar URL", value=f"[url]({user.display_avatar.url})")
+            .add_field(name="Account Creation", value=discord.utils.format_dt(user.created_at, style="R"))
+            .add_field(name="Bot", value=":white_check_mark:" if user.bot else ":x:")
+            .add_field(name="Flags", value="".join(flags) if flags else "None")
+        )
+
+    @commands.command()
+    @commands.is_owner()
+    async def leaveguild(self, ctx: KurisuContext, guild_id: int):
+        try:
+            await self.bot.get_guild(guild_id).leave()
+            await ctx.send_ok("Left that guild.")
+        except discord.HTTPException as error:
+            await ctx.send_error(error)
 
 
 def setup(bot: Kurisu):

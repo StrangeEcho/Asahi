@@ -71,4 +71,4 @@ async def clean_closeout(bot: Kurisu) -> None:
 
     await bot.http.close()
     bot._ready.clear()
-    exit(26)
+    exit(26)  # SystemD configuration will make every exit without this code a restart
