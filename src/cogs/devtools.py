@@ -1,20 +1,95 @@
 import io
 import os
 import traceback
-import subprocess
 import asyncio
-from datetime import datetime
+import re
+import textwrap
 from typing import Optional
+from subprocess import PIPE
+from datetime import datetime
+from contextlib import redirect_stdout
 
 import discord
 from discord.ext import commands
 from exts.utility import confirm_prompt
 from kurisu import Kurisu, KurisuContext
 
+START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
+
 
 class DevTools(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot = bot
+        self._last_result = None
+
+    @staticmethod
+    def cleanup_code(content):
+        """Automatically removes code blocks from the code."""
+        # remove ```py\n```
+        if content.startswith("```") and content.endswith("```"):
+            return START_CODE_BLOCK_RE.sub("", content)[:-3]
+
+        # remove `foo`
+        return content.strip("` \n")
+
+    @commands.command(name="eval", aliases=["evaluate", "ev"])
+    @commands.is_owner()
+    async def _eval(self, ctx: KurisuContext, *, body: str):
+        """Evaluate Python Code"""
+        env = {
+            "bot": self.bot,
+            "ctx": ctx,
+            "channel": ctx.channel,
+            "author": ctx.author,
+            "guild": ctx.guild,
+            "message": ctx.message,
+            "_": self,
+        }
+        env.update(globals())
+        stdout = io.StringIO()
+        body = self.cleanup_code(body)
+        to_compile = f"async def func():\n{textwrap.indent(body, '  ')}"
+        before = datetime.now()
+
+        try:
+            exec(to_compile, env)
+        except Exception as e:
+            await ctx.send_error("".join(traceback.format_exception(None, e, e.__traceback__)))
+
+        func = env["func"]
+
+        try:
+            with redirect_stdout(stdout):
+                ret = await func()
+        except Exception:
+            value = stdout.getvalue()
+            await ctx.send_error(f"```py\n{value}{traceback.format_exc()}\n```")
+        else:
+            value = stdout.getvalue()
+            try:
+                await ctx.message.add_reaction("\u2705")
+            except:  # noqa e722
+                pass
+            difference = datetime.now() - before
+
+            if not ret:
+                if value:
+                    await ctx.send(
+                        embed=discord.Embed(
+                            title=f"Eval executed after {difference.seconds}.{difference.microseconds // 1000}",
+                            description=f"```py\n{value[:1500]}\n```",
+                            color=self.bot.ok_color,
+                        )
+                    )
+            else:
+                self._last_result = ret
+                await ctx.send(
+                    embed=discord.Embed(
+                        title=f"Eval executed after {difference.seconds}.{difference.microseconds // 1000}",
+                        description=f"```py\n{value}{ret}```"[:1500],
+                        color=self.bot.ok_color,
+                    )
+                )
 
     @commands.command()
     @commands.is_owner()
@@ -29,7 +104,7 @@ class DevTools(commands.Cog):
             file=discord.File((io.BytesIO(basestr.encode("utf-8"))), f"{ctx.message.created_at.strftime('%c')}.txt")
         )
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, aliases=["cm"])
     @commands.is_owner()
     async def cogmanager(self, ctx: KurisuContext):
         """Cog management commands"""
@@ -144,26 +219,18 @@ class DevTools(commands.Cog):
         before = datetime.now()
         await ctx.trigger_typing()
         old_version = str(
-            (
-                await (
-                    await asyncio.create_subprocess_shell("git describe --always", stdout=subprocess.PIPE)
-                ).communicate()
-            )[0],
+            (await (await asyncio.create_subprocess_shell("git describe --always", stdout=PIPE)).communicate())[0],
             "utf-8",
         ).replace("\n", "")
         await ctx.send_info(f"Now attempting to update {self.bot.user.name} to the latest version.")
         await ctx.trigger_typing()
         pull_output = str(
-            (await (await asyncio.create_subprocess_shell("git pull", stdout=subprocess.PIPE)).communicate())[0][:1000],
+            (await (await asyncio.create_subprocess_shell("git pull", stdout=PIPE)).communicate())[0][:1000],
             "utf-8",
         ).replace("\n", "")
         await ctx.send_info(pull_output)
         new_version = str(
-            (
-                await (
-                    await asyncio.create_subprocess_shell("git describe --always", stdout=subprocess.PIPE)
-                ).communicate()
-            )[0],
+            (await (await asyncio.create_subprocess_shell("git describe --always", stdout=PIPE)).communicate())[0],
             "utf-8",
         ).replace("\n", "")
         after = datetime.now()

@@ -11,4 +11,5 @@ max-line-length = 120
 # E203 whitespace before :
 # W291 trailing whitespace
 # E501 line too long
-ignore = F401,F403,E402,E127,W504,W503,E126,E203,W291,E501
+# E722 Bare Exception Clause
+ignore = F401,F403,E402,E127,W504,W503,E126,E203,W291,E501,E722
