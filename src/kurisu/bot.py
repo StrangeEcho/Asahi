@@ -1,13 +1,13 @@
 import logging
 import os
 import traceback
-import aiohttp
 
+import aiohttp
 import discord
 from databases import Database
 from discord.ext import commands
-from exts.functions import get_prefix, database_init, color_convert
 from exts import clean_closeout
+from exts.functions import get_prefix, database_init, color_convert
 from helpers.confighandler import Config
 from helpers.loghandler import LoggingHandler
 

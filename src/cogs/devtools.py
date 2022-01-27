@@ -1,15 +1,16 @@
+import asyncio
 import io
 import os
-import traceback
-import asyncio
 import re
 import textwrap
-from typing import Optional
-from subprocess import PIPE
-from datetime import datetime
+import traceback
 from contextlib import redirect_stdout
+from datetime import datetime
+from subprocess import PIPE
+from typing import Optional
 
 import discord
+from data.database import ErrorSuppressionHandler
 from discord.ext import commands
 from exts.utility import confirm_prompt
 from kurisu import Kurisu, KurisuContext
@@ -21,6 +22,7 @@ class DevTools(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot = bot
         self._last_result = None
+        self.esh = ErrorSuppressionHandler(self.bot)
 
     @staticmethod
     def cleanup_code(content):

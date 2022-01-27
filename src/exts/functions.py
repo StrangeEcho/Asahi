@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import aiohttp
+
 if TYPE_CHECKING:
     from kurisu import Kurisu
 from data.database import SCHEMA, PrefixManager
@@ -37,3 +39,13 @@ def color_convert(color: str) -> int:
         return color
     else:
         return int(color.replace("#", "0x"), 16)
+
+
+async def get_ud_results(term: str, max: int = 5):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"https://api.urbandictionary.com/v0/define?term={term}") as resp:
+            try:
+                return (await resp.json())["list"][:max]
+            except (IndexError, KeyError):
+                pass
+    await session.close()
