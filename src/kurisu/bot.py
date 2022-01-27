@@ -1,6 +1,5 @@
 import logging
 import os
-import traceback
 
 import aiohttp
 import discord
@@ -40,6 +39,7 @@ class Kurisu(commands.AutoShardedBot):
         self.ok_color = color_convert(self._config.get("ok_color"))
         self.info_color = color_convert(self._config.get("info_color"))
         self.error_color = color_convert(self._config.get("error_color"))
+        self.executed_commands = 0
 
     @property
     def config(self) -> Config:
@@ -61,12 +61,6 @@ class Kurisu(commands.AutoShardedBot):
 
     async def on_message(self, msg: discord.Message) -> None:
         await self.invoke(await self.get_context(msg, cls=KurisuContext))
-
-    async def on_command_error(self, ctx: KurisuContext, error: commands.CommandError) -> None:
-        if isinstance(error, commands.CommandInvokeError):
-            self.logger.error("".join(traceback.format_exception(None, error, error.__traceback__)))
-
-        await ctx.send_error(error)
 
     def startup(self) -> None:
         self.logger.info("Starting Now!")

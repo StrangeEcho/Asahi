@@ -265,6 +265,7 @@ class DevTools(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def fetch(self, ctx: KurisuContext, _id: int):
+        """Fetch information about a specific discord user"""
         user = await self.bot.fetch_user(_id)
         flags = [v.replace("_", " ").title() for v, b in user.public_flags if b]
         if not user:
@@ -282,6 +283,7 @@ class DevTools(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def leaveguild(self, ctx: KurisuContext, guild_id: int):
+        """Force the bot to leave a guild"""
         try:
             await self.bot.get_guild(guild_id).leave()
             await ctx.send_ok("Left that guild.")

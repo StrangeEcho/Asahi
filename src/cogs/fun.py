@@ -24,7 +24,7 @@ class Fun(
         )
 
     @commands.command()
-    async def compliment(self, ctx: KurisuContext, *, member: discord.Member):
+    async def compliment(self, ctx: KurisuContext, *, member: discord.Member = None):
         """Compliment yourself or someone else"""
         member = member or ctx.author
         await ctx.send(
@@ -36,11 +36,11 @@ class Fun(
     @commands.command()
     async def owoify(self, ctx: KurisuContext, *, text: str):
         """Owoify text"""
-        if text > 200:
+        if len(text) > 200:
             return await ctx.send_error("Text is not allowed to be over 200 characters")
         async with self.bot.session.get(f"https://nekos.life/api/v2/owoify?text={text}") as resp:
             if resp.status == 200:
-                await ctx.send_info(" ".join((await resp.json())["owo"]))
+                await ctx.send_info((await resp.json())["owo"])
             else:
                 await ctx.send_error(f"API returned a {resp.status} instead of a 200")
 
@@ -102,3 +102,7 @@ class Fun(
             await ctx.send(
                 embed=discord.Embed(color=self.bot.info_color).set_image(url=(await resp.json())["images"][0]["url"])
             )
+
+
+def setup(bot: Kurisu):
+    bot.add_cog(Fun(bot))
