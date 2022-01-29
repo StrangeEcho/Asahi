@@ -19,6 +19,8 @@ START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
 
 class DevTools(commands.Cog):
+    """Developer Tools"""
+
     def __init__(self, bot: Kurisu):
         self.bot = bot
         self._last_result = None
@@ -300,7 +302,7 @@ class DevTools(commands.Cog):
     async def add(self, ctx: KurisuContext, guild: int):
         """Add a guild to the suppressed guilds list"""
         await self.esh.insert(guild)
-        await ctx.send(":ok_hand:")
+        await ctx.message.add_reaction("\u2705")
 
     @suppress.command()
     async def list(self, ctx: KurisuContext):
@@ -317,7 +319,7 @@ class DevTools(commands.Cog):
     async def remove(self, ctx: KurisuContext, guild: int):
         """Add a guild to the suppressed guilds list"""
         await self.esh.remove(guild)
-        await ctx.send(":ok_hand:")
+        await ctx.message.add_reaction("\u2705")
 
 
 def setup(bot: Kurisu):

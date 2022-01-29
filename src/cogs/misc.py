@@ -6,6 +6,8 @@ from kurisu import KurisuContext
 
 
 class Miscellaneous(commands.Cog):
+    """Commands that don't fit anywhere else"""
+
     def __init__(self, bot: Kurisu):
         self.bot = bot
 
@@ -33,7 +35,7 @@ class Miscellaneous(commands.Cog):
             await ctx.author.send(
                 embed=discord.Embed(
                     title="Thank you for invite me <3",
-                    url="https://discord.com/oauth2/authorize?client_id=755599763474219129&permissions=413893192823&scope=bot",  # noqa e501
+                    url=f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=413893192823&scope=bot",  # noqa e501
                     color=self.bot.ok_color,
                 ).set_thumbnail(url=self.bot.user.display_avatar.url)
             )

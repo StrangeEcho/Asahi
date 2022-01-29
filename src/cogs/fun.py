@@ -9,6 +9,8 @@ from kurisu import Kurisu, KurisuContext
 class Fun(
     commands.Cog, command_attrs={"cooldown": commands.CooldownMapping.from_cooldown(1, 2.5, commands.BucketType.user)}
 ):
+    """Some fun stuff"""
+
     def __init__(self, bot: Kurisu):
         self.bot = bot
 
@@ -33,7 +35,7 @@ class Fun(
             ).set_footer(text=f"Compliment from {ctx.author}")
         )
 
-    @commands.command()
+    @commands.command(aliases=["owo"])
     async def owoify(self, ctx: KurisuContext, *, text: str):
         """Owoify text"""
         if len(text) > 200:
@@ -67,7 +69,7 @@ class Fun(
                     )
                 )
 
-    @commands.command()
+    @commands.command(aliases=["urbandict"])
     @commands.cooldown(1, 4.5, commands.BucketType.user)
     async def ud(self, ctx: KurisuContext, *, term: str):
         """Query the Urban Dictionary API with a term"""
