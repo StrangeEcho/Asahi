@@ -15,7 +15,7 @@ class Fun(
         self.bot = bot
 
     @commands.command(name="8ball", aliases=["8b", "eightball"])
-    async def _8ball(self, ctx: KurisuContext, *question: str):
+    async def _8ball(self, ctx: KurisuContext, *, question: str):
         """Ask a question and let the mystical 8ball answer for you!"""
         await ctx.send(
             embed=discord.Embed(
