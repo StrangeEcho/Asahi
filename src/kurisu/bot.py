@@ -3,9 +3,9 @@ import os
 
 import aiohttp
 import discord
+import pomice
 from databases import Database
 from discord.ext import commands
-from exts import clean_closeout
 from exts.functions import get_prefix, database_init, color_convert
 from helpers.confighandler import Config
 from helpers.loghandler import LoggingHandler
@@ -40,10 +40,15 @@ class Kurisu(commands.AutoShardedBot):
         self.info_color = color_convert(self._config.get("info_color"))
         self.error_color = color_convert(self._config.get("error_color"))
         self.executed_commands = 0
+        self._node_pool = pomice.NodePool()
 
     @property
     def config(self) -> Config:
         return self._config
+
+    @property
+    def node_pool(self) -> pomice.NodePool:
+        return self._node_pool
 
     @property
     def db(self) -> Database:
@@ -65,24 +70,17 @@ class Kurisu(commands.AutoShardedBot):
     def startup(self) -> None:
         self.logger.info("Starting Now!")
         self.loop.create_task(database_init(self))
+
         self.logger.info("Registering Cogs...")
-
-        loaded = 0
-        unloaded = 0
-
         for cog in os.listdir("src/cogs"):
             if cog.endswith("py"):
                 try:
                     self.load_extension(f"cogs.{cog[:-3]}")
                     self.logger.info(f"Loaded {cog}")
-                    loaded += 1
                 except commands.ExtensionError as e:
                     self.logger.warning(f"Failed loading {cog}\nError:{e}")
-                    unloaded += 1
-
         self.logger.info("Done")
-        self.logger.info(f"Loaded Cogs: {loaded}")
-        self.logger.warn(f"Unloaded Cogs {unloaded}") if unloaded > 0 else self.logger.info(f"Unloaded Cogs {unloaded}")
+
         super().run(self.config.get("token"))
 
     async def close(self) -> None:
@@ -91,6 +89,9 @@ class Kurisu(commands.AutoShardedBot):
             await self._session.close()
         if self._db.connection:
             await self._db.disconnect()
+        for node in list(self.node_pool.nodes.values()):
+            for player in list(node.players.values()):
+                await player.destroy()
         await super().close()
 
     async def full_close(self) -> None:
@@ -98,4 +99,5 @@ class Kurisu(commands.AutoShardedBot):
         Does the same exact thing as the close method.
         However cleanly and fully exits without being prone to restart
         """
-        await clean_closeout(self)
+        await self.close()
+        exit(26)

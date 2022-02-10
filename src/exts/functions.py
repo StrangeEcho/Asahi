@@ -1,6 +1,7 @@
 from __future__ import annotations
+from datetime import timedelta
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generator
 
 import aiohttp
 
@@ -10,6 +11,7 @@ from data.database import SCHEMA, PrefixManager
 
 import discord
 from discord.ext.commands import when_mentioned_or
+from humanize import precisedelta
 
 
 def get_prefix(bot: Kurisu, msg: discord.Message):
@@ -49,3 +51,14 @@ async def get_ud_results(term: str, max: int = 5):
             except (IndexError, KeyError):
                 pass
     await session.close()
+
+
+def chunk_list(_list: list, size: int) -> Generator:
+    """Divide a list into even chunks"""
+    for i in range(0, len(_list), size):
+        yield _list[i : i + size]
+
+
+def humanize_timedelta(_delta: timedelta) -> str:
+    """Humanize a datetime.timedelta"""
+    return precisedelta(_delta)

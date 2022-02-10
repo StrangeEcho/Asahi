@@ -1,5 +1,4 @@
 import discord
-
 from discord.ext import commands
 from kurisu import Kurisu
 from kurisu import KurisuContext
