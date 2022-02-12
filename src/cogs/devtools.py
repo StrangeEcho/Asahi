@@ -58,7 +58,7 @@ class DevTools(commands.Cog):
         try:
             exec(to_compile, env)
         except Exception as e:
-            await ctx.send_error("".join(traceback.format_exception(None, e, e.__traceback__)))
+            return await ctx.send_error("".join(traceback.format_exception(None, e, e.__traceback__)))
 
         func = env["func"]
 
