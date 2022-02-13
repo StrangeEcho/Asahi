@@ -231,7 +231,7 @@ class DevTools(commands.Cog):
         pull_output = str(
             (await (await asyncio.create_subprocess_shell("git pull", stdout=PIPE)).communicate())[0][:1000],
             "utf-8",
-        ).replace("\n", "")
+        )
         await ctx.send_info(f"```\n{pull_output}\n```")
         new_version = str(
             (await (await asyncio.create_subprocess_shell("git describe --always", stdout=PIPE)).communicate())[0],
