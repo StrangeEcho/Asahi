@@ -1,17 +1,17 @@
 from __future__ import annotations
-from datetime import timedelta
 
+import subprocess
+from datetime import timedelta
 from typing import TYPE_CHECKING, Generator
 
 import aiohttp
-
-if TYPE_CHECKING:
-    from kurisu import Kurisu
-from data.database import SCHEMA, PrefixManager
-
 import discord
 from discord.ext.commands import when_mentioned_or
 from humanize import precisedelta
+from data.database import SCHEMA, PrefixManager
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 def get_prefix(bot: Kurisu, msg: discord.Message):
@@ -62,3 +62,7 @@ def chunk_list(_list: list, size: int) -> Generator:
 def humanize_timedelta(_delta: timedelta) -> str:
     """Humanize a datetime.timedelta"""
     return precisedelta(_delta)
+
+
+def get_version_hash() -> str:
+    return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()

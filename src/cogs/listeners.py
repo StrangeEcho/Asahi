@@ -60,11 +60,11 @@ class Listeners(commands.Cog):
                     try:
                         await self.bot.get_user(owner).send(
                             "**Unexpected exception caught.**\n\n"
-                            f"**Command**: {ctx.command.qualified_name}\n"
-                            f"**Guild**: {ctx.guild}({ctx.guild.id if ctx.guild else 'None'})\n"
-                            f"**Channel**: {ctx.channel}({ctx.channel.id if ctx.channel else 'None'})\n"
-                            f"**User**: {ctx.author}\n"
-                            f"**Usage**: {ctx.message.content}",
+                            f"**Command**:` {ctx.command.qualified_name}`\n"
+                            f"**Guild**: `{ctx.guild}({ctx.guild.id if ctx.guild else 'None'})`\n"
+                            f"**Channel**: `{ctx.channel}({ctx.channel.id if ctx.channel else 'None'})`\n"
+                            f"**User**: `{ctx.author}`\n"
+                            f"**Usage**: `{ctx.message.content}`",
                             file=discord.File(io.BytesIO(formatted_traceback.encode("utf-8")), "error.nim"),
                         )
                     except (discord.Forbidden, discord.HTTPException):

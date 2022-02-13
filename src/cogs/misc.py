@@ -1,14 +1,22 @@
+import platform
+from datetime import datetime
+
 import discord
 from discord.ext import commands
 from kurisu import Kurisu
 from kurisu import KurisuContext
+from data.database import PrefixManager
+from exts import humanize_timedelta, get_version_hash
 
 
-class Miscellaneous(commands.Cog):
+class Miscellaneous(
+    commands.Cog, command_attrs={"cooldown": commands.CooldownMapping.from_cooldown(1, 2.5, commands.BucketType.user)}
+):
     """Commands that don't fit anywhere else"""
 
     def __init__(self, bot: Kurisu):
         self.bot = bot
+        self.pm = PrefixManager(self.bot)
 
     @commands.command()
     async def ping(self, ctx: KurisuContext):
@@ -33,7 +41,7 @@ class Miscellaneous(commands.Cog):
         try:
             await ctx.author.send(
                 embed=discord.Embed(
-                    title="Thank you for invite me <3",
+                    title="Thank you for inviting me <3",
                     url=f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=413893192823&scope=bot",  # noqa e501
                     color=self.bot.ok_color,
                 ).set_thumbnail(url=self.bot.user.display_avatar.url)
@@ -41,6 +49,32 @@ class Miscellaneous(commands.Cog):
             await ctx.send_ok("DMed you with Invite Link!")
         except (discord.Forbidden, discord.HTTPException):
             await ctx.send_error("Could not DM you with my invite link", trash=True)
+
+    @commands.command()
+    @commands.has_permissions(manage_guild=True)
+    async def prefix(self, ctx: KurisuContext, *, prefix: str = None):
+        """Prefix manager command"""
+        if not prefix:
+            return await ctx.send_info(
+                f"Prefix for this guild is: `{self.bot.prefixes.get(ctx.guild.id) or self.bot.config.get('prefix')}`"
+            )
+        await self.pm.add_prefix(ctx.guild.id, prefix)
+        await ctx.send_ok(f"Set this guild's prefix to `{prefix}`")
+
+    @commands.command()
+    async def about(self, ctx: KurisuContext):
+        """Info about the bot"""
+
+        uptime = humanize_timedelta(datetime.now() - self.bot.start_time)
+
+        await ctx.send(
+            embed=discord.Embed(title=f"Information for {self.bot.user.name}", color=self.bot.info_color)
+            .add_field(name="Novus", value=f"`{discord.__version__}`")
+            .add_field(name="Python", value=f"`{platform.python_version()}`")
+            .add_field(name=f"{self.bot.user.name} Version", value=f"`{get_version_hash()}`")
+            .add_field(name="Uptime", value=f"`{uptime}`")
+            .add_field(name="Ping", value=f"`{round(self.bot.latency * 1000)}ms`")
+        )
 
 
 def setup(bot: Kurisu):

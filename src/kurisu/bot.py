@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import os
 
@@ -41,6 +42,7 @@ class Kurisu(commands.AutoShardedBot):
         self.error_color = color_convert(self._config.get("error_color"))
         self.executed_commands = 0
         self._node_pool = pomice.NodePool()
+        self.start_time = datetime.now()
 
     @property
     def config(self) -> Config:
