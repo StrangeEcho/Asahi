@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import enum
 from typing import Optional, Coroutine, TYPE_CHECKING
 from random import shuffle
 
@@ -91,7 +90,7 @@ async def do_music(ctx: KurisuContext, query: str) -> Optional[discord.Message]:
         if not player.current:
             ttp = player.queue.pop(0)
             await player.play(ttp)
-            await ctx.send_info(f"Now playing [{ttp.author}]({ttp.uri}) by {ttp.author}")
+            await ctx.send_info(f"Now playing [{ttp.title}]({ttp.uri}) by {ttp.author}")
         return
 
     if isinstance(results, list):
@@ -128,11 +127,10 @@ async def do_music(ctx: KurisuContext, query: str) -> Optional[discord.Message]:
             except asyncio.TimeoutError:
                 embed.description = "Timed Out!"
                 await msg.edit(embed=embed, components=None)
+                return
 
             ttp = results[int(payload.values[0])]
-            embed.description = (
-                f"{'Now playing' if not player.current else 'Added'} [{ttp.title}]({ttp.uri}) by {ttp.author}"
-            )
+            embed.description = f"{'Enqueued' if player.is_playing else 'Now playing'} [{ttp.title}]({ttp.uri})"
             await msg.edit(embed=embed, components=None)
             if not player.current:
                 await player.play(ttp)
