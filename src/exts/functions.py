@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Generator
 import aiohttp
 import discord
 from discord.ext.commands import when_mentioned_or
-from humanize import precisedelta
+from humanize import precisedelta, naturaldelta
 from data.database import SCHEMA, PrefixManager
 
 if TYPE_CHECKING:
@@ -45,7 +45,9 @@ def color_convert(color: str) -> int:
 
 async def get_ud_results(term: str, max: int = 5):
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"https://api.urbandictionary.com/v0/define?term={term}") as resp:
+        async with session.get(
+                f"https://api.urbandictionary.com/v0/define?term={term}"
+        ) as resp:
             try:
                 return (await resp.json())["list"][:max]
             except (IndexError, KeyError):
@@ -56,13 +58,17 @@ async def get_ud_results(term: str, max: int = 5):
 def chunk_list(_list: list, size: int) -> Generator:
     """Divide a list into even chunks"""
     for i in range(0, len(_list), size):
-        yield _list[i : i + size]
+        yield _list[i:i + size]
 
 
-def humanize_timedelta(_delta: timedelta) -> str:
+def humanize_timedelta(_delta: timedelta, *, precise: bool = False) -> str:
     """Humanize a datetime.timedelta"""
-    return precisedelta(_delta)
+    if precise:
+        return precisedelta(_delta)
+    else:
+        return naturaldelta(_delta)
 
 
 def get_version_hash() -> str:
-    return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
+    return subprocess.check_output(["git", "rev-parse", "--short",
+                                    "HEAD"]).decode("ascii").strip()
