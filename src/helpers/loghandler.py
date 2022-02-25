@@ -23,19 +23,13 @@ colors2 = {
     "ERROR": Fore.LIGHTRED_EX,
     "CRITICAL": Fore.RED,
 }
-styles = {
-    "DEBUG": f"{Style.DIM}{Fore.LIGHTWHITE_EX}",
-    "INFO": "",
-    "WARNING": "",
-    "ERROR": "",
-    "CRITICAL": Style.BRIGHT,
-}
+styles = {"DEBUG": f"{Style.DIM}{Fore.LIGHTWHITE_EX}", "INFO": "", "WARNING": "", "ERROR": "", "CRITICAL": Style.BRIGHT}
 names = {
     "kurisu": Fore.BLUE,
-    "discord.client": Fore.GREEN,
-    "discord.gateway": Fore.MAGENTA,
-    "discord.ext.commands.core": Fore.YELLOW,
-    "discord.http": Fore.RED,
+    "disnake.client": Fore.GREEN,
+    "disnake.gateway": Fore.MAGENTA,
+    "disnake.ext.commands.core": Fore.YELLOW,
+    "disnake.http": Fore.RED,
 }
 
 lock = threading.Lock()

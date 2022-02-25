@@ -15,7 +15,7 @@ You can run Kurisu in docker with either docker compose or using the Docker CLI.
     docker run \
     --name kurisu \
     -v kurisu-data:/app/src/data \
-    -v "/path/to/config.tom:/app/src/data/config.toml:ro" \
+    -v "/path/to/config.tom:/app/config.toml:ro" \
     kurisu:latest
 ```
 
@@ -26,7 +26,7 @@ Or, for long term use:
     --name kurisu \
     --restart unless-stopped \
     -v kurisu-data:/app/src/data \
-    -v "/path/to/config.tom:/app/src/data/config.toml:ro" \
+    -v "/path/to/config.tom:/app/config.toml:ro" \
     kurisu:latest
 ```
 
@@ -49,7 +49,7 @@ services:
     # Your database will be saved in a docker volume named 'kurisu-data'
      - kurisu-data:/app/src/data
      # Change to the location of your config if it's located elsewhere
-     - ./config.toml:/app/src/data/config.toml:ro
+     - ./config.toml:/app/config.toml:ro
 
 volumes:
   kurisu-data: {}

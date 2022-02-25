@@ -1,6 +1,6 @@
-import discord
+import disnake
 import async_cse
-from discord.ext import commands, vbu
+from disnake.ext import commands, vbu
 from kurisu import Kurisu, KurisuContext
 
 
@@ -22,9 +22,9 @@ class Searches(commands.Cog):
             return await ctx.send_error("No results found for that query.")
 
         await ctx.send(
-            embed=discord.Embed(
+            embed=disnake.Embed(
                 description="\n".join([f"[{res.title}]({res.url})\n{res.description}\n\n" for res in results[:5]]),
-                color=discord.Color.random(),
+                color=disnake.Color.random(),
             )
             .set_footer(text=f"Requested by {ctx.author}")
             .set_author(name=ctx.author, icon_url="https://staffordonline.org/wp-content/uploads/2019/01/Google.jpg")
@@ -41,7 +41,7 @@ class Searches(commands.Cog):
 
         embeds = []
         for i in results[:7]:
-            embeds.append(discord.Embed(color=discord.Color.random()).set_image(url=i.image_url))
+            embeds.append(disnake.Embed(color=disnake.Color.random()).set_image(url=i.image_url))
         await vbu.Paginator(embeds, per_page=1).start(ctx)
 
 

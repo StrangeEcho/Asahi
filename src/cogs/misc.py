@@ -1,11 +1,11 @@
 import platform
 from datetime import datetime
 
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 from kurisu import Kurisu
 from kurisu import KurisuContext
-from data.database import PrefixManager
+from kurisu.database import PrefixManager
 from exts import humanize_timedelta, get_version_hash
 
 
@@ -24,7 +24,7 @@ class Miscellaneous(
         shards = [f"Shard {_id}: {round(latency * 1000)} ms" for _id, latency in self.bot.latencies]
 
         embed = (
-            discord.Embed(description="Pong!", color=self.bot.info_color)
+            disnake.Embed(description="Pong!", color=self.bot.info_color)
             .add_field(name="Discord WebSocket", value=f"`{round(self.bot.latency * 1000)} ms`")
             .add_field(name="Message", value="`Calculating...`")
         )
@@ -40,14 +40,14 @@ class Miscellaneous(
         """Invite me to your server!"""
         try:
             await ctx.author.send(
-                embed=discord.Embed(
+                embed=disnake.Embed(
                     title="Thank you for inviting me <3",
-                    url=f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=413893192823&scope=bot",  # noqa e501
+                    url=f"https://disnake.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=413893192823&scope=bot",  # noqa e501
                     color=self.bot.ok_color,
                 ).set_thumbnail(url=self.bot.user.display_avatar.url)
             )
             await ctx.send_ok("DMed you with Invite Link!")
-        except (discord.Forbidden, discord.HTTPException):
+        except (disnake.Forbidden, disnake.HTTPException):
             await ctx.send_error("Could not DM you with my invite link", trash=True)
 
     @commands.command()
@@ -68,8 +68,8 @@ class Miscellaneous(
         uptime = humanize_timedelta(datetime.now() - self.bot.start_time)
 
         await ctx.send(
-            embed=discord.Embed(title=f"Information for {self.bot.user.name}", color=self.bot.info_color)
-            .add_field(name="Novus", value=f"`{discord.__version__}`")
+            embed=disnake.Embed(title=f"Information for {self.bot.user.name}", color=self.bot.info_color)
+            .add_field(name="Novus", value=f"`{disnake.__version__}`")
             .add_field(name="Python", value=f"`{platform.python_version()}`")
             .add_field(name=f"{self.bot.user.name} Version", value=f"`{get_version_hash()}`")
             .add_field(name="Uptime", value=f"`{uptime}`")

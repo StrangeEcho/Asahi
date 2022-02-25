@@ -1,9 +1,9 @@
 import io
 import traceback
 
-import discord
-from data.database import ErrorSuppressionHandler
-from discord.ext import commands
+import disnake
+from kurisu.database import ErrorSuppressionHandler
+from disnake.ext import commands
 from kurisu import Kurisu, KurisuContext
 
 
@@ -65,9 +65,9 @@ class Listeners(commands.Cog):
                             f"**Channel**: `{ctx.channel}({ctx.channel.id if ctx.channel else 'None'})`\n"
                             f"**User**: `{ctx.author}`\n"
                             f"**Usage**: `{ctx.message.content}`",
-                            file=discord.File(io.BytesIO(formatted_traceback.encode("utf-8")), "error.nim"),
+                            file=disnake.File(io.BytesIO(formatted_traceback.encode("utf-8")), "error.nim"),
                         )
-                    except (discord.Forbidden, discord.HTTPException):
+                    except (disnake.Forbidden, disnake.HTTPException):
                         pass
         else:
             self.bot.logger.error(formatted_traceback)

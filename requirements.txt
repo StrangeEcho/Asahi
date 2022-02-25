@@ -2,7 +2,7 @@ git+https://github.com/Voxel-Fox-Ltd/Novus
 databases
 pillow
 psutil
-jishaku
+disnake-jishaku
 PyNacl
 git+https://github.com/6days9weeks/pomice
 humanize
