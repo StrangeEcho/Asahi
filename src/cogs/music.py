@@ -2,8 +2,8 @@ import asyncio
 from datetime import timedelta
 
 import pomice
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 from kurisu import Kurisu, KurisuContext
 from exts import do_music, Player, humanize_timedelta
 
@@ -68,7 +68,7 @@ class Music(
 
         try:
             await ctx.author.voice.channel.connect(cls=Player)
-        except discord.ClientException as e:
+        except disnake.ClientException as e:
             return await ctx.send_error(e)
 
     @commands.command(aliases=["queueadd"])
@@ -82,7 +82,7 @@ class Music(
 
         try:
             await ctx.author.voice.channel.connect(cls=Player)
-        except discord.ClientException:
+        except disnake.ClientException:
             pass
 
         await do_music(ctx, query)
@@ -99,7 +99,7 @@ class Music(
         queue_length = humanize_timedelta(timedelta(milliseconds=sum([int(i.length) for i in player.queue])))
 
         await ctx.send(
-            embed=discord.Embed(
+            embed=disnake.Embed(
                 title=f"Queue for {ctx.guild}",
                 description="\n".join(
                     [f"{num}. {track.title} - {track.author}" for num, track in enumerate(player.queue, 1)]
@@ -117,7 +117,7 @@ class Music(
         if not player:
             return await ctx.send_error("No Music Player found for this guild.")
         await ctx.send(
-            embed=discord.Embed(
+            embed=disnake.Embed(
                 title=player.current.title,
                 url=player.current.uri,
                 description=f"From: {player.current.author}",
@@ -129,10 +129,7 @@ class Music(
         )
 
     @commands.command(aliases=["leave", "gtfo", "fuckoff"])
-    async def disconnect(
-        self,
-        ctx: KurisuContext,
-    ):
+    async def disconnect(self, ctx: KurisuContext):
         """Disconnect from my current vc"""
         player: Player = ctx.voice_client
 

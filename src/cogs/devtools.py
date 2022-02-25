@@ -9,9 +9,9 @@ from datetime import datetime
 from subprocess import PIPE
 from typing import Optional
 
-import discord
-from data.database import ErrorSuppressionHandler
-from discord.ext import commands
+import disnake
+from kurisu.database import ErrorSuppressionHandler
+from disnake.ext import commands
 from exts.utility import confirm_prompt
 from kurisu import Kurisu, KurisuContext
 
@@ -72,14 +72,14 @@ class DevTools(commands.Cog):
             value = stdout.getvalue()
             try:
                 await ctx.message.add_reaction("\u2705")
-            except discord.Forbidden:
+            except disnake.Forbidden:
                 pass
             difference = datetime.now() - before
 
             if not ret:
                 if value:
                     await ctx.send(
-                        embed=discord.Embed(
+                        embed=disnake.Embed(
                             title=f"Eval executed after {difference.seconds}.{difference.microseconds // 1000}",
                             description=f"```py\n{value[:1500]}\n```",
                             color=self.bot.ok_color,
@@ -88,7 +88,7 @@ class DevTools(commands.Cog):
             else:
                 self._last_result = ret
                 await ctx.send(
-                    embed=discord.Embed(
+                    embed=disnake.Embed(
                         title=f"Eval executed after {difference.seconds}.{difference.microseconds // 1000}",
                         description=f"```py\n{value}{ret}```"[:1500],
                         color=self.bot.ok_color,
@@ -105,7 +105,7 @@ class DevTools(commands.Cog):
             basestr += f"{msg.author}: {msg.content}\n"
 
         await ctx.send(
-            file=discord.File((io.BytesIO(basestr.encode("utf-8"))), f"{ctx.message.created_at.strftime('%c')}.txt")
+            file=disnake.File((io.BytesIO(basestr.encode("utf-8"))), f"{ctx.message.created_at.strftime('%c')}.txt")
         )
 
     @commands.group(invoke_without_command=True, aliases=["cm"])
@@ -120,7 +120,7 @@ class DevTools(commands.Cog):
         succeed = 0
         failed = 0
         error_str = ""
-        embed = discord.Embed(description=":ok_hand:", color=self.bot.info_color)
+        embed = disnake.Embed(description=":ok_hand:", color=self.bot.info_color)
 
         for ext in cogs:
             try:
@@ -136,7 +136,7 @@ class DevTools(commands.Cog):
 
         await ctx.send(embed=embed)
         if error_str:
-            await ctx.send(file=discord.File(io.BytesIO(error_str.encode("utf-8")), "error.nim"))
+            await ctx.send(file=disnake.File(io.BytesIO(error_str.encode("utf-8")), "error.nim"))
 
     @cogmanager.command()
     async def reload(self, ctx: KurisuContext, *cogs):
@@ -144,7 +144,7 @@ class DevTools(commands.Cog):
         succeed = 0
         failed = 0
         error_str = ""
-        embed = discord.Embed(description=":ok_hand:", color=self.bot.info_color)
+        embed = disnake.Embed(description=":ok_hand:", color=self.bot.info_color)
 
         for ext in cogs:
             try:
@@ -160,7 +160,7 @@ class DevTools(commands.Cog):
 
         await ctx.send(embed=embed)
         if error_str:
-            await ctx.send(file=discord.File(io.BytesIO(error_str.encode("utf-8")), "error.nim"))
+            await ctx.send(file=disnake.File(io.BytesIO(error_str.encode("utf-8")), "error.nim"))
 
     @cogmanager.command()
     async def unload(self, ctx: KurisuContext, *cogs):
@@ -229,8 +229,7 @@ class DevTools(commands.Cog):
         await ctx.send_info(f"Now attempting to update {self.bot.user.name} to the latest version.")
         await ctx.trigger_typing()
         pull_output = str(
-            (await (await asyncio.create_subprocess_shell("git pull", stdout=PIPE)).communicate())[0][:1000],
-            "utf-8",
+            (await (await asyncio.create_subprocess_shell("git pull", stdout=PIPE)).communicate())[0][:1000], "utf-8"
         )
         await ctx.send_info(f"```\n{pull_output}\n```")
         new_version = str(
@@ -246,12 +245,12 @@ class DevTools(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def say(self, ctx: KurisuContext, chan: Optional[discord.TextChannel], *, msg):
+    async def say(self, ctx: KurisuContext, chan: Optional[disnake.TextChannel], *, msg):
         """Say something with the bot"""
         chan = chan or ctx.channel
         try:
             await ctx.message.delete()
-        except discord.Forbidden:
+        except disnake.Forbidden:
             pass
         await chan.send(msg)
 
@@ -273,11 +272,11 @@ class DevTools(commands.Cog):
         if not user:
             raise commands.BadArgument(f"Failed converting {_id} to user.")
         await ctx.send(
-            embed=discord.Embed(title=f"Information for {user}", color=self.bot.info_color)
+            embed=disnake.Embed(title=f"Information for {user}", color=self.bot.info_color)
             .set_thumbnail(url=user.display_avatar.url)
             .add_field(name="ID", value=user.id)
             .add_field(name="Avatar URL", value=f"[url]({user.display_avatar.url})")
-            .add_field(name="Account Creation", value=discord.utils.format_dt(user.created_at, style="R"))
+            .add_field(name="Account Creation", value=disnake.utils.format_dt(user.created_at, style="R"))
             .add_field(name="Bot", value=":white_check_mark:" if user.bot else ":x:")
             .add_field(name="Flags", value="".join(flags) if flags else "None")
         )
@@ -289,7 +288,7 @@ class DevTools(commands.Cog):
         try:
             await self.bot.get_guild(guild_id).leave()
             await ctx.send_ok("Left that guild.")
-        except discord.HTTPException as error:
+        except disnake.HTTPException as error:
             await ctx.send_error(error)
 
     @commands.group(invoke_without_command=True)

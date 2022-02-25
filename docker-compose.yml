@@ -7,7 +7,7 @@ services:
        # The SQLite database is saved here, so use a docker volume for persistent data
      - kurisu-data:/app/src/data
        # The config needs to be in the same location as this file
-     - ./config.toml:/app/src/data/config.toml:ro
+     - ./config.toml:/app/config.toml:ro
 
 volumes:
   kurisu-data: {}

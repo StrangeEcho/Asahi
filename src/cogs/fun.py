@@ -1,8 +1,8 @@
 import random
 
-import discord
-from discord.ext import commands, vbu
-from exts import EIGHTBALL_ANSWERS, COMPLIMENTS, get_ud_results
+import disnake
+from disnake.ext import commands, vbu
+from exts import EIGHTBALL_ANSWERS, COMPLIMENTS
 from kurisu import Kurisu, KurisuContext
 
 
@@ -14,11 +14,20 @@ class Fun(
     def __init__(self, bot: Kurisu):
         self.bot = bot
 
+    async def get_ud_results(self, term: str, max: int = 5):
+        async with self.bot.session as session:
+            async with session.get(f"https://api.urbandictionary.com/v0/define?term={term}") as resp:
+                try:
+                    return (await resp.json())["list"][:max]
+                except (IndexError, KeyError):
+                    pass
+        await session.close()
+
     @commands.command(name="8ball", aliases=["8b", "eightball"])
     async def _8ball(self, ctx: KurisuContext, *, question: str):
         """Ask a question and let the mystical 8ball answer for you!"""
         await ctx.send(
-            embed=discord.Embed(
+            embed=disnake.Embed(
                 title="🎱The Mystical 8ball🎱",
                 description=f"Question: {question}\nAnswer: {random.choice(EIGHTBALL_ANSWERS)}",
                 color=self.bot.info_color,
@@ -26,11 +35,11 @@ class Fun(
         )
 
     @commands.command()
-    async def compliment(self, ctx: KurisuContext, *, member: discord.Member = None):
+    async def compliment(self, ctx: KurisuContext, *, member: disnake.Member = None):
         """Compliment yourself or someone else"""
         member = member or ctx.author
         await ctx.send(
-            embed=discord.Embed(
+            embed=disnake.Embed(
                 description=f"{member.mention} {random.choice(COMPLIMENTS)}", color=self.bot.info_color
             ).set_footer(text=f"Compliment from {ctx.author}")
         )
@@ -56,16 +65,14 @@ class Fun(
                 char = (await resp.json())["character"]
                 anime = (await resp.json())["anime"]
                 await ctx.send(
-                    embed=discord.Embed(
-                        description=f"{quote}\n~{char}",
-                        color=self.bot.info_color,
-                    ).set_footer(text=f"Anime: {anime}")
+                    embed=disnake.Embed(description=f"{quote}\n~{char}", color=self.bot.info_color).set_footer(
+                        text=f"Anime: {anime}"
+                    )
                 )
             else:
                 await ctx.send(
-                    embed=discord.Embed(
-                        description=f"API threw a {resp.status}. Please try again later.",
-                        color=self.bot.error_color,
+                    embed=disnake.Embed(
+                        description=f"API threw a {resp.status}. Please try again later.", color=self.bot.error_color
                     )
                 )
 
@@ -73,12 +80,12 @@ class Fun(
     @commands.cooldown(1, 4.5, commands.BucketType.user)
     async def ud(self, ctx: KurisuContext, *, term: str):
         """Query the Urban Dictionary API with a term"""
-        results = await get_ud_results(term)
-        embeds: list[discord.Embed] = []
+        results = await self.get_ud_results(term)
+        embeds: list[disnake.Embed] = []
 
         for i in results:
             embeds.append(
-                discord.Embed(
+                disnake.Embed(
                     title=f"Definition for {term}",
                     description=f"Definition: {i['definition']}",
                     color=self.bot.ok_color,
@@ -94,7 +101,7 @@ class Fun(
         """Maids go brrr"""
         async with self.bot.session.get("https://api.waifu.im/sfw/maid") as resp:
             await ctx.send(
-                embed=discord.Embed(color=self.bot.info_color).set_image(url=(await resp.json())["images"][0]["url"])
+                embed=disnake.Embed(color=self.bot.info_color).set_image(url=(await resp.json())["images"][0]["url"])
             )
 
     @commands.command()
@@ -102,7 +109,7 @@ class Fun(
         """Waifu go brrr"""
         async with self.bot.session.get("https://api.waifu.im/sfw/waifu") as resp:
             await ctx.send(
-                embed=discord.Embed(color=self.bot.info_color).set_image(url=(await resp.json())["images"][0]["url"])
+                embed=disnake.Embed(color=self.bot.info_color).set_image(url=(await resp.json())["images"][0]["url"])
             )
 
 

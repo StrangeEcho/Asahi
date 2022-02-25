@@ -1,0 +1,15 @@
+token=""
+owner_ids = []
+prefix=""
+
+ok_color="DC00FF"
+error_color="#FF0000"
+info_color="001FFF"
+
+ll_host = ""
+ll_password = "" 
+ll_port = ""
+spotify_client_id = ""
+spotify_client_secret = ""
+
+google_api_key = ""

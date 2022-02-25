@@ -3,7 +3,6 @@
 
 # Allow files and directories
 !/src
-/src/data
 !pyproject.toml
 !requirements.txt
 !LICENSE
