@@ -1,6 +1,8 @@
 import disnake
 import async_cse
-from disnake.ext import commands, vbu
+import disnake_paginator
+
+from disnake.ext import commands
 from kurisu import Kurisu, KurisuContext
 
 
@@ -42,7 +44,7 @@ class Searches(commands.Cog):
         embeds = []
         for i in results[:7]:
             embeds.append(disnake.Embed(color=disnake.Color.random()).set_image(url=i.image_url))
-        await vbu.Paginator(embeds, per_page=1).start(ctx)
+        await disnake_paginator.ButtonPaginator(segments=embeds).start(ctx)
 
 
 def setup(bot: Kurisu):

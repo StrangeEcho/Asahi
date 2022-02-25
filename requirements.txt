@@ -1,14 +1,13 @@
-git+https://github.com/Voxel-Fox-Ltd/Novus
 databases
 pillow
 psutil
 disnake-jishaku
+disnake-paginator
 PyNacl
 git+https://github.com/6days9weeks/pomice
 humanize
 hentai
 colorama
 toml
-voxelbotutils
 tabulate
 async-cse
