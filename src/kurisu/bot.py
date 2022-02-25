@@ -84,10 +84,10 @@ class Kurisu(commands.AutoShardedBot):
 
     async def database_init(self) -> None:
         with open("./schema.sql") as f:
-            await self.db.execute_many(f.read())
+            for query in f.read().split(";"):
+                await self.db.execute(query)
 
         self.logger.info("Finished Building Database")
-
         try:
             await PrefixManager(self).startup_caching()
         except Exception as e:
@@ -110,7 +110,6 @@ class Kurisu(commands.AutoShardedBot):
                 except commands.ExtensionError as e:
                     self.logger.warning(f"Failed loading {cog}\nError:{e}")
         self.logger.info("Done")
-
         super().run(self.config.get("token"))
 
     async def close(self) -> None:

@@ -1,7 +1,8 @@
 import random
-
 import disnake
-from disnake.ext import commands, vbu
+import disnake_paginator
+
+from disnake.ext import commands
 from exts import EIGHTBALL_ANSWERS, COMPLIMENTS
 from kurisu import Kurisu, KurisuContext
 
@@ -94,7 +95,7 @@ class Fun(
                 .add_field(name="Author", value=i["author"] or "No Author ")
             )
 
-        await vbu.Paginator(data=embeds, per_page=1).start(ctx)
+        await disnake_paginator.ButtonPaginator(segments=embeds).start(ctx)
 
     @commands.command()
     async def maid(self, ctx: KurisuContext):

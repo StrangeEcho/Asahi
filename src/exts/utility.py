@@ -26,6 +26,24 @@ class Player(pomice.Player):
         shuffle(self.queue)
 
 
+class Confirm(disnake.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    @disnake.ui.button(label="Confirm", style=disnake.ButtonStyle.green)
+    async def confirm(self, button: disnake.ui.Button, interaction: disnake.MessageInteraction):
+        await interaction.response.send_message("Confirming", ephemeral=True)
+        self.value = True
+        self.stop()
+
+    @disnake.ui.button(label="Cancel", style=disnake.ButtonStyle.grey)
+    async def cancel(self, button: disnake.ui.Button, interaction: disnake.MessageInteraction):
+        await interaction.response.send_message("Cancelling", ephemeral=True)
+        self.value = False
+        self.stop()
+
+
 async def confirm_prompt(
     ctx: KurisuContext,
     action: Coroutine,
@@ -36,7 +54,14 @@ async def confirm_prompt(
 ) -> Optional[disnake.Message]:
     """Confirmation prompt"""
 
-    # TODO: view
+    view = Confirm()
+    await ctx.send.send(prompt, view=view)
+    await view.wait()
+
+    if view.value:
+        await ctx.send(confirm_str)
+        return await action()
+    await ctx.send(cancelled_str)
 
 
 async def do_music(ctx: KurisuContext, query: str) -> Optional[disnake.Message]:  # noqa c901
