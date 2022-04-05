@@ -1,6 +1,8 @@
 import logging
+import io
+import traceback
 import os
-from typing import Final
+from typing import Final, Optional
 from datetime import datetime
 
 import discord
@@ -9,7 +11,6 @@ from databases import Database
 from exts.helpers import Config, color_resolver
 from exts._logging import LoggingHandler
 from .context import AsahiContext
-from humanize import naturaldate
 
 class Asahi(commands.AutoShardedBot):
     def __init__(self, *args, **kwargs):
@@ -26,6 +27,7 @@ class Asahi(commands.AutoShardedBot):
         super().__init__(
             command_prefix=self.get_prefix,
             intents=discord.Intents.all(),
+            activity=discord.Activity(type=discord.ActivityType.competing, name="Best Girl"),
             *args,
             **kwargs
         )
@@ -47,6 +49,51 @@ class Asahi(commands.AutoShardedBot):
 
     async def on_ready(self) -> None:
         self.logger.info(f"{self.user} is now ready.")
+    
+    async def on_command_completion(self, ctx: AsahiContext) -> None:
+        self.logger.info(
+            "----------\n"
+            "Command Executed\n"
+            f"Name: {ctx.command.qualified_name}\n"
+            f"User: {ctx.author}\n"
+            f"Location: Guild {ctx.guild}({ctx.guild.id}) | Channel: {ctx.channel}({ctx.channel.id})\n"
+            f"Usage: {ctx.message.content}"
+        )
+    
+    async def on_command_error(self, ctx: AsahiContext, error: commands.CommandError) -> None:
+        if isinstance(
+            error,
+            (
+                commands.MissingPermissions,
+                commands.CheckFailure,
+                commands.NSFWChannelRequired,
+                commands.NotOwner,
+                commands.BadArgument,
+                commands.MissingRequiredArgument
+            )
+        ):
+            await ctx.send_error(str(error))
+        
+        if isinstance(error, commands.CommandInvokeError):
+            formatted_tb = "".join(traceback.format_exception(None, error, error.__traceback__))
+            await ctx.send_error(
+                "There was an internal problem with this command. "
+                f"Please refrain from using the command `{ctx.command.qualified_name}` any more. "
+                "This issue has also been reported to this bot's ownership/developer team."
+            )
+            for owner in self.owner_ids:
+                try:
+                    await self.get_user(owner).send(
+                        f"There was an internal error thrown for command {ctx.command.qualified_name}\n"
+                        "Info:\n"
+                        f"`User`: **{ctx.author}** | `Guild`: **{ctx.guild}** | `Usage`: **{ctx.message.content}**",
+                        file=discord.File(io.BytesIO(formatted_tb.encode("utf-8")), f"{ctx.message.created_at.strftime('%m/%d/%Y %H:%M')}.nim")
+                    )
+                except Exception:
+                    pass
+        else:
+            self.logger.info(formatted_tb)
+
 
     async def startup(self):
         """Startup entry"""
@@ -64,14 +111,15 @@ class Asahi(commands.AutoShardedBot):
         await self.start(self.config.get("token")) # lgtm
 
     async def db_entry(self) -> None:
+        logger = logging.getLogger("database")
         with open("./src/core/data/schema.sql") as f: # Setup Database
             for line in f.read().split(";;"):
                 await self.db.execute(line)
-        self.logger.info("Finished Building Database")
+        logger.info("Finished Building Database")
         
         for guild, prefix in await self.db.fetch_all("SELECT guild_id, prefix FROM Guild_Settings"):
             self.prefixes.setdefault(guild, prefix)
-        self.logger.info("Finished appending prefixes to on-board memory cache")
+        logger.info("Finished appending prefixes to on-board memory cache")
     
     async def get_prefix(self, msg: discord.Message):
         if not msg.guild or msg.guild.id not in self.prefixes:

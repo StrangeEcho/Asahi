@@ -60,7 +60,7 @@ class LoggingHandler(logging.StreamHandler):
                 print(
                     f"{datetime.now().strftime('%x %X') if first else '                 '}"
                     f" "
-                    f"{colors2[level_name]}{styles[level_name]}[{level_name[:3]}]{Style.RESET_ALL}"
+                    f"{colors2[level_name]}{styles[level_name]}[{level_name}]{Style.RESET_ALL}"
                     f" "
                     f"{Style.BRIGHT}{names[name]}{name}{Style.RESET_ALL} "
                     + (f"» {Style.BRIGHT}{Fore.LIGHTBLUE_EX}{sub}{Style.RESET_ALL} " if sub else "")

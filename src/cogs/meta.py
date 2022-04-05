@@ -34,6 +34,7 @@ class Meta(commands.Cog):
             return await ctx.send_info(f"Prefix for this guild {self.bot.prefixes.get(ctx.guild.id) or self.bot.config.get('prefix')}")
         
         await self.prefix_handler.add_prefix(prefix, ctx.guild.id)
+        await ctx.send_ok(f"Sucessfully changed this guild's prefix to `{prefix}`")
 
 async def setup(bot: Asahi):
     await bot.add_cog(Meta(bot))
