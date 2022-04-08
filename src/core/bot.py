@@ -81,6 +81,7 @@ class Asahi(commands.AutoShardedBot):
                 f"Please refrain from using the command `{ctx.command.qualified_name}` any more. "
                 "This issue has also been reported to this bot's ownership/developer team."
             )
+            self.logger.error(formatted_tb)
             for owner in self.owner_ids:
                 try:
                     await self.get_user(owner).send(
@@ -90,9 +91,9 @@ class Asahi(commands.AutoShardedBot):
                         file=discord.File(io.BytesIO(formatted_tb.encode("utf-8")), f"{ctx.message.created_at.strftime('%m/%d/%Y %H:%M')}.nim")
                     )
                 except Exception:
-                    pass
+                    self.logger.warning(f"Failed to dm {owner}.")
         else:
-            self.logger.info(formatted_tb)
+            self.logger.error(formatted_tb)
 
 
     async def startup(self):
