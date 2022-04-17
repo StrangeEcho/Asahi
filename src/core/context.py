@@ -9,8 +9,6 @@ import asyncio
 import discord
 from discord.ext import commands
 
-__all__ = ["AsahiContext"]
-
 class AsahiContext(commands.Context):
     bot: Asahi
 

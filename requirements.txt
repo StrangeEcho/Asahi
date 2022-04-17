@@ -3,3 +3,4 @@ databases[sqlite]
 toml
 PyNaCl
 humanize
+colorama
