@@ -1,15 +1,15 @@
 token=""
 owner_ids = []
-prefix=""
+prefix = ""
 
-ok_color="DC00FF"
-error_color="#FF0000"
-info_color="001FFF"
+#Colors
+ok_color = "#ff91a4"
+info_color = "#FFFF00"
+error_color = "#b22222"
 
+#Lavalink/Music credentials
 ll_host = ""
-ll_password = "" 
 ll_port = ""
+ll_password = ""
 spotify_client_id = ""
 spotify_client_secret = ""
-
-google_api_key = ""

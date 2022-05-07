@@ -1,4 +1,5 @@
-import asyncio 
+import asyncio
+
 from core.bot import Asahi
 
 if __name__ == "__main__":

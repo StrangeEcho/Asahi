@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 from types import TracebackType
 
-from colorama import Fore, init, Style
+from colorama import Fore, Style, init
 
 init()
 
@@ -29,7 +29,8 @@ names = {
     "discord.gateway": Fore.MAGENTA,
     "discord.ext.commands.core": Fore.YELLOW,
     "discord.http": Fore.RED,
-    "database": Fore.YELLOW
+    "database": Fore.YELLOW,
+    "music-master": Fore.GREEN,
 }
 
 lock = threading.Lock()

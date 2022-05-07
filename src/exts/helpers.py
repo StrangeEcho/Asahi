@@ -1,10 +1,13 @@
-from typing import Any 
+from datetime import timedelta
+from typing import Any
 
 import toml
+from humanize import naturaldelta, precisedelta
 
 
 class ConfigKeyNotFound(KeyError):
     pass
+
 
 class Config:
     master: dict = toml.load("./src/core/data/config.toml")
@@ -25,4 +28,11 @@ def color_resolver(color: str) -> int:
             return int(color, 16)
     except ValueError:
         print(f"There was a problem with resolving the following color: '{color}' ")
-    
+
+
+def humanize_timedelta(_delta: timedelta, *, precise: bool = False) -> str:
+    """Humanize a datetime.timedelta"""
+    if precise:
+        return precisedelta(_delta)
+    else:
+        return naturaldelta(_delta)
