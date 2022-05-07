@@ -87,6 +87,7 @@ class Asahi(commands.AutoShardedBot):
         await super().close()
 
     async def on_command_error(self, ctx: AsahiContext, error: commands.CommandError) -> None:
+        formatted_tb = "".join(traceback.format_exception(None, error, error.__traceback__))
         if isinstance(
             error,
             (
@@ -101,7 +102,6 @@ class Asahi(commands.AutoShardedBot):
             await ctx.send_error(str(error))
 
         if isinstance(error, commands.CommandInvokeError):
-            formatted_tb = "".join(traceback.format_exception(None, error, error.__traceback__))
             await ctx.send_error(
                 "There was an internal problem with this command. "
                 f"Please refrain from using the command `{ctx.command.qualified_name}` any more. "

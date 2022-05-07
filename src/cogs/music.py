@@ -36,7 +36,7 @@ class MusicNavigator(Select):
                     label=f"{num}. {track.title}", description=f"From {track.author}", value=str(num - 1)
                 )
             )
-        super().__init__(placeholder="Select A Song To Play Here!", options=self.selections, max_values=5)
+        super().__init__(placeholder="Select A Song To Play Here!", options=self.selections)
 
     async def callback(self, inter: discord.Interaction):
         if inter.user.id != self.ctx.author.id:
@@ -128,6 +128,9 @@ class Music(commands.Cog):
 
         tracks = await player.get_tracks(query, ctx=ctx)
 
+        if not tracks:
+            return await ctx.send_error(f" {ctx.author} No track(s) found with that query")
+
         if isinstance(tracks, pomice.Playlist):
             for track in tracks.tracks:
                 player.queue.append(track)
@@ -141,10 +144,18 @@ class Music(commands.Cog):
             player.queue.append(tracks[0])
             if not player.is_playing:
                 await player.play(player.queue.pop(0))
+                await ctx.send_info(f"Now playing {player.current.title} from {player.current.author}")
             return
 
         else:
-            await ctx.send(view=MusicView(ctx, tracks))
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Select One Of The 5 Options Below",
+                    description=f"Results for term: '{query[:50]}'",
+                    color=self.bot.ok_color,
+                ),
+                view=MusicView(ctx, tracks),
+            )
 
     @commands.command(aliases=["q"])
     async def queue(self, ctx: AsahiContext):

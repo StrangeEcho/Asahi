@@ -1,3 +1,4 @@
+from multiprocessing import context
 import typing
 
 import discord
@@ -19,7 +20,14 @@ class AsahiHelp(commands.HelpCommand):
     async def send_bot_help(self, mapping: typing.Mapping) -> None:
         view = discord.ui.View()
         view.add_item(Navigator(self.context))
-        await self.context.send(view=view)
+        await self.context.send(
+            embed=discord.Embed(
+                title=f":wave: Hi Im {self.context.bot.user.name}",
+                description="Select one of my modules below for more information.",
+                color=self.context.bot.info_color,
+            ).set_thumbnail(url=self.context.bot.user.avatar.url),
+            view=view,
+        )
 
     async def send_cog_help(self, cog: commands.Cog):
         await self.context.send(
