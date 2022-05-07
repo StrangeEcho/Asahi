@@ -66,6 +66,7 @@ class Navigator(discord.ui.Select):
     def __init__(self, ctx: AsahiContext):
         self.ctx = ctx
         selectoptions: list[discord.SelectOption] = []
+        self.sent: bool = False
         for i in [c for c in self.ctx.bot.cogs.values() if c.get_commands()]:
             selectoptions.append(
                 discord.SelectOption(
@@ -79,7 +80,9 @@ class Navigator(discord.ui.Select):
             return await interaction.response.send_message("You are not able to use this view", ephemeral=True)
         else:
             await interaction.response.defer()
-            await self.ctx.send_help(self.ctx.bot.get_cog(self.values[0]))
+            if not self.sent:
+                await self.ctx.send_help(self.ctx.bot.get_cog(self.values[0]))
+                self.sent = True
 
 
 async def setup(bot: Asahi):
