@@ -276,5 +276,5 @@ class DevTools(commands.Cog):
             await ctx.send_error(error)
 
 
-def setup(bot: Asahi):
-    bot.add_cog(DevTools(bot))
+async def setup(bot: Asahi):
+    await bot.add_cog(DevTools(bot))
