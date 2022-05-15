@@ -187,6 +187,8 @@ class Music(commands.Cog):
         player: Player = ctx.voice_client
         if not player:
             return await ctx.send_error("No Music Player found for this guild.")
+        if not player.current:
+            return await ctx.send_error("There is no song currently playing")
         await ctx.send(
             embed=discord.Embed(
                 title=player.current.title,

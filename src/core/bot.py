@@ -57,12 +57,15 @@ class Asahi(commands.AutoShardedBot):
         self.logger.info(f"{self.user} is now ready.")
 
     async def on_command_completion(self, ctx: AsahiContext) -> None:
+        location = f"DM Channel | {ctx.author.id}"
+        if ctx.guild:
+            location = f"Guild {ctx.guild} | {ctx.guild.id}"
         self.logger.info(
             "----------\n"
             "Command Executed\n"
             f"Name: {ctx.command.qualified_name}\n"
             f"User: {ctx.author}\n"
-            f"Location: Guild {ctx.guild}({ctx.guild.id}) | Channel: {ctx.channel}({ctx.channel.id})\n"
+            f"Location: {location}"
             f"Usage: {ctx.message.content}"
         )
 
