@@ -122,9 +122,10 @@ class Music(commands.Cog):
     @commands.command()
     async def play(self, ctx: AsahiContext, *, query: str):
         """Play a song"""
-        player: Player = ctx.voice_client
-        if not player:
+        if not ctx.me.voice:
             await self.connect(ctx)
+
+        player: Player = ctx.voice_client
 
         tracks = await player.get_tracks(query, ctx=ctx)
 
@@ -150,7 +151,7 @@ class Music(commands.Cog):
         else:
             await ctx.send(
                 embed=discord.Embed(
-                    title="Select One Of The 5 Options Below",
+                    title="Select One Of The Options Below",
                     description=f"Results for term: '{query[:50]}'",
                     color=self.bot.ok_color,
                 ),

@@ -18,11 +18,12 @@ class Meta(
         """Obligitory ping command"""
         msg = await ctx.send("Measuring now...")
         await msg.edit(
+            content=None,
             embed=discord.Embed(description=f"Ping for {self.bot.user}", color=self.bot.info_color)
             .add_field(name="WebSocket Latency", value=f"{round(self.bot.latency * 1000)}ms")
             .add_field(
                 name="Message", value=f"{round((msg.created_at - ctx.message.created_at).total_seconds() * 1000)}ms"
-            )
+            ),
         )
 
     @commands.command()
@@ -58,11 +59,6 @@ class Meta(
         await ctx.send_info(
             f"Invite me using [this link](https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=413893192823&scope=bot)"
         )
-
-    @commands.command()
-    @commands.is_owner()
-    async def test(self, ctx: AsahiContext):
-        await ctx.bot.close()
 
 
 async def setup(bot: Asahi):

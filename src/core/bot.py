@@ -77,13 +77,9 @@ class Asahi(commands.AutoShardedBot):
         mlog = logging.getLogger("music-master")
         for node in self.node_pool.nodes.values():
             for player in list(node.players.values()):
-                await player.cleanup()
                 await player.disconnect(force=True)
-                mlog.info(f"Disconnected music player from {player.channel.guild}")
-            mlog.info(f"Disconnected all players from {node._identifier}")
-
-            mlog.info(f"Disconnected Node {node._identifier}")
-
+                await mlog.info(f"Disconnected Player for {player.channel.guild}")
+        mlog.info("Finished cleaning up Music/LavaLink. Closing now...")
         await super().close()
 
     async def on_command_error(self, ctx: AsahiContext, error: commands.CommandError) -> None:

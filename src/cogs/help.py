@@ -1,4 +1,3 @@
-from multiprocessing import context
 import typing
 
 import discord
@@ -59,6 +58,18 @@ class AsahiHelp(commands.HelpCommand):
             )
             .add_field(name="Cooldown", value=f"`{cd.rate}` time(s) per `{cd.per}` seconds", inline=False)
             .set_footer(text=f"You can run this command: {await command.can_run(self.context)}")
+        )
+
+    async def send_group_help(self, group: commands.Group):
+        cd = group._buckets._cooldown
+        await self.context.send(
+            embed=discord.Embed(
+                title=f"Help for {group.qualified_name}",
+                description=group.help or "No Description",
+                color=self.context.bot.info_color,
+            )
+            .add_field(name="Commands", value="\n".join([f"`{i}`" for i in group.all_commands.values()]), inline=False)
+            .add_field(name="Cooldown", value=f"`{cd.rate}` time(s) per `{cd.per}` seconds", inline=False),
         )
 
 
