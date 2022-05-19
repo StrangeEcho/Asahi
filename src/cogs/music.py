@@ -33,7 +33,7 @@ class MusicNavigator(Select):
         for num, track in enumerate(self.tracks[:5], 1):
             self.selections.append(
                 discord.SelectOption(
-                    label=f"{num}. {track.title}", description=f"From {track.author}", value=str(num - 1)
+                    label=f"{num}. {track.title[:50]}", description=f"From {track.author[:50]}", value=str(num - 1)
                 )
             )
         super().__init__(placeholder="Select A Song To Play Here!", options=self.selections)
@@ -59,7 +59,9 @@ class MusicView(View):
         self.add_item(MusicNavigator(ctx, tracks))
 
 
-class Music(commands.Cog):
+class Music(
+    commands.Cog, command_attrs={"cooldown": commands.CooldownMapping.from_cooldown(1, 3.5, commands.BucketType.user)}
+):
     """All commands related to the bots music features"""
 
     def __init__(self, bot: Asahi):
