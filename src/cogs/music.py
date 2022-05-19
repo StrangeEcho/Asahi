@@ -118,7 +118,7 @@ class Music(
             return await ctx.send_error(
                 "I am unable to join that voice channel because of a lack of connection permissions"
             )
-        await ctx.author.voice.channel.connect(cls=Player())
+        await ctx.author.voice.channel.connect(cls=Player)
         await ctx.send_ok(f"<a:tick:791078978193719366> Connected to {ctx.author.voice.channel.name}")
 
     @commands.command()

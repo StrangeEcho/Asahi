@@ -54,3 +54,6 @@ class AsahiContext(commands.Context):
             await reaction.message.delete()
         except asyncio.TimeoutError:
             pass
+
+    async def trigger_typing(self): # Add this back since Danny removed
+        await self._state.http.send_typing((await self._get_channel()).id)
