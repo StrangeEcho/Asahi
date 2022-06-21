@@ -8,6 +8,8 @@ from core.database import PrefixHandler
 class Meta(
     commands.Cog, command_attrs={"cooldown": commands.CooldownMapping.from_cooldown(1, 3.5, commands.BucketType.user)}
 ):
+    """Base commands"""
+
     def __init__(self, bot: Asahi):
         self.bot = bot
         self.prefix_handler = PrefixHandler(self.bot)
