@@ -5,5 +5,5 @@ os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
 os.environ["JISHAKU_HIDE"] = "True"
 
 
-def setup(bot):
-    bot.load_extension("jishaku")
+async def setup(bot):
+    await bot.load_extension("jishaku")
