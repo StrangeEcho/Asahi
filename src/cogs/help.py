@@ -46,7 +46,7 @@ class AsahiHelp(commands.HelpCommand):
         aliases = command.aliases
         embed = discord.Embed(
             title=f"Help for {command.qualified_name}",
-            description=command.description or "No Description",
+            description=command.help or "No Description",
             color=self.context.bot.info_color
         )
         if aliases:
@@ -57,7 +57,8 @@ class AsahiHelp(commands.HelpCommand):
         if cd:
             embed.add_field(
                 name="Cooldown",
-                value=f"{cd.rate} time(s) per {cd.per} seconds"
+                value=f"{cd.rate} time(s) per {cd.per} seconds",
+                inline=False
             )
         await self.context.send(embed=embed)
 
@@ -66,22 +67,24 @@ class AsahiHelp(commands.HelpCommand):
         aliases = group.aliases
         embed = discord.Embed(
             title=f"Help for {group.qualified_name}",
-            description=group.description or "No Description",
+            description=group.help or "No Description",
             color=self.context.bot.info_color
         )
         embed.add_field(
             name="Sub-Commands",
-            value=", ".join([f"`{cmd}`" for cmd in group.all_commands.keys()])
+            value=", ".join([f"`{cmd.qualified_name}`" for cmd in group.all_commands.values()])
         )
         if aliases:
             embed.add_field(
                 name="Aliases",
-                value=", ".join(["`{a}`" for a in aliases])
+                value=", ".join(["`{a}`" for a in aliases]),
+                inline=False
             )
         if cd:
             embed.add_field(
                 name="Cooldown",
-                value=f"{cd.rate} time(s) per {cd.per} seconds"
+                value=f"{cd.rate} time(s) per {cd.per} seconds",
+                inline=False
             )
         await self.context.send(embed=embed)
 
