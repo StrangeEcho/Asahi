@@ -77,7 +77,7 @@ class AsahiHelp(commands.HelpCommand):
         if aliases:
             embed.add_field(
                 name="Aliases",
-                value=", ".join(["`{a}`" for a in aliases]),
+                value=", ".join([f"`{a}`" for a in aliases]),
                 inline=False
             )
         if cd:
