@@ -174,5 +174,5 @@ class Roleplay(
             )
 
 
-def setup(bot):
-    bot.add_cog(Roleplay(bot))
+async def setup(bot):
+    await bot.add_cog(Roleplay(bot))
