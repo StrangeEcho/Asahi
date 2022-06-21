@@ -65,3 +65,6 @@ class NSFW(
             await ctx.send(
                 embed=discord.Embed(color=self.bot.ok_color).set_image(url=(await resp.json())["images"][0]["url"])
             )
+
+async def setup(bot: Asahi):
+    await bot.add_cog(NSFW(bot))

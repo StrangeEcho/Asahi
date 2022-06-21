@@ -37,21 +37,17 @@ class Asahi(commands.AutoShardedBot):
             *args,
             **kwargs,
         )
-        self.db: Final[Database] = Database("sqlite:///src/core/data/asahi.db")
-        self.config: Final[Config] = Config()
+        self.db: Database = Database("sqlite:///src/core/data/asahi.db")
+        self.config: Config = Config()
         self.owner_ids: set[int] = set(self.config.get("owner_ids"))
         self.prefixes: dict[int, str] = {}
-        self.ok_color: Final[int] = color_resolver(self.config.get("ok_color"))
-        self.info_color: Final[int] = color_resolver(self.config.get("info_color"))
-        self.error_color: Final[int] = color_resolver(self.config.get("error_color"))
+        self.ok_color: int = color_resolver(self.config.get("ok_color"))
+        self.info_color: int = color_resolver(self.config.get("info_color"))
+        self.error_color: int = color_resolver(self.config.get("error_color"))
         self.logger = logging.getLogger("asahi")
-        self.startup_time: Final[datetime] = datetime.now()
+        self.startup_time: datetime = datetime.now()
         self.node_pool = pomice.NodePool()
-        self._session = aiohttp.ClientSession()
 
-    @property
-    def session(self) -> aiohttp.ClientSession:
-        return self._session
 
     async def on_message(self, msg: discord.Message):
         await self.invoke(await self.get_context(msg, cls=AsahiContext))
@@ -77,7 +73,9 @@ class Asahi(commands.AutoShardedBot):
 
     async def close(self) -> None:
         self.logger.info("Recieved signal to terminate bot process.")
-
+        if self.session:
+            await self.session.close()
+            self.logger.info("Destroyed HTTP session")
         dlog = logging.getLogger("database")
         if self.db.connection:
             await self.db.disconnect()
@@ -141,8 +139,10 @@ class Asahi(commands.AutoShardedBot):
                     self.logger.info(f"Loaded extension: {ext}")
                 except commands.ExtensionError as exp:
                     self.logger.error(f"Failed to load {ext} : {exp}")
-
-        await self.start(self.config.get("token"))  # lgtm
+        async with self:
+            async with aiohttp.ClientSession() as session:
+                self.session: aiohttp.ClientSession = session
+                await self.start(self.config.get("token"))
 
     async def db_entry(self) -> None:
         logger = logging.getLogger("database")
