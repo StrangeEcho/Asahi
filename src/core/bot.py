@@ -108,7 +108,8 @@ class Asahi(commands.AutoShardedBot):
             await ctx.send_error(
                 "There was an internal problem with this command. "
                 f"Please refrain from using the command `{ctx.command.qualified_name}` any more. "
-                "This issue has also been reported to this bot's ownership/developer team."
+                "This issue has also been reported to this bot's ownership/developer team. "
+                "If you need any futher assitance join my support server: https://discord.gg/Cs5RdJF9pb"
             )
             self.logger.error(formatted_tb)
             for owner in self.owner_ids:
