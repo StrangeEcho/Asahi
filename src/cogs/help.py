@@ -43,33 +43,47 @@ class AsahiHelp(commands.HelpCommand):
 
     async def send_command_help(self, command: commands.Command):
         cd = command._buckets._cooldown
-        await self.context.send(
-            embed=discord.Embed(
-                title=f"Help for {command.qualified_name}",
-                description=command.help or "No Description",
-                color=self.context.bot.info_color,
-            )
-            .add_field(name="Aliases", value="\n".join([f"`{a}`" for a in command.aliases]) or "No Aliases")
-            .add_field(
-                name="Usage",
-                value=f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}`",
-                inline=False,
-            )
-            .add_field(name="Cooldown", value=f"`{cd.rate}` time(s) per `{cd.per}` seconds", inline=False)
-            .set_footer(text=f"You can run this command: {await command.can_run(self.context)}")
+        aliases = command.aliases
+        embed = discord.Embed(
+            title=f"Help for {command.qualified_name}",
+            description=command.description or "No Description",
+            color=self.context.bot.info_color
         )
+        if aliases:
+            embed.add_field(
+                name="Aliases",
+                value=", ".join([f"`{a}`" for a in aliases])
+            )
+        if cd:
+            embed.add_field(
+                name="Cooldown",
+                value=f"{cd.rate} time(s) per {cd.per} seconds"
+            )
+        await self.context.send(embed=embed)
 
     async def send_group_help(self, group: commands.Group):
         cd = group._buckets._cooldown
-        await self.context.send(
-            embed=discord.Embed(
-                title=f"Help for {group.qualified_name}",
-                description=group.help or "No Description",
-                color=self.context.bot.info_color,
-            )
-            .add_field(name="Commands", value="\n".join([f"`{i}`" for i in group.all_commands.values()]), inline=False)
-            .add_field(name="Cooldown", value=f"`{cd.rate}` time(s) per `{cd.per}` seconds", inline=False),
+        aliases = group.aliases
+        embed = discord.Embed(
+            title=f"Help for {group.qualified_name}",
+            description=group.description or "No Description",
+            color=self.context.bot.info_color
         )
+        embed.add_field(
+            name="Sub-Commands",
+            value=", ".join([f"`{cmd}`" for cmd in group.all_commands.keys()])
+        )
+        if aliases:
+            embed.add_field(
+                name="Aliases",
+                value=", ".join(["`{a}`" for a in aliases])
+            )
+        if cd:
+            embed.add_field(
+                name="Cooldown",
+                value=f"{cd.rate} time(s) per {cd.per} seconds"
+            )
+        await self.context.send(embed=embed)
 
 
 class Navigator(discord.ui.Select):
