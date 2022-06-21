@@ -10,10 +10,9 @@ from subprocess import PIPE
 from typing import Optional
 
 import discord
-
 from discord.ext import commands
-from core.bot import Asahi
-from core.context import AsahiContext
+
+from core import Asahi, AsahiContext
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
 
@@ -198,7 +197,6 @@ class DevTools(commands.Cog):
     async def restart(self, ctx: AsahiContext):
         """Restart the bot"""
         await ctx.send_ok("Attempting to restart now. Cya later...")
-
 
     @commands.command()
     @commands.is_owner()

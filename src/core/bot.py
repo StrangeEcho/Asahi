@@ -3,8 +3,9 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Final, Optional
+from typing import Final
 
+import aiohttp
 import discord
 import pomice
 from databases import Database
@@ -46,6 +47,11 @@ class Asahi(commands.AutoShardedBot):
         self.logger = logging.getLogger("asahi")
         self.startup_time: Final[datetime] = datetime.now()
         self.node_pool = pomice.NodePool()
+        self._session = aiohttp.ClientSession()
+
+    @property
+    def session(self) -> aiohttp.ClientSession:
+        return self._session
 
     async def on_message(self, msg: discord.Message):
         await self.invoke(await self.get_context(msg, cls=AsahiContext))

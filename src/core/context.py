@@ -55,5 +55,5 @@ class AsahiContext(commands.Context):
         except asyncio.TimeoutError:
             pass
 
-    async def trigger_typing(self): # Add this back since Danny removed
+    async def trigger_typing(self):  # Add this back since Danny removed
         await self._state.http.send_typing((await self._get_channel()).id)

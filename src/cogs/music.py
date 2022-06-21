@@ -7,8 +7,7 @@ import pomice
 from discord.ext import commands
 from discord.ui import Select, View
 
-from core.bot import Asahi
-from core.context import AsahiContext
+from core import Asahi, AsahiContext
 from exts.helpers import humanize_timedelta
 
 

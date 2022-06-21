@@ -3,8 +3,7 @@ import typing
 import discord
 from discord.ext import commands
 
-from core.bot import Asahi
-from core.context import AsahiContext
+from core import Asahi, AsahiContext
 
 
 class Help(commands.Cog):
