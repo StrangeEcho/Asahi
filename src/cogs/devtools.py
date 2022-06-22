@@ -122,7 +122,7 @@ class DevTools(commands.Cog):
 
         for ext in cogs:
             try:
-                self.bot.load_extension(ext)
+                await self.bot.load_extension(ext)
                 succeed += 1
             except commands.ExtensionError as e:
                 failed += 1
@@ -146,7 +146,7 @@ class DevTools(commands.Cog):
 
         for ext in cogs:
             try:
-                self.bot.reload_extension(ext)
+                await self.bot.reload_extension(ext)
                 succeed += 1
             except commands.ExtensionError as e:
                 failed += 1
@@ -164,7 +164,7 @@ class DevTools(commands.Cog):
     async def unload(self, ctx: AsahiContext, *cogs):
         """Unload cogs"""
         for ext in cogs:
-            self.bot.unload_extension(ext)
+            await self.bot.unload_extension(ext)
         await ctx.send_ok(":ok_hand:")
 
     @cogmanager.command()
@@ -175,7 +175,7 @@ class DevTools(commands.Cog):
         for i in os.listdir("./src/cogs"):
             if i.endswith(".py"):
                 try:
-                    self.bot.reload_extension(f"cogs.{i[:-3]}")
+                    await self.bot.reload_extension(f"cogs.{i[:-3]}")
                 except commands.ExtensionError:
                     errored_out = True
 

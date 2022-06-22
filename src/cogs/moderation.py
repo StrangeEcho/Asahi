@@ -1,10 +1,9 @@
-from re import A
 from typing import Union
 
 import discord
 from discord.ext import commands
 
-from core import Asahi, AsahiContext, MuteHandler
+from core import Asahi, AsahiContext, MuteHandler, WarningHandler
 
 
 class Moderation(commands.Cog):
@@ -13,6 +12,7 @@ class Moderation(commands.Cog):
     def __init__(self, bot: Asahi):
         self.bot = bot
         self.mute_handler = MuteHandler(self.bot)
+        self.warn_handler = WarningHandler(self.bot)
 
     def owner_cooldown_bypass(message: discord.Message):
         """Shortens cooldown for the guild owner"""
@@ -21,7 +21,7 @@ class Moderation(commands.Cog):
         else:
             return commands.Cooldown(1, 5)
 
-    async def check_hierachy(ctx: AsahiContext, target: discord.Member):
+    async def check_hierachy(self, ctx: AsahiContext, target: discord.Member):
         if ctx.me.top_role.position < target.top_role.position:
             return await ctx.send_error("Cant do this action because the target is higher on the role hierachy than me")
         if ctx.author == ctx.guild.owner:
@@ -55,7 +55,7 @@ class Moderation(commands.Cog):
         reason = reason or "No Reason Provided"
 
         if isinstance(member, discord.Member):
-            if await self.check_hierachy():
+            if await self.check_hierachy(ctx, member):
                 return
             await member.ban(reason=f"{reason} - {ctx.author}")
             await ctx.message.add_reaction("👍")
@@ -73,7 +73,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     async def mute(self, ctx: AsahiContext, member: discord.Member, *, reason: str = None):
         """Mute a member in this guild"""
-        if await self.check_hierachy():
+        if await self.check_hierachy(ctx, member):
             return
 
         reason = reason or "No Reason Provided"
@@ -112,6 +112,41 @@ class Moderation(commands.Cog):
 
         await member.remove_roles(role)
         await ctx.message.add_reaction("👍")
+
+    @commands.command()
+    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def warn(self, ctx: AsahiContext, member: discord.Member, *, reason: str = None):
+        """Warn a member in this guild"""
+        if await self.check_hierachy(ctx, member):
+            return
+        reason = reason or "No Reason Provided"
+
+        await self.warn_handler.insert_warning(
+            member=member.id, guild_id=ctx.guild.id, moderator=ctx.author.id, reason=reason
+        )
+        await ctx.send_ok(f"Warned {member} for the reason {reason}")
+
+    @commands.command()
+    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def warns(self, ctx: AsahiContext, member: discord.Member = None):
+        """View all the warns for someone in this guild"""
+        member = member or ctx.author
+
+        raw_warn_data: list[tuple] = await self.warn_handler.fetch_warnings(
+            member.id, ctx.guild.id
+        )  # returns in (user, gid, mid, reason, wid)
+        await ctx.send_info(
+            "\n\n".join(
+                [
+                    f"{num}. Warned for `{i[3]}` by `{await self.bot.fetch_user(i[2])}` under warn ID: `{i[4]}`"
+                    for num, i in enumerate(raw_warn_data, 1)
+                ]
+            )
+        )
 
     @commands.command()
     @commands.cooldown(1, 60, commands.BucketType.user)

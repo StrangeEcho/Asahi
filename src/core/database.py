@@ -43,3 +43,22 @@ class MuteHandler:
         return await self.bot.db.fetch_one(
             "SELECT mute_role FROM Mute_Settings WHERE guild_id = :guild", values={"guild": guild}
         )
+
+
+class WarningHandler:
+    def __init__(self, bot: Asahi):
+        self.bot = bot
+
+    async def insert_warning(self, *, member: int, guild_id: int, moderator: int, reason: str):
+        """Insert a warning into database"""
+        await self.bot.db.execute(
+            "INSERT INTO Warn_Table (user, guild_id, mod_id, reason) values (:u, :gid, :m, :r)",
+            values={"u": member, "gid": guild_id, "m": moderator, "r": reason},
+        )
+        LOGGER.info(f"Added warn for user {member} for guild {guild_id} into Warn Table")
+
+    async def fetch_warnings(self, user: int, guild_id: int):
+        """Fetches warnings for a user under the specified guild"""
+        return await self.bot.db.fetch_all(
+            query="SELECT * FROM Warn_Table WHERE user = :u AND guild_id = :gid", values={"u": user, "gid": guild_id}
+        )
