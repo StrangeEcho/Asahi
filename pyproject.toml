@@ -1,3 +1,16 @@
 [tool.black]
 line-length = 120
-target-version = ["py39"]
+target-version = ["py39"] # latest version I can go despite project being py310
+
+[tool.isort]
+profile = "black"
+line_length = 99
+combine_as_imports = true
+atomic = true
+combine_star = true
+from_first = true
+force_alphabetical_sort_within_sections = true
+virtual_env = true
+case_sensitive = true
+remove_redundant_aliases = true
+dedup_headings = true

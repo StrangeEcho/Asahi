@@ -6,3 +6,7 @@ humanize
 colorama
 git+https://github.com/cloudwithax/pomice
 jishaku
+flake8
+black
+isort
+pre-commit
