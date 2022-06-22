@@ -47,19 +47,16 @@ class AsahiHelp(commands.HelpCommand):
         embed = discord.Embed(
             title=f"Help for {command.qualified_name}",
             description=command.help or "No Description",
-            color=self.context.bot.info_color
+            color=self.context.bot.info_color,
+        )
+        embed.add_field(
+            name="Usage", value=f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}`"
         )
         if aliases:
-            embed.add_field(
-                name="Aliases",
-                value=", ".join([f"`{a}`" for a in aliases])
-            )
+            embed.add_field(name="Aliases", value=", ".join([f"`{a}`" for a in aliases]), inline=False)
         if cd:
-            embed.add_field(
-                name="Cooldown",
-                value=f"{cd.rate} time(s) per {cd.per} seconds",
-                inline=False
-            )
+            embed.add_field(name="Cooldown", value=f"{cd.rate} time(s) per {cd.per} seconds", inline=False)
+        embed.set_footer(text="[] - Optional | <> - Required")
         await self.context.send(embed=embed)
 
     async def send_group_help(self, group: commands.Group):
@@ -68,24 +65,15 @@ class AsahiHelp(commands.HelpCommand):
         embed = discord.Embed(
             title=f"Help for {group.qualified_name}",
             description=group.help or "No Description",
-            color=self.context.bot.info_color
+            color=self.context.bot.info_color,
         )
         embed.add_field(
-            name="Sub-Commands",
-            value=", ".join([f"`{cmd.qualified_name}`" for cmd in group.all_commands.values()])
+            name="Sub-Commands", value=", ".join([f"`{cmd.qualified_name}`" for cmd in group.all_commands.values()])
         )
         if aliases:
-            embed.add_field(
-                name="Aliases",
-                value=", ".join([f"`{a}`" for a in aliases]),
-                inline=False
-            )
+            embed.add_field(name="Aliases", value=", ".join([f"`{a}`" for a in aliases]), inline=False)
         if cd:
-            embed.add_field(
-                name="Cooldown",
-                value=f"{cd.rate} time(s) per {cd.per} seconds",
-                inline=False
-            )
+            embed.add_field(name="Cooldown", value=f"{cd.rate} time(s) per {cd.per} seconds", inline=False)
         await self.context.send(embed=embed)
 
 

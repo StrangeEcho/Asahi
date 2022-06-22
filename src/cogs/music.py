@@ -124,7 +124,9 @@ class Music(
     async def play(self, ctx: AsahiContext, *, query: str):
         """Play a song"""
         if not ctx.me.voice:
-            return await ctx.send_error(f"Im currently not connected to a VC. Connect me with `{ctx.clean_prefix}connect` before trying to play a song.")
+            return await ctx.send_error(
+                f"Im currently not connected to a VC. Connect me with `{ctx.clean_prefix}connect` before trying to play a song."
+            )
 
         player: Player = ctx.voice_client
 

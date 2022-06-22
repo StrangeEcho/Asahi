@@ -48,7 +48,6 @@ class Asahi(commands.AutoShardedBot):
         self.startup_time: datetime = datetime.now()
         self.node_pool = pomice.NodePool()
 
-
     async def on_message(self, msg: discord.Message):
         await self.invoke(await self.get_context(msg, cls=AsahiContext))
 
@@ -91,6 +90,10 @@ class Asahi(commands.AutoShardedBot):
 
     async def on_command_error(self, ctx: AsahiContext, error: commands.CommandError) -> None:
         formatted_tb = "".join(traceback.format_exception(None, error, error.__traceback__))
+
+        if isinstance(error, commands.CommandNotFound):
+            return
+
         if isinstance(
             error,
             (
@@ -100,6 +103,9 @@ class Asahi(commands.AutoShardedBot):
                 commands.NotOwner,
                 commands.BadArgument,
                 commands.MissingRequiredArgument,
+                commands.RoleNotFound,
+                commands.MemberNotFound,
+                commands.BotMissingPermissions,
             ),
         ):
             await ctx.send_error(str(error))
