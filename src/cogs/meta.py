@@ -1,8 +1,7 @@
-import discord
 from discord.ext import commands
+import discord
 
-from core import Asahi, AsahiContext
-from core.database import PrefixHandler
+from core import Asahi, AsahiContext, PrefixHandler
 
 
 class Meta(

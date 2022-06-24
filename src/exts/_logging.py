@@ -1,10 +1,10 @@
+from datetime import datetime
+from types import TracebackType
 import logging
 import threading
 import traceback
-from datetime import datetime
-from types import TracebackType
 
-from colorama import Fore, Style, init
+from colorama import Fore, init, Style
 
 init()
 

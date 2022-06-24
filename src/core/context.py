@@ -7,8 +7,8 @@ if TYPE_CHECKING:
 
 import asyncio
 
-import discord
 from discord.ext import commands
+import discord
 
 
 class AsahiContext(commands.Context):

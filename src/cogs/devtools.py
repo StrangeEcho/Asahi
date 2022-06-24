@@ -1,16 +1,16 @@
+from contextlib import redirect_stdout
+from datetime import datetime
+from subprocess import PIPE
+from typing import Optional
 import asyncio
 import io
 import os
 import re
 import textwrap
 import traceback
-from contextlib import redirect_stdout
-from datetime import datetime
-from subprocess import PIPE
-from typing import Optional
 
-import discord
 from discord.ext import commands
+import discord
 
 from core import Asahi, AsahiContext
 

@@ -1,8 +1,8 @@
 from datetime import timedelta
 from typing import Any
 
-import toml
 from humanize import naturaldelta, precisedelta
+import toml
 
 
 class ConfigKeyNotFound(KeyError):

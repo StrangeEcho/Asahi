@@ -1,7 +1,7 @@
 from typing import Union
 
-import discord
 from discord.ext import commands
+import discord
 
 from core import Asahi, AsahiContext, MuteHandler, WarningHandler
 
@@ -103,7 +103,7 @@ class Moderation(commands.Cog):
             return await ctx.send_error("No mute role configured for this guild. Try again after setting one.")
         role = ctx.guild.get_role(raw_role_data[0])
 
-        if not role in member.roles:
+        if role not in member.roles:
             return await ctx.send_error("This member is currently not muted with the configured mute role")
         if role.position > ctx.me.top_role.position:
             return await ctx.send_error(
