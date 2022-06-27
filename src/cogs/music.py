@@ -16,7 +16,7 @@ class Player(pomice.Player):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self.loop: bool = False
         self._queue: list[pomice.Track] = []
 
     @property
@@ -86,9 +86,12 @@ class Music(
             await self.cog_unload()
 
     @commands.Cog.listener()
-    async def on_pomice_track_end(self, player: Player, track, _):
+    async def on_pomice_track_end(self, player: Player, track: pomice.Track, _):
         try:
-            await player.play(player.queue.pop(0))
+            if player.loop:
+                await player.play(track)
+            else:
+                await player.play(player.queue.pop(0))
         except IndexError:
             await asyncio.sleep(60)
             if not player.current and not player.queue:
@@ -278,6 +281,19 @@ class Music(
             return await ctx.send_error("Volume must be between 1 or 100")
         await player.set_volume(vol)
         await ctx.send_ok(f"Set player volume to {player.volume}")
+
+    @commands.command()
+    async def repeat(self, ctx: AsahiContext):
+        """Repeats/loops the current song"""
+        player: Player = ctx.voice_client
+        if not player:
+            return await ctx.send_error("There is no active player")
+
+        if not player.current:
+            await ctx.send_error("There is currently nothing playing to repeat")
+
+        player.loop = True
+        await ctx.send_ok(f"Now repeating {player.current.title}")
 
 
 async def setup(bot: Asahi):
