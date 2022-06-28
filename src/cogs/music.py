@@ -1,13 +1,12 @@
-from datetime import timedelta
 import asyncio
 import logging
+from datetime import timedelta
 
-from discord.ext import commands
-from discord.ui import Select, View
 import discord
 import pomice
-
 from core import Asahi, AsahiContext
+from discord.ext import commands
+from discord.ui import Select, View
 from exts.helpers import humanize_timedelta
 
 
@@ -32,24 +31,32 @@ class MusicNavigator(Select):
         for num, track in enumerate(self.tracks[:5], 1):
             self.selections.append(
                 discord.SelectOption(
-                    label=f"{num}. {track.title[:50]}", description=f"From {track.author[:50]}", value=str(num - 1)
+                    label=f"{num}. {track.title[:50]}",
+                    description=f"From {track.author[:50]}",
+                    value=str(num - 1),
                 )
             )
         super().__init__(placeholder="Select A Song To Play Here!", options=self.selections)
 
     async def callback(self, inter: discord.Interaction):
         if inter.user.id != self.ctx.author.id:
-            return await inter.response.send_message("You are not able to respond to this select menu", ephemeral=True)
+            return await inter.response.send_message(
+                "You are not able to respond to this select menu", ephemeral=True
+            )
 
         player: Player = self.ctx.voice_client
         track = self.tracks[int(self.values[0])]
 
         if player.is_playing:
             player.queue.append(track)
-            await inter.response.send_message(f"Added {track.title[:50]} from {track.author[:25]} to the queue.")
+            await inter.response.send_message(
+                f"Added {track.title[:50]} from {track.author[:25]} to the queue."
+            )
         else:
             await player.play(track)
-            await inter.response.send_message(f"Now playing {track.title[:50]} from {track.author[:25]}")
+            await inter.response.send_message(
+                f"Now playing {track.title[:50]} from {track.author[:25]}"
+            )
 
 
 class MusicView(View):
@@ -59,7 +66,10 @@ class MusicView(View):
 
 
 class Music(
-    commands.Cog, command_attrs={"cooldown": commands.CooldownMapping.from_cooldown(1, 3.5, commands.BucketType.user)}
+    commands.Cog,
+    command_attrs={
+        "cooldown": commands.CooldownMapping.from_cooldown(1, 3.5, commands.BucketType.user)
+    },
 ):
     """All commands related to the bots music features"""
 
@@ -121,7 +131,9 @@ class Music(
                 "I am unable to join that voice channel because of a lack of connection permissions"
             )
         await ctx.author.voice.channel.connect(cls=Player)
-        await ctx.send_ok(f"<a:tick:791078978193719366> Connected to {ctx.author.voice.channel.name}")
+        await ctx.send_ok(
+            f"<a:tick:791078978193719366> Connected to {ctx.author.voice.channel.name}"
+        )
 
     @commands.command()
     async def play(self, ctx: AsahiContext, *, query: str):
@@ -144,14 +156,18 @@ class Music(
             await ctx.send_ok(f"Added {tracks.track_count} tracks to the queue")
             if not player.is_playing:
                 await player.play(player.queue.pop(0))
-                await ctx.send_info(f"Now playing {player.current.title} from {player.current.author}")
+                await ctx.send_info(
+                    f"Now playing {player.current.title} from {player.current.author}"
+                )
             return
 
         if len(tracks) == 1:
             player.queue.append(tracks[0])
             if not player.is_playing:
                 await player.play(player.queue.pop(0))
-                await ctx.send_info(f"Now playing {player.current.title} from {player.current.author}")
+                await ctx.send_info(
+                    f"Now playing {player.current.title} from {player.current.author}"
+                )
             return
 
         else:
@@ -173,17 +189,24 @@ class Music(
         if not player.queue:
             return await ctx.send_info("No tracks left in queue.")
 
-        queue_length = humanize_timedelta(timedelta(milliseconds=sum([int(i.length) for i in player.queue])))
+        queue_length = humanize_timedelta(
+            timedelta(milliseconds=sum([int(i.length) for i in player.queue]))
+        )
 
         await ctx.send(
             embed=discord.Embed(
                 title=f"Queue for {ctx.guild}",
                 description="\n".join(
-                    [f"{num}. {track.title} - {track.author}" for num, track in enumerate(player.queue, 1)]
+                    [
+                        f"{num}. {track.title} - {track.author}"
+                        for num, track in enumerate(player.queue, 1)
+                    ]
                 ),
                 color=self.bot.info_color,
             )
-            .set_footer(text=f"Vol: {player.volume}% | Track Count: {len(player.queue)} | Length: {queue_length}")
+            .set_footer(
+                text=f"Vol: {player.volume}% | Track Count: {len(player.queue)} | Length: {queue_length}"
+            )
             .set_author(name=f"Current Song: {player.current.title}")
         )
 
@@ -202,7 +225,10 @@ class Music(
                 description=f"From: {player.current.author}",
                 color=self.bot.ok_color,
             )
-            .add_field(name="Length", value=humanize_timedelta(timedelta(milliseconds=player.current.length)))
+            .add_field(
+                name="Length",
+                value=humanize_timedelta(timedelta(milliseconds=player.current.length)),
+            )
             .add_field(name="Requester", value=player.current.requester)
             .set_thumbnail(url=player.current.thumbnail)
         )
@@ -229,7 +255,9 @@ class Music(
         if not player:
             return await ctx.send_error("There is no activate player.")
         if ctx.author not in ctx.guild.me.voice.channel.members:
-            return await ctx.send_error("You must be in the same voice chat as me to use this command.")
+            return await ctx.send_error(
+                "You must be in the same voice chat as me to use this command."
+            )
 
         await player.stop()
 
@@ -268,7 +296,9 @@ class Music(
             item = player.queue.pop(index - 1)
             await ctx.send_ok(f"Removed {item.title}")
         except IndexError:
-            return await ctx.send_error("Error: You tried to remove an item from the queue that doesnt exist.")
+            return await ctx.send_error(
+                "Error: You tried to remove an item from the queue that doesnt exist."
+            )
 
     @commands.command(aliases=["vol"])
     async def volume(self, ctx: AsahiContext, vol: int):
