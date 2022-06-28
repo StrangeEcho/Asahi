@@ -322,8 +322,11 @@ class Music(
         if not player.current:
             await ctx.send_error("There is currently nothing playing to repeat")
 
-        player.loop = True
-        await ctx.send_ok(f"Now repeating {player.current.title}")
+        player.loop = not player.loop
+        if player.loop:
+            await ctx.send_ok(f"Now repeating {player.current.title}")
+        else:
+            await ctx.send_ok("Looping is now disabled.")
 
 
 async def setup(bot: Asahi):
