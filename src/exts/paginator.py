@@ -11,6 +11,8 @@ if TYPE_CHECKING:
 
 
 class Paginator:
+    """Very simple implementation of a reaction based paginator"""
+
     def __init__(
         self,
         embeds: list[discord.Embed],
@@ -46,15 +48,16 @@ class Paginator:
                     break
 
     async def page_left(self, msg: discord.Message):
+        """Page the paginator to the left"""
         if self._index == 0:
             return
         self._index -= 1
         await msg.edit(embed=self.embeds[self._index])
 
     async def page_right(self, msg: discord.Message):
+        """Page the paginator to the right"""
         if self._index == len(self.embeds) - 1:
             return
         else:
             self._index += 1
-            print(self._index)
             await msg.edit(embed=self.embeds[self._index])
