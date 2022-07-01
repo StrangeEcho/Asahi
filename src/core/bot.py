@@ -47,6 +47,7 @@ class Asahi(commands.AutoShardedBot):
         self.logger = logging.getLogger("asahi")
         self.startup_time: datetime = datetime.now()
         self.node_pool = pomice.NodePool()
+        self.commands_ran = 0
 
     async def on_message(self, msg: discord.Message):
         await self.invoke(await self.get_context(msg, cls=AsahiContext))
@@ -58,6 +59,7 @@ class Asahi(commands.AutoShardedBot):
         self.logger.info(f"{self.user} is now ready.")
 
     async def on_command_completion(self, ctx: AsahiContext) -> None:
+        self.commands_ran += 1
         location = f"DM Channel | {ctx.author.id}"
         if ctx.guild:
             location = f"Guild {ctx.guild} | {ctx.guild.id}"
