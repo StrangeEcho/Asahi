@@ -150,19 +150,22 @@ class Music(
 
         else:
             if len(results) == 1:
-                if not player.is_playing:
-                    await player.play(results.pop(0))
-                    await ctx.send_ok(f"Now playing {player.current.title} from {player.current.author}")
+                trk = results.pop(0)
+                if player.is_playing:
+                    player.queue.append(trk)
+                    await ctx.send_ok(f"Added {trk.title} from {trk.author} to the queue")
                     return
-                else:
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title=f"Results for query '{query[:50]}'",
-                            description="Select one of the options below to play",
-                            color=self.bot.ok_color,
-                        ),
-                        view=MusicView(ctx, results),
-                    )
+                await player.play(trk)
+                await ctx.send_ok(f"Now playing {trk.title} from {trk.author}")
+            else:
+                await ctx.send(
+                    embed=discord.Embed(
+                        title=f"Results for query '{query[:50]}'",
+                        description="Select one of the options below to play",
+                        color=self.bot.ok_color,
+                    ),
+                    view=MusicView(ctx, results),
+                )
 
     @commands.command(aliases=["q"])
     async def queue(self, ctx: AsahiContext):
