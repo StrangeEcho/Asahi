@@ -134,6 +134,7 @@ class Music(
         player: Player = ctx.voice_client
         if not player:
             await ctx.invoke(self.bot.get_command("connect"))
+            player: Player = ctx.voice_client
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
         if not results:
