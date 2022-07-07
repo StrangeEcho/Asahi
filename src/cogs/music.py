@@ -1,9 +1,11 @@
 from datetime import timedelta
+from typing import Union
 import asyncio
 import logging
 
 from discord.ext import commands
 from discord.ui import Select, View
+from pomice import Playlist, Track
 import discord
 import pomice
 
@@ -124,48 +126,43 @@ class Music(
                 "I am unable to join that voice channel because of a lack of connection permissions"
             )
         await ctx.author.voice.channel.connect(cls=Player)
-        await ctx.send_ok(f"<a:tick:791078978193719366> Connected to {ctx.author.voice.channel.name}")
+        await ctx.send_ok(f":white_check_mark: Connected to {ctx.author.voice.channel.name}")
 
-    @commands.command()
+    @commands.command(aliases=["enqueue"])
     async def play(self, ctx: AsahiContext, *, query: str):
-        """Play a song"""
-        if not ctx.me.voice:
-            return await ctx.send_error(
-                f"Im currently not connected to a VC. Connect me with `{ctx.clean_prefix}connect` before trying to play a song."
-            )
-
+        """Play or enqueue a song"""
         player: Player = ctx.voice_client
+        if not player:
+            await ctx.invoke(self.bot.get_command("connect"))
 
-        tracks = await player.get_tracks(query, ctx=ctx)
+        results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
+        if not results:
+            return await ctx.send_error(f"No tracks found with the query '{query}'")
 
-        if not tracks:
-            return await ctx.send_error(f" {ctx.author} No track(s) found with that query")
-
-        if isinstance(tracks, pomice.Playlist):
-            for track in tracks.tracks:
+        if isinstance(results, Playlist):
+            for track in results.tracks:
                 player.queue.append(track)
-            await ctx.send_ok(f"Added {tracks.track_count} tracks to the queue")
+            await ctx.send_ok(f"Added {results.track_count} tracks to the queue")
             if not player.is_playing:
                 await player.play(player.queue.pop(0))
-                await ctx.send_info(f"Now playing {player.current.title} from {player.current.author}")
-            return
-
-        if len(tracks) == 1:
-            player.queue.append(tracks[0])
-            if not player.is_playing:
-                await player.play(player.queue.pop(0))
-                await ctx.send_info(f"Now playing {player.current.title} from {player.current.author}")
+                await ctx.send_ok(f"Now playing {player.current.title} from {player.current.author}")
             return
 
         else:
-            await ctx.send(
-                embed=discord.Embed(
-                    title="Select One Of The Options Below",
-                    description=f"Results for term: '{query[:50]}'",
-                    color=self.bot.ok_color,
-                ),
-                view=MusicView(ctx, tracks),
-            )
+            if len(results) == 1:
+                if not player.is_playing:
+                    await player.play(results.pop(0))
+                    await ctx.send_ok(f"Now playing {player.current.title} from {player.current.author}")
+                    return
+                else:
+                    await ctx.send(
+                        embed=discord.Embed(
+                            title=f"Results for query '{query[:50]}'",
+                            description="Select one of the options below to play",
+                            color=self.bot.ok_color,
+                        ),
+                        view=MusicView(ctx, results),
+                    )
 
     @commands.command(aliases=["q"])
     async def queue(self, ctx: AsahiContext):
@@ -236,8 +233,17 @@ class Music(
             return await ctx.send_error("There is no activate player.")
         if ctx.author not in ctx.guild.me.voice.channel.members:
             return await ctx.send_error("You must be in the same voice chat as me to use this command.")
+        if ctx.author != player.current.requester or not ctx.author.guild_permissions.manage_guild:
+            return await ctx.send(
+                "You must be the current track requester or have manage server permissions to skip this track"
+            )
 
         await player.stop()
+
+        track = player.current
+        if not track:
+            return await ctx.send_info("No more songs left in the queue")
+        await ctx.send_info(f"Now playing {track.title} from {track.author}")
 
     @commands.command(aliases=["stop"])
     async def pause(self, ctx: AsahiContext):
