@@ -1,5 +1,8 @@
+import os
+
 from discord.ext import commands
 import discord
+import psutil
 
 from core import Asahi, AsahiContext, PrefixHandler
 
@@ -27,16 +30,15 @@ class Meta(
         )
 
     @commands.command()
-    @commands.has_permissions(manage_guild=True)
-    async def prefix(self, ctx: AsahiContext, prefix: str = None):
-        """Set a custom prefix for the guild"""
+    async def prefix(self, ctx: AsahiContext, *, prefix: str = None):
+        """Set a guilds custom prefix. If none provided the set one will be provided"""
         if not prefix:
-            return await ctx.send_info(
-                f"Prefix for this guild {self.bot.prefixes.get(ctx.guild.id) or self.bot.config.get('prefix')}"
-            )
-
-        await self.prefix_handler.add_prefix(prefix, ctx.guild.id)
-        await ctx.send_ok(f"Sucessfully changed this guild's prefix to `{prefix}`")
+            return await ctx.send_info(f"This guild's prefix is `{self.bot.get_custom_prefix(ctx.guild.id)}`")
+        if ctx.author.guild_permissions.manage_guild:
+            self.prefix_handler.add_prefix(prefix[:10], ctx.guild.id)
+            await ctx.send_ok("Prefix set!")
+        else:
+            await ctx.send_error("You are lacking the required permission to run this command: `Manage Server`")
 
     @commands.command()
     async def credits(self, ctx: AsahiContext):

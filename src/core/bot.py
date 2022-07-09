@@ -169,3 +169,7 @@ class Asahi(commands.AutoShardedBot):
             return commands.when_mentioned_or(self.config.get("prefix"))(self, msg)
         else:
             return commands.when_mentioned_or(self.prefixes[msg.guild.id])(self, msg)
+
+    def get_custom_prefix(self, guild: int):
+        """Get a guild's custom prefix. If one is not found the default prefix is returned"""
+        return self.prefixes.get(guild) or self.config.get("prefix")

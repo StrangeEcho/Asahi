@@ -86,8 +86,8 @@ class Music(
                 identifier="MAIN",
             )
             self.logger.info(f"Sucessfully created Node: {node._identifier}")
-        except pomice.NodeCreationError as e:
-            self.logger.error(f"Error while creating Node. Unloading cog now...\n\n{e}")
+        except (pomice.NodeCreationError, pomice.NodeConnectionFailure) as e:
+            self.logger.error(f"Error while creating Node. Unloading cog now...\n{e}")
             await self.cog_unload()
 
     @commands.Cog.listener()
