@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Union
+from typing import Any, Optional, Union
 import asyncio
 import logging
 
@@ -11,6 +11,12 @@ import pomice
 
 from core import Asahi, AsahiContext
 from exts.helpers import humanize_timedelta
+
+
+class VoiceConnectionError(commands.CommandError):
+    def __init__(self, message: Optional[str] = None, *args: Any):
+        message = message or "There was an error thrown while trying to connect to a voice channel."
+        super().__init__(message, *args)
 
 
 class Player(pomice.Player):
@@ -120,11 +126,9 @@ class Music(
     async def connect(self, ctx: AsahiContext):
         """Connect the bot to your current vc"""
         if not ctx.author.voice:
-            return await ctx.send_error("You are not connected to any Voice Channels.")
+            raise VoiceConnectionError("You are not connected to any Voice Channels.")
         if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            return await ctx.send_error(
-                "I am unable to join that voice channel because of a lack of connection permissions"
-            )
+            raise VoiceConnectionError("Not able to join due to lack of permissions")
         await ctx.author.voice.channel.connect(cls=Player)
         await ctx.send_ok(f":white_check_mark: Connected to {ctx.author.voice.channel.name}")
 
@@ -133,8 +137,10 @@ class Music(
         """Play or enqueue a song"""
         player: Player = ctx.voice_client
         if not player:
-            await ctx.invoke(self.bot.get_command("connect"))
-            player: Player = ctx.voice_client
+            try:
+                await ctx.invoke(self.bot.get_command("connect"))
+            except VoiceConnectionError as e:
+                await ctx.send_error(e)
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
         if not results:
