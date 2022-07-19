@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Final
+from typing import Union
 import io
 import logging
 import os
@@ -49,7 +49,7 @@ class Asahi(commands.AutoShardedBot):
         self.node_pool = pomice.NodePool()
         self.commands_ran = 0
 
-    async def on_message(self, msg: discord.Message):
+    async def on_message(self, msg: discord.Message) -> None:
         await self.invoke(await self.get_context(msg, cls=AsahiContext))
 
     async def on_connect(self) -> None:
@@ -136,7 +136,7 @@ class Asahi(commands.AutoShardedBot):
         else:
             self.logger.error(formatted_tb)
 
-    async def startup(self):
+    async def startup(self) -> None:
         """Startup entry"""
         self.logger.info("Starting Asahi now.")
         self.logger.info(f"Time: {self.startup_time.strftime('%m/%d/%Y %H:%M')}")
@@ -164,12 +164,18 @@ class Asahi(commands.AutoShardedBot):
             self.prefixes.setdefault(guild, prefix)
         logger.info("Finished appending prefixes to on-board memory cache")
 
-    async def get_prefix(self, msg: discord.Message):
+    async def get_prefix(self, msg: discord.Message) -> Union[list[str], str]:
         if not msg.guild or msg.guild.id not in self.prefixes:
             return commands.when_mentioned_or(self.config.get("prefix"))(self, msg)
         else:
             return commands.when_mentioned_or(self.prefixes[msg.guild.id])(self, msg)
 
-    def get_custom_prefix(self, guild: int):
+    def get_custom_prefix(self, guild: int) -> str:
         """Get a guild's custom prefix. If one is not found the default prefix is returned"""
         return self.prefixes.get(guild) or self.config.get("prefix")
+
+    async def getch_user(self, userid: int) -> discord.User:
+        try:
+            return self.get_user(userid) or await self.fetch_user(userid)
+        except discord.NotFound:
+            self.logger.error(f"No user could be found with ID: {userid}")

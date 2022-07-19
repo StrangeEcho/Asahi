@@ -1,4 +1,4 @@
-import typing
+from typing import Mapping, Optional
 
 from discord.ext import commands
 import discord
@@ -15,7 +15,7 @@ class Help(commands.Cog):
 class AsahiHelp(commands.HelpCommand):
     context: AsahiContext
 
-    async def send_bot_help(self, mapping: typing.Mapping) -> None:
+    async def send_bot_help(self, mapping: Mapping) -> None:
         view = discord.ui.View()
         view.add_item(Navigator(self.context))
         await self.context.send(
@@ -27,7 +27,7 @@ class AsahiHelp(commands.HelpCommand):
             view=view,
         )
 
-    async def send_cog_help(self, cog: commands.Cog):
+    async def send_cog_help(self, cog: commands.Cog) -> None:
         await self.context.send(
             embed=discord.Embed(
                 title=f"Help for {cog.qualified_name.replace('_', ' ')}",
@@ -41,7 +41,7 @@ class AsahiHelp(commands.HelpCommand):
             )
         )
 
-    async def send_command_help(self, command: commands.Command):
+    async def send_command_help(self, command: commands.Command) -> None:
         cd = command._buckets._cooldown
         aliases = command.aliases
         embed = discord.Embed(
@@ -59,7 +59,7 @@ class AsahiHelp(commands.HelpCommand):
         embed.set_footer(text="[] - Optional | <> - Required")
         await self.context.send(embed=embed)
 
-    async def send_group_help(self, group: commands.Group):
+    async def send_group_help(self, group: commands.Group) -> None:
         cd = group._buckets._cooldown
         aliases = group.aliases
         embed = discord.Embed(
@@ -90,7 +90,7 @@ class Navigator(discord.ui.Select):
             )
         super().__init__(placeholder="Select a module/cog to view.", options=selectoptions)
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> Optional[discord.Message]:
         if interaction.user.id != self.ctx.author.id:
             return await interaction.response.send_message("You are not able to use this view", ephemeral=True)
         else:

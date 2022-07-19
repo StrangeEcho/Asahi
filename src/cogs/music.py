@@ -47,7 +47,7 @@ class MusicNavigator(Select):
             )
         super().__init__(placeholder="Select A Song To Play Here!", options=self.selections)
 
-    async def callback(self, inter: discord.Interaction):
+    async def callback(self, inter: discord.Interaction) -> Optional[discord.Message]:
         if inter.user.id != self.ctx.author.id:
             return await inter.response.send_message("You are not able to respond to this select menu", ephemeral=True)
 

@@ -14,14 +14,14 @@ class Moderation(commands.Cog):
         self.mute_handler = MuteHandler(self.bot)
         self.warn_handler = WarningHandler(self.bot)
 
-    def owner_cooldown_bypass(message: discord.Message):
+    def owner_cooldown_bypass(message: discord.Message) -> commands.Cooldown:
         """Shortens cooldown for the guild owner"""
         if message.author == message.guild.owner:
             return commands.Cooldown(1, 1.5)
         else:
             return commands.Cooldown(1, 5)
 
-    async def check_hierachy(self, ctx: AsahiContext, target: discord.Member):
+    async def check_hierachy(self, ctx: AsahiContext, target: discord.Member) -> Union[bool, discord.Message]:
         if ctx.me.top_role.position < target.top_role.position:
             return await ctx.send_error("Cant do this action because the target is higher on the role hierachy than me")
         if ctx.author == ctx.guild.owner:
@@ -142,7 +142,7 @@ class Moderation(commands.Cog):
         await ctx.send_info(
             "\n\n".join(
                 [
-                    f"{num}. Warned for `{i[3]}` by `{await self.bot.fetch_user(i[2])}` under warn ID: `{i[4]}`"
+                    f"{num}. Warned for `{i[3]}` by `{await self.bot.getch_user(i[2])}` under warn ID: `{i[4]}`"
                     for num, i in enumerate(raw_warn_data, 1)
                 ]
             )

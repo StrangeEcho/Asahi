@@ -25,7 +25,7 @@ class DevTools(commands.Cog):
         self._last_result = None
 
     @staticmethod
-    def cleanup_code(content):
+    def cleanup_code(content) -> str:
         """Automatically removes code blocks from the code."""
         # remove ```py\n```
         if content.startswith("```") and content.endswith("```"):
