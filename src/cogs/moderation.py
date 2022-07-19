@@ -32,7 +32,7 @@ class Moderation(commands.Cog):
             return await ctx.send_error("You cant perform this action on yourself")
 
     @commands.command()
-    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.dynamic_cooldown(owner_cooldown_bypass, type=commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(kick_members=True)
     @commands.guild_only()
@@ -46,7 +46,7 @@ class Moderation(commands.Cog):
         await ctx.message.add_reaction("👍")
 
     @commands.command()
-    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.dynamic_cooldown(owner_cooldown_bypass, type=commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.guild_only()
@@ -67,7 +67,7 @@ class Moderation(commands.Cog):
                 return await ctx.send_error(f"Could not ban anyone outside this guild with ID: {member}")
 
     @commands.command()
-    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.dynamic_cooldown(owner_cooldown_bypass, type=commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
@@ -90,7 +90,7 @@ class Moderation(commands.Cog):
         await ctx.send_ok(f"Muted {member} for the reason: {reason}")
 
     @commands.command()
-    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.dynamic_cooldown(owner_cooldown_bypass, type=commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
@@ -114,7 +114,7 @@ class Moderation(commands.Cog):
         await ctx.message.add_reaction("👍")
 
     @commands.command()
-    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.dynamic_cooldown(owner_cooldown_bypass, type=commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
     async def warn(self, ctx: AsahiContext, member: discord.Member, *, reason: str = None):
@@ -129,7 +129,7 @@ class Moderation(commands.Cog):
         await ctx.send_ok(f"Warned {member} for the reason {reason}")
 
     @commands.command()
-    @commands.dynamic_cooldown(owner_cooldown_bypass)
+    @commands.dynamic_cooldown(owner_cooldown_bypass, type=commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
     async def warns(self, ctx: AsahiContext, member: discord.Member = None):
@@ -149,7 +149,7 @@ class Moderation(commands.Cog):
         )
 
     @commands.command()
-    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.cooldown(1, 60, commands.BucketType.user, type=commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     async def setmuterole(self, ctx: AsahiContext, *, role: discord.Role):
