@@ -149,7 +149,7 @@ class Moderation(commands.Cog):
         )
 
     @commands.command()
-    @commands.cooldown(1, 60, commands.BucketType.user, type=commands.BucketType.user)
+    @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     async def setmuterole(self, ctx: AsahiContext, *, role: discord.Role):
