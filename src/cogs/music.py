@@ -138,10 +138,10 @@ class Music(
         player: Player = ctx.voice_client
         if not player:
             try:
-                await ctx.invoke(self.bot.get_command("connect"))
+                await ctx.invoke(ctx.invoke(ctx.bot.get_command("connect")))
                 player: Player = ctx.voice_client
             except VoiceConnectionError as e:
-                return await ctx.send_error(e)
+                await ctx.send_error(e)
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
         if not results:
@@ -244,17 +244,8 @@ class Music(
             return await ctx.send_error("There is no activate player.")
         if ctx.author not in ctx.guild.me.voice.channel.members:
             return await ctx.send_error("You must be in the same voice chat as me to use this command.")
-        if ctx.author != player.current.requester or not ctx.author.guild_permissions.manage_guild:
-            return await ctx.send(
-                "You must be the current track requester or have manage server permissions to skip this track"
-            )
-
         await player.stop()
-
-        track = player.current
-        if not track:
-            return await ctx.send_info("No more songs left in the queue")
-        await ctx.send_info(f"Now playing {track.title} from {track.author}")
+        await ctx.message.add_reaction("✅")
 
     @commands.command(aliases=["stop"])
     async def pause(self, ctx: AsahiContext):
