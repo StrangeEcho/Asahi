@@ -139,9 +139,9 @@ class Music(
         if not player:
             try:
                 await ctx.invoke(ctx.invoke(ctx.bot.get_command("connect")))
-                player: Player = ctx.voice_client
             except VoiceConnectionError as e:
                 await ctx.send_error(e)
+            player: Player = ctx.voice_client
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
         if not results:
