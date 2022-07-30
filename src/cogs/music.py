@@ -138,7 +138,7 @@ class Music(
         player: Player = ctx.voice_client
         if not player:
             try:
-                await ctx.invoke(ctx.invoke(ctx.bot.get_command("connect")))
+                await ctx.invoke(ctx.bot.get_command("connect"))
             except VoiceConnectionError as e:
                 await ctx.send_error(e)
             player: Player = ctx.voice_client
