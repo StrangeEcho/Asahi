@@ -13,12 +13,6 @@ from core import Asahi, AsahiContext
 from exts.helpers import humanize_timedelta
 
 
-class VoiceConnectionError(commands.CommandError):
-    def __init__(self, message: Optional[str] = None, *args: Any):
-        message = message or "There was an error thrown while trying to connect to a voice channel."
-        super().__init__(message, *args)
-
-
 class Player(pomice.Player):
     """Subclass of Pomice Player, adding a queue implementation."""
 
@@ -122,25 +116,25 @@ class Music(
         except IndexError:
             await player.destroy()
 
-    @commands.command()
+    @commands.command(aliases=["join", "con"])
     async def connect(self, ctx: AsahiContext):
-        """Connect the bot to your current vc"""
+        """Connect the bot to your current voice channel"""
         if not ctx.author.voice:
-            raise VoiceConnectionError("You are not connected to any Voice Channels.")
+            return await ctx.send_error("You are currently not connected to any voice channels")
         if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            raise VoiceConnectionError("Not able to join due to lack of permissions")
+            return await ctx.send_error("I am lacking permissions to join your current voice channel")
         await ctx.author.voice.channel.connect(cls=Player)
-        await ctx.send_ok(f":white_check_mark: Connected to {ctx.author.voice.channel.name}")
 
     @commands.command(aliases=["enqueue"])
     async def play(self, ctx: AsahiContext, *, query: str):
         """Play or enqueue a song"""
         player: Player = ctx.voice_client
         if not player:
-            try:
-                await ctx.invoke(ctx.bot.get_command("connect"))
-            except VoiceConnectionError as e:
-                await ctx.send_error(e)
+            if not ctx.author.voice:
+                return await ctx.send_error("You are currently not connected to any voice channels")
+            if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
+                return await ctx.send_error("I am lacking permissions to join your current voice channel")
+            await ctx.author.voice.channel.connect()
             player: Player = ctx.voice_client
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
