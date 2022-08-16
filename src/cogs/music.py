@@ -135,7 +135,7 @@ class Music(
             if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
                 return await ctx.send_error("I am lacking permissions to join your current voice channel")
             await ctx.author.voice.channel.connect()
-            player: Player = ctx.voice_client
+        player: Player = ctx.voice_client
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
         if not results:
