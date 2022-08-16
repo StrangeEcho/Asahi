@@ -129,12 +129,10 @@ class Music(
     async def play(self, ctx: AsahiContext, *, query: str):
         """Play or enqueue a song"""
         player: Player = ctx.voice_client
-        if not player:
-            if not ctx.author.voice:
-                return await ctx.send_error("You are currently not connected to any voice channels")
-            if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-                return await ctx.send_error("I am lacking permissions to join your current voice channel")
-            await ctx.author.voice.channel.connect(cls=Player)
+        if not player and ctx.author.voice and ctx.author.voice.channel.permissions_for(ctx.me).connect:
+            await ctx.invoke(self.connect)
+        else:
+            return await ctx.send_error("Could not connect to voice channel")
         player: Player = ctx.voice_client
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
