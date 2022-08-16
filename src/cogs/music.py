@@ -73,6 +73,16 @@ class Music(
         self.logger = logging.getLogger("music-master")
         asyncio.get_running_loop().create_task(self.create_ll_connection())
 
+    def is_vc_joinable(self, ctx: AsahiContext) -> bool:
+        if not ctx.author.voice:
+            return False
+        if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
+            return False
+        if len(ctx.author.voice.channel.members) == ctx.author.voice.channel.user_limit:
+            return False
+        else:
+            return True
+
     async def create_ll_connection(self) -> None:
         await self.bot.wait_until_ready()
         try:
@@ -119,20 +129,18 @@ class Music(
     @commands.command(aliases=["join", "con"])
     async def connect(self, ctx: AsahiContext):
         """Connect the bot to your current voice channel"""
-        if not ctx.author.voice:
-            return await ctx.send_error("You are currently not connected to any voice channels")
-        if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            return await ctx.send_error("I am lacking permissions to join your current voice channel")
-        await ctx.author.voice.channel.connect(cls=Player)
+        if self.is_vc_joinable(ctx):
+            await ctx.author.voice.channel.connect(cls=Player)
+        else:
+            return await ctx.send_error("Cannot join voice channel")
 
     @commands.command(aliases=["enqueue"])
     async def play(self, ctx: AsahiContext, *, query: str):
         """Play or enqueue a song"""
-        player: Player = ctx.voice_client
-        if not player and ctx.author.voice and ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            await ctx.invoke(self.connect)
-        else:
-            return await ctx.send_error("Could not connect to voice channel")
+        if ctx.me.voice is None and ctx.author.voice is not None:
+            await ctx.invoke(self.command_summon)
+        if not ctx.author.voice:
+            return await ctx.send_error("You are not in a voice channel.")
         player: Player = ctx.voice_client
 
         results: Union[Playlist, list[Track]] = await player.get_tracks(query, ctx=ctx)
