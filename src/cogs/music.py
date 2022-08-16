@@ -138,7 +138,7 @@ class Music(
     async def play(self, ctx: AsahiContext, *, query: str):
         """Play or enqueue a song"""
         if ctx.me.voice is None and ctx.author.voice is not None:
-            await ctx.invoke(self.command_summon)
+            await ctx.invoke(self.connect)
         if not ctx.author.voice:
             return await ctx.send_error("You are not in a voice channel.")
         player: Player = ctx.voice_client
