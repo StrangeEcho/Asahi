@@ -2,7 +2,6 @@ from datetime import timedelta
 import logging
 from typing import Optional, Union
 import asyncio
-import chunk
 
 from discord.ext import commands
 from discord.ui import Select, View
@@ -46,6 +45,7 @@ class TrackNavigator(Select):
 
         player: Player = self.ctx.voice_client
         track: Track = self.tracks[int(self.values[0])]
+        await inter.response.defer()
         if player.is_playing:
             player.queue.put(track)
             await self.ctx.send_ok(f"Enqueued {track.title[:50]} into the queue")
