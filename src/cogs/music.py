@@ -1,79 +1,75 @@
 from datetime import timedelta
-from typing import Any, Optional, Union
-import asyncio
 import logging
+from typing import Optional, Union
+import asyncio
+import chunk
 
 from discord.ext import commands
 from discord.ui import Select, View
-from pomice import Playlist, Track
+from pomice import LoopMode, Playlist, Queue, Track
 import discord
 import pomice
 
 from core import Asahi, AsahiContext
-from exts.helpers import humanize_timedelta
+from exts import chunk_list, humanize_timedelta, Paginator
 
 
 class Player(pomice.Player):
-    """Subclass of Pomice Player, adding a queue implementation."""
+    """Custom implementation of pomice's player adding a queue system"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.loop: bool = False
-        self._queue: list[pomice.Track] = []
+        self._queue: Queue = Queue()
 
     @property
-    def queue(self) -> list[pomice.Track]:
+    def queue(self) -> Queue:
         return self._queue
 
 
-class MusicNavigator(Select):
-    def __init__(self, ctx: AsahiContext, tracks: list[pomice.Track]):
-        self.selections: list[discord.SelectOption] = []
-        self.ctx = ctx
-        self.tracks = tracks
-        for num, track in enumerate(self.tracks[:5], 1):
-            self.selections.append(
+class TrackNavigator(Select):
+    def __init__(self, ctx: AsahiContext, tracks: list[Track]):
+        self.tracks: list[Track] = tracks
+        self.select_options: list[discord.SelectOption] = []
+        self.ctx: AsahiContext = ctx
+
+        for i, track in enumerate(self.tracks[:5], 1):
+            self.select_options.append(
                 discord.SelectOption(
-                    label=f"{num}. {track.title[:50]}",
-                    description=f"From {track.author[:50]}",
-                    value=str(num - 1),
+                    label=f"{i}. {track.title[:50]}", description=f"From: {track.author[:50]}", value=str(i - 1)
                 )
             )
-        super().__init__(placeholder="Select A Song To Play Here!", options=self.selections)
+        super().__init__(placeholder="Select A Song To Play!", options=self.select_options)
 
     async def callback(self, inter: discord.Interaction) -> Optional[discord.Message]:
-        if inter.user.id != self.ctx.author.id:
-            return await inter.response.send_message("You are not able to respond to this select menu", ephemeral=True)
+        if self.ctx.author.id != inter.user.id:
+            return await inter.response.send_message("You are not able to use this Select Menu", ephemeral=True)
 
         player: Player = self.ctx.voice_client
-        track = self.tracks[int(self.values[0])]
-
+        track: Track = self.tracks[int(self.values[0])]
         if player.is_playing:
-            player.queue.append(track)
-            await inter.response.send_message(f"Added {track.title[:50]} from {track.author[:25]} to the queue.")
+            player.queue.put(track)
+            await self.ctx.send_ok(f"Enqueued {track.title[:50]} into the queue")
         else:
             await player.play(track)
-            await inter.response.send_message(f"Now playing {track.title[:50]} from {track.author[:25]}")
+            await self.ctx.send_ok(f"Now playing {track.title[:50]}")
 
 
 class MusicView(View):
-    def __init__(self, ctx: AsahiContext, tracks: list[pomice.Track]):
-        super().__init__(timeout=16)
-        self.add_item(MusicNavigator(ctx, tracks))
+    def __init__(self, ctx: AsahiContext, tracks: list[Track]):
+        super().__init__(timeout=30)
+        self.add_item(TrackNavigator(ctx, tracks))
 
 
 class Music(
     commands.Cog,
     command_attrs={"cooldown": commands.CooldownMapping.from_cooldown(1, 3.5, commands.BucketType.user)},
 ):
-    """All commands related to the bots music features"""
-
     def __init__(self, bot: Asahi):
         self.bot = bot
-        self.logger = logging.getLogger("music-master")
-        asyncio.get_running_loop().create_task(self.create_ll_connection())
+        asyncio.get_event_loop().create_task(self.create_ll_connection())
 
     def is_vc_joinable(self, ctx: AsahiContext) -> bool:
+        """Checks if a vc is joinable under certain conditions"""
         if not ctx.author.voice:
             return False
         if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
@@ -84,7 +80,9 @@ class Music(
             return True
 
     async def create_ll_connection(self) -> None:
+        """Create a connection to LavaLink node"""
         await self.bot.wait_until_ready()
+        music_logger = logging.getLogger("music-master")
         try:
             node = await self.bot.node_pool.create_node(
                 bot=self.bot,
@@ -95,19 +93,16 @@ class Music(
                 spotify_client_secret=self.bot.config.get("spotify_client_secret"),
                 identifier="MAIN",
             )
-            self.logger.info(f"Sucessfully created Node: {node._identifier}")
+            music_logger.info(f"Sucessfully created Node: {node._identifier}")
         except (pomice.NodeCreationError, pomice.NodeConnectionFailure) as e:
-            self.logger.error(f"Error while creating Node. Unloading cog now...\n{e}")
+            music_logger.error(f"Error while creating Node. Unloading cog now...\n{e}")
             await self.cog_unload()
 
     @commands.Cog.listener()
     async def on_pomice_track_end(self, player: Player, track: pomice.Track, _):
         try:
-            if player.loop:
-                await player.play(track)
-            else:
-                await player.play(player.queue.pop(0))
-        except IndexError:
+            await player.play(player.queue.get())
+        except pomice.QueueEmpty:
             await asyncio.sleep(60)
             if not player.current and not player.queue:
                 await player.destroy()
@@ -115,15 +110,15 @@ class Music(
     @commands.Cog.listener()
     async def on_pomice_track_stuck(self, player: Player, track, _):
         try:
-            await player.play(player.queue.pop(0))
-        except IndexError:
+            await player.play(player.queue.get())
+        except pomice.QueueEmpty:
             await player.destroy()
 
     @commands.Cog.listener()
     async def on_pomice_track_exception(self, player: Player, track, _):
         try:
-            await player.play(player.queue.pop(0))
-        except IndexError:
+            await player.play(player.queue.get())
+        except pomice.QueueEmpty:
             await player.destroy()
 
     @commands.command(aliases=["join", "con"])
@@ -149,10 +144,10 @@ class Music(
 
         if isinstance(results, Playlist):
             for track in results.tracks:
-                player.queue.append(track)
+                player.queue.put(track)
             await ctx.send_ok(f"Added {results.track_count} tracks to the queue")
             if not player.is_playing:
-                await player.play(player.queue.pop(0))
+                await player.play(player.queue.get())
                 await ctx.send_ok(f"Now playing {player.current.title} from {player.current.author}")
             return
 
@@ -160,7 +155,7 @@ class Music(
             if len(results) == 1:
                 trk = results.pop(0)
                 if player.is_playing:
-                    player.queue.append(trk)
+                    player.queue.put(trk)
                     await ctx.send_ok(f"Added {trk.title} from {trk.author} to the queue")
                     return
                 await player.play(trk)
@@ -184,19 +179,19 @@ class Music(
         if not player.queue:
             return await ctx.send_info("No tracks left in queue.")
 
-        queue_length = humanize_timedelta(timedelta(milliseconds=sum([int(i.length) for i in player.queue])))
-
-        await ctx.send(
-            embed=discord.Embed(
-                title=f"Queue for {ctx.guild}",
-                description="\n".join(
-                    [f"{num}. {track.title} - {track.author}" for num, track in enumerate(player.queue, 1)]
-                ),
+        queue_length: str = humanize_timedelta(timedelta(milliseconds=sum([int(i.length) for i in player.queue])))
+        track_list: list[list[Track]] = list(chunk_list(list(player.queue), 8))
+        embeds = [
+            discord.Embed(
+                description="\n".join([f"{trk.title[:50]} - {trk.author[:50]}" for trk in _list]),
                 color=self.bot.info_color,
             )
             .set_footer(text=f"Vol: {player.volume}% | Track Count: {len(player.queue)} | Length: {queue_length}")
-            .set_author(name=f"Current Song: {player.current.title}")
-        )
+            .set_author(name=f"Current song {player.current.title[:50]} - {player.current.author[:25]}")
+            .set_thumbnail(url=ctx.guild.icon.url)
+            for _list in track_list
+        ]
+        await Paginator(embeds).start(ctx)
 
     @commands.command(aliases=["np"])
     async def nowplaying(self, ctx: AsahiContext):
@@ -221,7 +216,7 @@ class Music(
             .set_thumbnail(url=player.current.thumbnail)
         )
 
-    @commands.command(aliases=["leave", "gtfo", "fuckoff"])
+    @commands.command(aliases=["leave", "gtfo", "fuckoff", "dc"])
     async def disconnect(
         self,
         ctx: AsahiContext,
@@ -241,7 +236,7 @@ class Music(
         player: Player = ctx.voice_client
 
         if not player:
-            return await ctx.send_error("There is no activate player.")
+            return await ctx.send_error("There is no active player.")
         if ctx.author not in ctx.guild.me.voice.channel.members:
             return await ctx.send_error("You must be in the same voice chat as me to use this command.")
         await player.stop()
@@ -268,22 +263,6 @@ class Music(
         await player.set_pause(False)
         await ctx.send_ok("Unpaused current track")
 
-    @commands.command(aliases=["remtrack"])
-    async def removetrack(self, ctx: AsahiContext, index: int = 1):
-        """Remove a single track from the music queue. If no index is provied, the first track in queue will be removed"""
-        player: Player = ctx.voice_client
-
-        if not player:
-            return await ctx.send_error("There is no activate player.")
-
-        if len(player.queue) == 0:
-            return await ctx.send_error("Queue is currently empty")
-        try:
-            item = player.queue.pop(index - 1)
-            await ctx.send_ok(f"Removed {item.title}")
-        except IndexError:
-            return await ctx.send_error("Error: You tried to remove an item from the queue that doesnt exist.")
-
     @commands.command(aliases=["vol"])
     async def volume(self, ctx: AsahiContext, vol: int):
         """Set the volume of the current music player"""
@@ -296,21 +275,25 @@ class Music(
         await player.set_volume(vol)
         await ctx.send_ok(f"Set player volume to {player.volume}")
 
-    @commands.command()
+    @commands.command(aliases=["loop"])
     async def repeat(self, ctx: AsahiContext):
         """Repeats/loops the current song"""
         player: Player = ctx.voice_client
         if not player:
             return await ctx.send_error("There is no active player")
 
-        if not player.current:
-            return await ctx.send_error("There is currently nothing playing to repeat")
-
-        player.loop = not player.loop
-        if player.loop:
-            await ctx.send_ok(f"Now repeating {player.current.title}")
-        else:
-            await ctx.send_ok("Looping is now disabled.")
+        if player.queue.loop_mode is None:
+            player.queue.set_loop_mode(LoopMode.TRACK)
+            await ctx.send_ok("Now repeating the current track")
+            return
+        if player.queue.loop_mode is LoopMode.TRACK:
+            player.queue.set_loop_mode(LoopMode.QUEUE)
+            await ctx.send_ok("Now looping the queue")
+            return
+        if player.queue.loop_mode is LoopMode.QUEUE:
+            player.queue.set_loop_mode(None)
+            await ctx.send_ok("Disabled looping")
+            return
 
 
 async def setup(bot: Asahi):

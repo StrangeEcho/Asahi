@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Any
+from typing import Any, Generator
 
 from humanize import naturaldelta, precisedelta
 import toml
@@ -36,3 +36,9 @@ def humanize_timedelta(_delta: timedelta, *, precise: bool = False) -> str:
         return precisedelta(_delta)
     else:
         return naturaldelta(_delta)
+
+
+def chunk_list(_list: list, size: int) -> Generator:
+    """Divide a list into even chunks"""
+    for i in range(0, len(_list), size):
+        yield _list[i : i + size]

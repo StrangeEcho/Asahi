@@ -1,6 +1,6 @@
 import asyncio
 
-from core.bot import Asahi
+from core import Asahi
 
 if __name__ == "__main__":
     asyncio.run(Asahi().startup())
