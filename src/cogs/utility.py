@@ -77,8 +77,9 @@ class Utility(
                 value="\n".join([f"{k.replace('_', ' ').title()}: **{v}**" for k, v in channels.items()]),
                 inline=False,
             )
-            .add_field(name="Features", value=", ".join([f"`{feature}`" for feature in features]), inline=False)
         )
+        if features:
+            embed.add_field(name="Features", value=", ".join([f"`{feature}`" for feature in features]), inline=False)
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["rinfo"])
