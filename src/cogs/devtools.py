@@ -106,13 +106,7 @@ class DevTools(commands.Cog):
             file=discord.File((io.BytesIO(basestr.encode("utf-8"))), f"{ctx.message.created_at.strftime('%c')}.txt")
         )
 
-    @commands.group(invoke_without_command=True, aliases=["cm"])
-    @commands.is_owner()
-    async def cogmanager(self, ctx: AsahiContext):
-        """Cog management commands"""
-        await ctx.send_help(ctx.command)
-
-    @cogmanager.command()
+    @commands.command()
     async def load(self, ctx: AsahiContext, *cogs):
         """Load Cogs"""
         succeed = 0
@@ -136,7 +130,7 @@ class DevTools(commands.Cog):
         if error_str:
             await ctx.send(file=discord.File(io.BytesIO(error_str.encode("utf-8")), "error.nim"))
 
-    @cogmanager.command()
+    @commands.command()
     async def reload(self, ctx: AsahiContext, *cogs):
         """Reload cogs"""
         succeed = 0
@@ -160,14 +154,14 @@ class DevTools(commands.Cog):
         if error_str:
             await ctx.send(file=discord.File(io.BytesIO(error_str.encode("utf-8")), "error.nim"))
 
-    @cogmanager.command()
+    @commands.command()
     async def unload(self, ctx: AsahiContext, *cogs):
         """Unload cogs"""
         for ext in cogs:
             await self.bot.unload_extension(ext)
         await ctx.send_ok(":ok_hand:")
 
-    @cogmanager.command()
+    @commands.command()
     async def reloadall(self, ctx: AsahiContext):
         """Reload all cogs"""
         errored_out = False
@@ -184,11 +178,11 @@ class DevTools(commands.Cog):
         else:
             return await ctx.send_ok(":ok_hand:")
 
-    @cogmanager.command()
+    @commands.command()
     async def unloadall(self, ctx: AsahiContext):
         """Unload all cogs"""
         for cog in self.bot.cogs.values():
-            cog.cog_unload()
+            await cog.cog_unload()
 
         await ctx.send_ok(":ok_hand:")
 
@@ -197,6 +191,7 @@ class DevTools(commands.Cog):
     async def restart(self, ctx: AsahiContext):
         """Restart the bot"""
         await ctx.send_ok("Attempting to restart now. Cya later...")
+        await self.bot.close()
 
     @commands.command()
     @commands.is_owner()

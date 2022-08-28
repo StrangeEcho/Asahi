@@ -16,7 +16,7 @@ class AsahiHelp(commands.HelpCommand):
     context: AsahiContext
 
     async def send_bot_help(self, mapping: Mapping) -> None:
-        view = discord.ui.View()
+        view = discord.ui.View(timeout=16)
         view.add_item(Navigator(self.context))
         await self.context.send(
             embed=discord.Embed(
@@ -98,6 +98,7 @@ class Navigator(discord.ui.Select):
             if not self.sent:
                 await self.ctx.send_help(self.ctx.bot.get_cog(self.values[0]))
                 self.sent = True
+                self.view.stop()
 
 
 async def setup(bot: Asahi):

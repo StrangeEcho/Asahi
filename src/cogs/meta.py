@@ -1,10 +1,13 @@
+from datetime import datetime
 import os
+import platform
 
 from discord.ext import commands
 import discord
 import psutil
 
 from core import Asahi, AsahiContext, PrefixHandler
+from exts import humanize_timedelta, Paginator
 
 
 class Meta(
@@ -61,6 +64,56 @@ class Meta(
         await ctx.send_info(
             f"Invite me using [this link](https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=413893192823&scope=bot)"
         )
+
+    @commands.command()
+    async def about(self, ctx: AsahiContext):
+        """Information about the bot"""
+        pid = os.getpid()
+        memory_usage = round(psutil.Process(pid).memory_info().rss / 1024**2)
+        total_memory = round(psutil.virtual_memory().total / 1024**2)
+        cpu_usage = psutil.Process(pid).cpu_percent(interval=2)
+
+        embed = (
+            discord.Embed(
+                title="About Me", description=f"{self.bot.user} | {self.bot.user.id}", color=self.bot.info_color
+            )
+            .add_field(name="Creation Date", value=discord.utils.format_dt(self.bot.user.created_at, "F"))
+            .add_field(
+                name="Registered Owner(s)",
+                value=", ".join([f"`{await self.bot.getch_user(u)}`" for u in self.bot.owner_ids]),
+            )
+            .add_field(
+                name="Uptime",
+                value=humanize_timedelta(datetime.now() - self.bot.startup_time, precise=True),
+                inline=False,
+            )
+            .add_field(name="Discord WebSocket Latency", value=f"{round(self.bot.latency * 1000)}ms")
+            .add_field(
+                name="Library & Language",
+                value=f"Python: {platform.python_version()} | Discord.py: {discord.__version__}",
+                inline=False,
+            )
+            .set_thumbnail(url=self.bot.user.avatar.url)
+            .set_footer(text=f"Asahi Version {self.bot.__version__}")
+        )
+
+        embed2 = (
+            discord.Embed(title="Statistics", color=self.bot.info_color)
+            .add_field(name="Guild Count", value=len(self.bot.guilds))
+            .add_field(name="User Count", value=len(self.bot.users))
+            .add_field(
+                name="Command Usage",
+                value=f"Total Commands: {len(self.bot.commands)} | Used Since Startup: {self.bot.commands_ran}",
+                inline=False,
+            )
+        )
+
+        embed3 = (
+            discord.Embed(title="Process Information", color=self.bot.info_color)
+            .add_field(name="CPU Usage", value=f"{cpu_usage}%")
+            .add_field(name="Memory Usage", value=f"{memory_usage}Mb of {total_memory}Mb")
+        )
+        await Paginator([embed, embed2, embed3]).start(ctx)
 
 
 async def setup(bot: Asahi):
