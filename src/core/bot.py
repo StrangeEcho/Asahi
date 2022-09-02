@@ -34,6 +34,7 @@ class Asahi(commands.AutoShardedBot):
             command_prefix=self.get_prefix,
             intents=discord.Intents.all(),
             activity=discord.Activity(type=discord.ActivityType.competing, name="Best Girl"),
+            enable_debug_events=True,
             *args,
             **kwargs,
         )

@@ -1,3 +1,4 @@
+from collections import Counter
 from contextlib import redirect_stdout
 from datetime import datetime
 from subprocess import PIPE
@@ -23,6 +24,7 @@ class DevTools(commands.Cog):
     def __init__(self, bot: Asahi):
         self.bot = bot
         self._last_result = None
+        self.socket_stats = Counter()
 
     @staticmethod
     def cleanup_code(content) -> str:
@@ -33,6 +35,22 @@ class DevTools(commands.Cog):
 
         # remove `foo`
         return content.strip("` \n")
+
+    @commands.Cog.listener("on_socket_event_type")
+    async def websocket_listener(self, event: str):
+        self.socket_stats[event] += 1
+
+    @commands.command()
+    @commands.is_owner()
+    async def wssstats(self, ctx: AsahiContext):
+        """Show a list of websocket events and the amount they've been dispatched"""
+        await ctx.send(
+            embed=discord.Embed(
+                title=f"Total Observed WebSocket Events : {self.socket_stats.total()}",
+                description="\n".join([f"`{n}`: **{i}**" for n, i in self.socket_stats.most_common()]),
+                color=self.bot.info_color,
+            )
+        )
 
     @commands.command(name="eval", aliases=["evaluate", "ev"])
     @commands.is_owner()

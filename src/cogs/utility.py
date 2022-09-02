@@ -1,3 +1,4 @@
+from collections import Counter
 from typing import Union
 
 from discord.ext import commands
@@ -54,12 +55,10 @@ class Utility(
     async def serverinfo(self, ctx: AsahiContext):
         """Retrieve information about this guild"""
         g = ctx.guild
-        channels: dict[str, int] = {}
+        channels = Counter()
         features: list[str] = [f.replace("_", " ").title() for f in g.features]
-        for typ in discord.ChannelType.__members__.keys():
-            channels[typ] = 0
-        for channel in g.channels:
-            channels[str(channel.type)] += 1
+        for c in g.channels:
+            channels[str(c.type)] += 1
         embed = (
             discord.Embed(
                 title=f"Information for {g}",
@@ -111,7 +110,7 @@ class Utility(
             .add_field(name="Category", value=channel.category)
             .add_field(name="Permission Synced", value="✅" if channel.permissions_synced else "❌")
             .add_field(name="Created at", value=discord.utils.format_dt(channel.created_at, "F"))
-            .add_field(name="Posistion", value=channel.position)
+            .add_field(name="Position", value=channel.position)
         )
         if isinstance(channel, (discord.TextChannel, discord.CategoryChannel)):
             embed.add_field(name="NSFW", value="✅" if channel.nsfw else "❌")
