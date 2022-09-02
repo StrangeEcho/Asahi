@@ -49,7 +49,7 @@ class Asahi(commands.AutoShardedBot):
         self.startup_time: datetime = datetime.now()
         self.node_pool = pomice.NodePool()
         self.commands_ran = 0
-        self.__version__ = "3.2.6"
+        self.__version__ = "3.2.7"
 
     async def on_message(self, msg: discord.Message) -> None:
         await self.invoke(await self.get_context(msg, cls=AsahiContext))

@@ -42,7 +42,7 @@ class DevTools(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def wssstats(self, ctx: AsahiContext):
+    async def wsstats(self, ctx: AsahiContext):
         """Show a list of websocket events and the amount they've been dispatched"""
         await ctx.send(
             embed=discord.Embed(
