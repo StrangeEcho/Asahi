@@ -104,7 +104,7 @@ class Utility(
         channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel] = None,
     ):
         channel = channel or ctx.channel
-        """Retreive information about a guild channel"""
+        """Retrieve information about a guild channel"""
         embed = (
             discord.Embed(title=f"Info for {channel}", description=f"ID: {channel.id}", color=self.bot.info_color)
             .add_field(name="Category", value=channel.category)
@@ -123,9 +123,11 @@ class Utility(
     @commands.command(aliases=["einfo"])
     @commands.guild_only()
     async def emojiinfo(self, ctx: AsahiContext, *, emoji: Union[discord.PartialEmoji, discord.Emoji]):
-        """Retreieve information about an emoji"""
+        """Retrieve information about an emoji"""
         embed = (
-            discord.Embed(title=f"Info for {emoji.name}", value=f"{emoji} | ID: {emoji.id}", color=self.bot.info_color)
+            discord.Embed(
+                title=f"Info for {emoji.name}", description=f"{emoji} | ID: {emoji.id}", color=self.bot.info_color
+            )
             .add_field(name="Animated", value="✅" if emoji.animated else "❌")
             .add_field(name="Url", value=emoji.url)
         )
