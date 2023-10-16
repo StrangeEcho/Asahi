@@ -1,10 +1,9 @@
 {
   "apps": [
     {
-      "name": "Kurisu",
-      "script": "main.py",
-      "interpreter": "./venv/bin/python3",
-      "interpreter_args": "-u"
+      "name": "Asahi",
+      "script": "kurisu",
+      "interpreter": "./venv/bin/python3"
     }
   ]
 }

@@ -1,7 +1,7 @@
 from discord.ext import commands
 
-from .errors import UserNotFound
-from .kurisu import KurisuBot
+from ...Utilities.errors import UserNotFound
+from ..kurisu import KurisuBot
 
 
 class PrefixManager:

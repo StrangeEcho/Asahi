@@ -1,93 +1,51 @@
 import logging
 import os
 
-from aiohttp import ClientSession
-from databases import Database
-from discord.ext import commands
-import discord
-import toml
 
-from .context import KurisuContext
-from .log import LoggingHandler
+from discord.ext import commands
+from typing import Any, Optional
+import discord
+import tomllib
+import aiosqlite
+
+class ConfigHandler:
+    """Core configuration handler for parsing toml config file"""
+    def __init__(self):
+        with open("./Kurisu/core/config.toml", "rb") as f:
+            self.config = tomllib.load(f.read())
+        
+    def get(self, config_name: str, category: str = None) -> Optional[Any]:
+        """Fetch the specified config from the config.toml file"""
+        if category:
+            try:
+                return self.config[category][config_name]
+            except KeyError:
+                return None
+        return self.config.get(config_name)
 
 
 class KurisuBot(commands.AutoShardedBot):
-    """Idk"""
+    """Subclass adding multiple meta features to the bot"""
+    discord.utils.setup_logging(level=logging.INFO)
 
-    def __init__(self, *args, **kwargs):
-        for logger in [
-            "kurisu",
-            "discord.client",
-            "discord.gateway",
-            "discord.http",
-            "discord.ext.commands.core",
-            "listeners",
-            "main",
-        ]:
-            logging.getLogger(logger).setLevel(
-                logging.DEBUG if logger == "kurisu" else logging.INFO
-            )
-            logging.getLogger(logger).addHandler(LoggingHandler())
-        self.logger = logging.getLogger("kurisu")
+    def __init__(self):
         super().__init__(
             intents=discord.Intents.all(),
-            allowed_mentions=discord.AllowedMentions(
-                roles=False, everyone=False
-            ),
-            *args,
-            **kwargs,
         )
-        self.config = toml.load("config.toml")
-        self.configoptions = toml.load("configoptions.toml")
-        self.owner_ids: set = {000000000000}  # The 0's are a placeholder
-        self.ok_color = int(
-            str(
-                self.get_config("configoptions", "options", "ok_color")
-            ).replace("#", "0x"),
-            base=16,
-        )
-        self.error_color = int(
-            str(
-                self.get_config("configoptions", "options", "error_color")
-            ).replace("#", "0x"),
-            base=16,
-        )
-        self.uptime = None
-        self._session = None
-        self.startup_time = discord.utils.utcnow()
+        self.config = ConfigHandler()
+        self.logger = logging.getLogger(__name__)
+        self.db = aiosqlite.connect("./Kurisu/core/database/database.db")
+        self.ok_color: int = self.config.get("ok_color", "Core")
+        self.error_color: int = self.config.get("error_color", "Core")
+        self.owner_ids = self.config.get("owner_ids", "Core")
+        self.start_time = discord.utils.utcnow()
         self.version = "3.2.2"
-        self.db = Database("sqlite:///kurisu/kurisu.db")
         self.executed_commands = 0
-        self.prefixes = {}
+        self.prefixes: dict[int, str] = {}
 
-    @property
-    def database(self) -> Database:
-        return self.db
+    async def on_shard_connect(self, shard_id: int):
+        self.logger.info(f"Shard ID: {shard_id} | Logged In...")
 
-    @property
-    def session(self) -> ClientSession:
-        if self._session is None:
-            self._session = ClientSession(loop=self.loop)
-        return self._session
-
-    def get_config(self, file: str, group: str, config: str = None):
-        if file == "configoptions":
-            if not config:
-                return self.configoptions[group]
-            return self.configoptions[group][config]
-
-        if file == "config":
-            if not config:
-                return self.config[group]
-            return self.config[group][config]
-
-    async def on_connect(self):
-        self.logger.info(f"Logged in as {self.user.name}(ID: {self.user.id})")
-        try:
-            await self.db.connect()
-        except AssertionError:
-            pass
-        self.logger.info("Connected to the database: `kurisu.db`")
 
     async def on_ready(self):
         if self.uptime is not None:

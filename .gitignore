@@ -6,7 +6,3 @@ __pycache__
 venv
 /cogs/testing.py
 *.db
-
-# personal
-setup.sh
-reformat.bat

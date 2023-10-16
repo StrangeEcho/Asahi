@@ -1,15 +1,10 @@
-git+https://github.com/Voxel-Fox-Ltd/Novus
-databases
+discord.py
+aiosqlite
 pillow
 psutil
 jishaku
 PyNacl
-databases
 git+https://github.com/6days9weeks/pomice
 humanize
-hentai
-colorama
-toml
-voxelbotutils
 tabulate
 async-cse
