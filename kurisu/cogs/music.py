@@ -75,7 +75,6 @@ class Music(commands.Cog):
     async def join(self, ctx: KurisuContext):
         """Have the bot join your voice channel"""
 
-
         if ctx.voice_client:
             return await ctx.send_error("Im already connected to a VC.")
 
@@ -83,9 +82,11 @@ class Music(commands.Cog):
             return await ctx.send_error(
                 "You are currently not in a Voice Channel"
             )
-        
+
         if not ctx.author.voice.channel.permissions_for(ctx.me).connect:
-            return await ctx.send_error("I have no permission to join that voice channel.")
+            return await ctx.send_error(
+                "I have no permission to join that voice channel."
+            )
 
         await ctx.author.voice.channel.connect(cls=Player)
         await ctx.guild.me.edit(deafen=True)
@@ -176,8 +177,8 @@ class Music(commands.Cog):
     @commands.command(aliases=["leave", "gtfo", "fuckoff"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def disconnect(
-            self,
-            ctx: KurisuContext,
+        self,
+        ctx: KurisuContext,
     ):
         """Disconnect from my current vc"""
         if not ctx.guild.voice_client:
@@ -242,12 +243,12 @@ class Music(commands.Cog):
                 description=f"[{player.current.title}]({player.current.uri})\n\nRequested by {player.current.requester}",
                 color=self.bot.ok_color,
             )
-                .add_field(name="Author", value=player.current.author)
-                .add_field(
+            .add_field(name="Author", value=player.current.author)
+            .add_field(
                 name="Length",
                 value=str(timedelta(milliseconds=player.current.length)),
             )
-                .set_thumbnail(
+            .set_thumbnail(
                 url=player.current.thumbnail
                 if player.current.thumbnail
                 else player.current.requester.avatar.url

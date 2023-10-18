@@ -41,8 +41,10 @@ class Utility(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title=f"Todo items for {ctx.author}",
-                description="\n".join([f"{n}. {v[0]}" for n, v in enumerate(items, 1)]),
-                color=self.bot.ok_color
+                description="\n".join(
+                    [f"{n}. {v[0]}" for n, v in enumerate(items, 1)]
+                ),
+                color=self.bot.ok_color,
             )
         )
 
@@ -209,8 +211,8 @@ class Utility(commands.Cog):
                 embed=discord.Embed(
                     title="Available Color List",
                     description="```apache\n"
-                                + ", ".join(sorted(map(str, colors)))
-                                + "\n```",
+                    + ", ".join(sorted(map(str, colors)))
+                    + "\n```",
                     color=self.bot.ok_color,
                 )
             )
@@ -247,7 +249,7 @@ class Utility(commands.Cog):
     @commands.command(aliases=["sinfo", "ginfo", "guildinfo"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def serverinfo(
-            self, ctx: KurisuContext, guild: discord.Guild = None
+        self, ctx: KurisuContext, guild: discord.Guild = None
     ):
         """Get information about a certain guild"""
         if guild is None:
@@ -308,9 +310,9 @@ class Utility(commands.Cog):
         embed.add_field(
             name="Channel Count",
             value=f"Text: **{len(guild.text_channels)}**\n"
-                  f"Voice: **{len(guild.voice_channels)}**\n"
-                  f"Categories: **{len(guild.categories)}**\n"
-                  f"Total **{len(guild.text_channels) + len(guild.voice_channels) + len(guild.categories)}**",
+            f"Voice: **{len(guild.voice_channels)}**\n"
+            f"Categories: **{len(guild.categories)}**\n"
+            f"Total **{len(guild.text_channels) + len(guild.voice_channels) + len(guild.categories)}**",
             inline=True,
         )
         embed.add_field(
@@ -333,9 +335,7 @@ class Utility(commands.Cog):
     @commands.command(aliases=["uinfo", "memberinfo", "minfo"])
     @commands.guild_only()
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def userinfo(
-            self, ctx: KurisuContext, user: discord.Member = None
-    ):
+    async def userinfo(self, ctx: KurisuContext, user: discord.Member = None):
         """Returns info about a user"""
         if user is None:
             user = ctx.author
@@ -389,18 +389,18 @@ class Utility(commands.Cog):
             embed=discord.Embed(
                 title=f"Role info for {role.name}", color=role.color
             )
-                .add_field(name="ID", value=role.id, inline=True)
-                .add_field(name="Color", value=role.color, inline=True)
-                .add_field(
+            .add_field(name="ID", value=role.id, inline=True)
+            .add_field(name="Color", value=role.color, inline=True)
+            .add_field(
                 name="Creation Time",
                 value=role.created_at.strftime("%c"),
                 inline=True,
             )
-                .add_field(name="Members", value=len(role.members), inline=True)
-                .add_field(name="Hoisted", value=role.hoist, inline=True)
-                .add_field(name="Mentionable", value=role.mentionable, inline=True)
-                .add_field(name="Position", value=role.position, inline=True)
-                .add_field(
+            .add_field(name="Members", value=len(role.members), inline=True)
+            .add_field(name="Hoisted", value=role.hoist, inline=True)
+            .add_field(name="Mentionable", value=role.mentionable, inline=True)
+            .add_field(name="Position", value=role.position, inline=True)
+            .add_field(
                 name="Permissions",
                 value=f"Click [Here](https://cogs.fixator10.ru/permissions-calculator/?v={role.permissions.value})",
                 inline=True,
@@ -415,18 +415,18 @@ class Utility(commands.Cog):
             embed=discord.Embed(
                 title="Emoji Information", color=self.bot.ok_color
             )
-                .add_field(name="ID", value=emoji.id, inline=False)
-                .add_field(name="Animated", value=emoji.animated, inline=False)
-                .add_field(name="Link", value=emoji.url, inline=False)
-                .set_image(url=emoji.url)
+            .add_field(name="ID", value=emoji.id, inline=False)
+            .add_field(name="Animated", value=emoji.animated, inline=False)
+            .add_field(name="Link", value=emoji.url, inline=False)
+            .set_image(url=emoji.url)
         )
 
     @commands.command(aliases=["se", "bigmoji", "jumbo"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def bigemoji(
-            self,
-            ctx: KurisuContext,
-            emoji: Union[discord.Emoji, discord.PartialEmoji, str],
+        self,
+        ctx: KurisuContext,
+        emoji: Union[discord.Emoji, discord.PartialEmoji, str],
     ):
         """
         Get a emoji in big size lol
@@ -462,9 +462,7 @@ class Utility(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    async def avatar(
-            self, ctx: KurisuContext, user: Optional[discord.Member]
-    ):
+    async def avatar(self, ctx: KurisuContext, user: Optional[discord.Member]):
         """Check your avatars."""
         await ctx.channel.trigger_typing()
         if user is None:
@@ -476,9 +474,9 @@ class Utility(commands.Cog):
         e.add_field(
             name="File Formations",
             value=f"[jpg]({av.with_format('jpg')}), "
-                  f"[png]({av.with_format('png')}), "
-                  f"[webp]({av.with_format('webp')}){',' if av.is_animated() else ''} "
-                  f"{f'[gif]({av})' if av.is_animated() else ''}",
+            f"[png]({av.with_format('png')}), "
+            f"[webp]({av.with_format('webp')}){',' if av.is_animated() else ''} "
+            f"{f'[gif]({av})' if av.is_animated() else ''}",
         )
         e.add_field(
             name="Animated", value="\u2705" if av.is_animated() else ":x:"
@@ -536,7 +534,7 @@ class Utility(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     @commands.bot_has_permissions(manage_guild=True)
     async def setafkchannel(
-            self, ctx: KurisuContext, channel: discord.VoiceChannel = None
+        self, ctx: KurisuContext, channel: discord.VoiceChannel = None
     ):
         """Set the channel to where people go when they hit the AFK timeout. Pass in None for no Inactive Channel"""
         if channel is None:

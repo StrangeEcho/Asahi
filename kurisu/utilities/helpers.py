@@ -23,10 +23,10 @@ def get_color(color: str) -> int:
 
 
 async def autopaginate(
-        text: str,
-        limit: int,
-        ctx: Union[commands.Context, KurisuContext],
-        codeblock: bool = False,
+    text: str,
+    limit: int,
+    ctx: Union[commands.Context, KurisuContext],
+    codeblock: bool = False,
 ):
     """Automatic Paginator"""
     wrapped_text: list[str] = wrap(text, limit)
@@ -46,7 +46,9 @@ async def autopaginate(
 
 async def get_ud_results(term: str, max: int = 5):
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"https://api.urbandictionary.com/v0/define?term={term}") as resp:
+        async with session.get(
+            f"https://api.urbandictionary.com/v0/define?term={term}"
+        ) as resp:
             try:
                 return (await resp.json())["list"][:max]
             except (IndexError, KeyError) as e:

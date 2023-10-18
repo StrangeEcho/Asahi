@@ -22,8 +22,8 @@ class Miscellaneous(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def ping(
-            self,
-            ctx: KurisuContext,
+        self,
+        ctx: KurisuContext,
     ):
         """Just a ping command"""
         latency = self.bot.latency * 1000
@@ -56,7 +56,7 @@ class Miscellaneous(commands.Cog):
                 str(
                     int(
                         (
-                                message.created_at - ctx.message.created_at
+                            message.created_at - ctx.message.created_at
                         ).total_seconds()
                         * 1000
                     )
@@ -207,7 +207,7 @@ class Miscellaneous(commands.Cog):
     async def pypi(self, ctx: KurisuContext, project: str):
         """Get information of a python project from pypi."""
         async with self.bot.session.get(
-                f"https://pypi.org/pypi/{project}/json"
+            f"https://pypi.org/pypi/{project}/json"
         ) as response:
             try:
                 res = await response.json()
@@ -234,7 +234,7 @@ class Miscellaneous(commands.Cog):
             e.add_field(
                 name="Author Info",
                 value=f"**Name**: {info['author']}\n"
-                      + f"**Email**: {info['author_email'] or '`Not provided.`'}",
+                + f"**Email**: {info['author_email'] or '`Not provided.`'}",
             )
             e.add_field(name="Version", value=info["version"])
             e.add_field(
@@ -258,7 +258,7 @@ class Miscellaneous(commands.Cog):
         since = self.bot.uptime.strftime("%H:%M:%S UTC | %Y-%m-%d")
         delta = discord.utils.utcnow() - self.bot.uptime
         uptime_text = (
-                humanize.time.precisedelta(delta) or "Less than one second."
+            humanize.time.precisedelta(delta) or "Less than one second."
         )
         embed = discord.Embed(colour=self.bot.ok_color)
         embed.add_field(

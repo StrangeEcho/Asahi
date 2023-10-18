@@ -43,20 +43,20 @@ class KurisuHelpCommand(commands.HelpCommand):
             embed=discord.Embed(
                 title=f":wave: Hello there. Im {self.context.bot.user.name}",
                 description=f"{self.context.bot.user.name} is a multi-modular all purpose bot built with Discord.py\n\n"
-                            "Prefix: "
-                            f"`{self.context.bot.prefixes.get(str(self.context.guild.id)) or self.context.bot.get_config('config', 'config', 'prefix')}` "
-                            f"or {self.context.bot.user.mention}",
+                "Prefix: "
+                f"`{self.context.bot.prefixes.get(str(self.context.guild.id)) or self.context.bot.get_config('config', 'config', 'prefix')}` "
+                f"or {self.context.bot.user.mention}",
                 color=get_color("ok_color"),
             )
-                .set_thumbnail(url=self.context.bot.user.avatar.url)
-                .set_footer(
+            .set_thumbnail(url=self.context.bot.user.avatar.url)
+            .set_footer(
                 text=f"Do {self.context.clean_prefix}help <module/command> to for more info."
             ),
         )
 
         def check(p: discord.Interaction):
             return (
-                    p.message.id == msg.id and p.user.id == self.context.author.id
+                p.message.id == msg.id and p.user.id == self.context.author.id
             )
 
         try:
@@ -82,18 +82,18 @@ class KurisuHelpCommand(commands.HelpCommand):
                 description=f"Command Description: {'`{}`'.format(command.help) if command.help else '`No Description`'}",
                 color=get_color("ok_color"),
             )
-                .add_field(name="Module/Cog", value=f"`{command.cog_name}`")
-                .add_field(
+            .add_field(name="Module/Cog", value=f"`{command.cog_name}`")
+            .add_field(
                 name="Usage",
                 value=f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}`",
             )
-                .add_field(
+            .add_field(
                 name="Aliases",
                 value=f"\n".join([f"`{a}`" for a in command.aliases])
                 if command.aliases
                 else "`None`",
             )
-                .set_footer(
+            .set_footer(
                 text="<> params signify required arguments while [] signify optional arguments"
             )
         )
@@ -115,12 +115,12 @@ class KurisuHelpCommand(commands.HelpCommand):
                     [
                         f"`{c.name}` `{c.aliases}`"
                         for c in await self.filter_commands(
-                        cog.get_commands(), sort=True
-                    )
+                            cog.get_commands(), sort=True
+                        )
                         if await c.can_run(self.context)
                     ]
                 )
-                      or "`No Usable Commands.`",
+                or "`No Usable Commands.`",
             )
         embed.set_footer(
             text="Cog commands are filtered to the commands that are usable by you in the current context."
@@ -138,19 +138,19 @@ class KurisuHelpCommand(commands.HelpCommand):
                 description=f"Description: {'`{}`'.format(group.help) if group.help else 'No Description'}",
                 color=get_color("ok_color"),
             )
-                .add_field(
+            .add_field(
                 name="Subcommands",
                 value="\n".join(
                     [
                         f"`{c.qualified_name}`"
                         for c in await self.filter_commands(
-                        group.commands, sort=True
-                    )
+                            group.commands, sort=True
+                        )
                         if await c.can_run(self.context)
                     ]
                 ),
             )
-                .set_footer(
+            .set_footer(
                 text=f"Use {self.context.clean_prefix}help <subcommand> for information on a command groups subcommand"
             )
         )
@@ -176,8 +176,10 @@ class Help(commands.Cog):
         self.bot = bot
         self.bot.help_command = KurisuHelpCommand(
             command_attrs={
-                "cooldown": commands.CooldownMapping.from_cooldown(1, 3.5, commands.BucketType.user),
-                "aliases": ["h"]
+                "cooldown": commands.CooldownMapping.from_cooldown(
+                    1, 3.5, commands.BucketType.user
+                ),
+                "aliases": ["h"],
             }
         )
 

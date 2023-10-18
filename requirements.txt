@@ -4,7 +4,7 @@ pillow
 psutil
 jishaku
 PyNacl
-git+https://github.com/6days9weeks/pomice
+pomice
 humanize
 tabulate
 async-cse

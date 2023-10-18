@@ -66,8 +66,8 @@ class AFK(commands.Cog):
                 title=f"Current AFK Status For {ctx.author.name}",
                 color=self.bot.ok_color,
             )
-                .add_field(name="Toggled", value=bool(afkdata[1]), inline=True)
-                .add_field(
+            .add_field(name="Toggled", value=bool(afkdata[1]), inline=True)
+            .add_field(
                 name="Message",
                 value="```\n" + str(afkdata[0]) + "\n```",
                 inline=True,

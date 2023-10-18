@@ -21,10 +21,16 @@ class Moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def ban(self, ctx: KurisuContext, member: Union[discord.Member, int], *, reason=None):
+    async def ban(
+        self,
+        ctx: KurisuContext,
+        member: Union[discord.Member, int],
+        *,
+        reason=None,
+    ):
         if not reason:
             reason = "No Reason Added"
-        
+
         if isinstance(member, discord.Member):
             if await check_hierarchy(ctx, member):
                 return
@@ -35,22 +41,26 @@ class Moderation(commands.Cog):
                         embed=discord.Embed(
                             title=f"You were banned from {ctx.guild.name}",
                             description=f"Reason: {reason}",
-                            color=discord.Color.red()
+                            color=discord.Color.red(),
                         ).set_footer(
                             icon_url=ctx.author.display_avatar.url,
-                            text=f"Moderator: {ctx.author}"
+                            text=f"Moderator: {ctx.author}",
                         )
-                    )    
+                    )
                 except (discord.Forbidden, discord.HTTPException):
                     succeed = False
                 await member.ban(reason=f"{reason} - {ctx.author}")
                 await ctx.send(
                     embed=discord.Embed(
                         description=f":red_circle: Banned `{member}` for `{reason}`",
-                        color=self.bot.ok_color
-                    ).set_footer(
+                        color=self.bot.ok_color,
+                    )
+                    .set_footer(
                         text=f"DM Status: {'⚠️' if not succeed else '✅'}"
-                    ).set_author(name=ctx.author, icon_url=ctx.author.display_avatar.url)
+                    )
+                    .set_author(
+                        name=ctx.author, icon_url=ctx.author.display_avatar.url
+                    )
                 )
 
         if isinstance(member, int):
@@ -59,10 +69,9 @@ class Moderation(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     description=f":red_circle: Banned `{user}` for `{reason}`",
-                    color=self.bot.ok_color
+                    color=self.bot.ok_color,
                 ).set_footer(text=f"Moderator: {ctx.author}")
             )
-
 
     @commands.command()
     @commands.guild_only()
@@ -70,11 +79,11 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def kick(
-            self,
-            ctx: KurisuContext,
-            member: discord.Member,
-            *,
-            reason: str = None,
+        self,
+        ctx: KurisuContext,
+        member: discord.Member,
+        *,
+        reason: str = None,
     ):
         """Kick members from the current server"""
         if await check_hierarchy(ctx, member):
@@ -124,11 +133,11 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.cooldown(1, 3, commands.BucketType.guild)
     async def mute(
-            self,
-            ctx: KurisuContext,
-            member: discord.Member,
-            *,
-            reason: str = None,
+        self,
+        ctx: KurisuContext,
+        member: discord.Member,
+        *,
+        reason: str = None,
     ):
         """Mute a member"""
         if await check_hierarchy(ctx, member):
@@ -211,10 +220,10 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slowmode(
-            self,
-            ctx: KurisuContext,
-            chan: Optional[discord.TextChannel] = None,
-            time: int = 0,
+        self,
+        ctx: KurisuContext,
+        chan: Optional[discord.TextChannel] = None,
+        time: int = 0,
     ):
         """Turn a slowmode delay on a specified channel in SECONDS"""
         if chan is None:
@@ -240,7 +249,7 @@ class Moderation(commands.Cog):
     @warn.command()
     @commands.has_permissions(kick_members=True)
     async def add(
-            self, ctx: KurisuContext, user: discord.Member, *, reason: str
+        self, ctx: KurisuContext, user: discord.Member, *, reason: str
     ):
         """Add warnings to a user"""
         if await check_hierarchy(ctx, user):
@@ -265,13 +274,13 @@ class Moderation(commands.Cog):
             embed=discord.Embed(
                 title=f"Warnings For {user}",
                 description="```\n"
-                            + "\n".join(
+                + "\n".join(
                     [
                         f"{n}. {i[0]} - {await self.bot.fetch_user(i[1])}"
                         for n, i in enumerate(warnings, 1)
                     ]
                 )
-                            + "\n```",
+                + "\n```",
                 color=self.bot.ok_color,
             )
         )
@@ -279,7 +288,7 @@ class Moderation(commands.Cog):
     @warn.command(aliases=["clear"])
     @commands.has_permissions(kick_members=True)
     async def remove(
-            self, ctx: KurisuContext, warning: int, user: discord.Member
+        self, ctx: KurisuContext, warning: int, user: discord.Member
     ):
         """Remove A Specific Warning Off A User"""
         await self.wm.remove_warning(user.id, warning, ctx.guild.id)
