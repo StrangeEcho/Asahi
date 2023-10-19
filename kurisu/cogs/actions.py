@@ -1,6 +1,5 @@
+from core import KurisuBot, KurisuContext
 from discord.ext import commands
-from utils.context import KurisuContext
-from utils.kurisu import KurisuBot
 import discord
 
 np = ""

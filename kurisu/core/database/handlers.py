@@ -1,40 +1,33 @@
-from discord.ext import commands
+import logging
 
-from ...Utilities.errors import UserNotFound
-from ..kurisu import KurisuBot
+from core import KurisuBot
+from discord.ext import commands
+from utilities.errors import ItemNotFound
 
 
 class PrefixManager:
     def __init__(self, bot: KurisuBot):
         self.bot = bot
+        self.logger = logging.getLogger("core.database")
 
     async def add_prefix(self, guild: int, prefix: str) -> None:
         await self.bot.db.execute(
-            query="INSERT INTO guildsettings (guild, prefix) VALUES (:guild, :prefix) ON CONFLICT(guild) DO UPDATE SET prefix = :update_prefix",
-            values={
-                "guild": guild,
-                "prefix": prefix,
-                "update_prefix": prefix,
-            },
+            "INSERT INTO GuildSettings (prefix) VALUES (?) WHERE guild = ? ON CONFLICT guild DO UPDATE SET prefix = ?",
+            (prefix, guild, prefix),
         )
-        self.bot.prefixes[str(guild)] = prefix
+        self.bot.prefix[guild] = prefix  # Update in cache
+        self.logger.info(f"Set prefix to '{prefix}' at guild '{guild}'")
 
     async def remove_prefix(self, guild: int) -> None:
-        if str(guild) in self.bot.prefixes:
-            self.bot.prefixes.pop(str(guild))
+        if (
+            guild in self.bot.prefixes
+        ):  # Any guild with a custom prefix will be in cache
             await self.bot.db.execute(
-                query="DELETE FROM guildsettings WHERE guild = :guild_id",
-                values={
-                    "guild_id": guild,
-                },
+                "DELETE FROM GuildSettings WHERE guild = ?", (guild,)
             )
-
-    async def startup_caching(self) -> None:
-        for g, p in await self.bot.db.fetch_all(
-            query="SELECT guild, prefix FROM guildsettings"
-        ):
-            self.bot.prefixes.setdefault(str(g), str(p))
-            self.bot.logger.info("Prefixes Appended To Cache")
+            self.logger.info(f"Removed GuildSetting at guild '{guild}'")
+        else:
+            raise ItemNotFound(f"No guild Column found with ID '{guild}'")
 
 
 class WarningManager:

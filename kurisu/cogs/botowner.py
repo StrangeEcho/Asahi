@@ -7,11 +7,9 @@ import subprocess
 import textwrap
 import traceback
 
+from core import KurisuBot, KurisuContext
 from discord.errors import HTTPException
 from discord.ext import commands
-from utils.context import KurisuContext
-from utils.dbmanagers import ErrorSuppressionHandler
-from utils.kurisu import KurisuBot
 import discord
 
 START_CODE_BLOCK_RE = re.compile(r"^((```py(thon)?)(?=\s)|(```))")
@@ -565,38 +563,6 @@ class Bot_Owner(commands.Cog):
             await ctx.send(":ok_hand:")
         except HTTPException as e:
             await ctx.send(e)
-
-    @commands.group(invoke_without_command=True)
-    @commands.is_owner()
-    async def suppress(self, ctx: KurisuContext):
-        """Guild error suppression commands"""
-        await ctx.send_help(ctx.command)
-
-    @suppress.command()
-    async def add(self, ctx: KurisuContext, guild: int):
-        """Add a guild to the suppressed guilds list"""
-        await self.esh.insert(guild)
-        await ctx.send(":ok_hand:")
-
-    @suppress.command()
-    async def list(self, ctx: KurisuContext):
-        """Add a guild to the suppressed guilds list"""
-        await ctx.send(
-            "\n".join(
-                [
-                    f"{n}. {v}"
-                    for n, v in enumerate((await self.esh.fetch_all())[0], 1)
-                ]
-                if await self.esh.fetch_all()
-                else "None"
-            )
-        )
-
-    @suppress.command()
-    async def remove(self, ctx: KurisuContext, guild: int):
-        """Add a guild to the suppressed guilds list"""
-        await self.esh.remove(guild)
-        await ctx.send(":ok_hand:")
 
 
 def setup(bot):

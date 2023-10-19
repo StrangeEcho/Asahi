@@ -1,4 +1,4 @@
-class UserNotFound(BaseException):
-    """Thrown if a user passed is not in database"""
+class ItemNotFound(Exception):
+    """Exception thrown when an Item queried is not found within the database"""
 
     pass

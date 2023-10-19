@@ -35,7 +35,7 @@ class KurisuBot(commands.AutoShardedBot):
 
     def __init__(self):
         super().__init__(
-            intents=discord.Intents.all(),
+            intents=discord.Intents.all(), command_prefix=self.get_prefix
         )
         self.config = ConfigHandler()
         self.logger = logging.getLogger(__name__)
@@ -76,6 +76,7 @@ class KurisuBot(commands.AutoShardedBot):
 
     async def start(self):
         await self._load_extensions()
+        await self._append_prefixes()
         await super().start(self.config.get("token", "Core"))
 
     async def close(self):
@@ -87,6 +88,15 @@ class KurisuBot(commands.AutoShardedBot):
         """Completely kills the process and closes all connections. However, it will continue to restart if being ran with PM2"""
         await self.close()  # Followup exit
         exit(26)
+
+    async def get_prefix(self, msg: discord.Message):
+        if not msg.guild or not msg.guild.id in self.prefixes:
+            return commands.when_mentioned_or(
+                self.config.get("prefix", "Core")
+            )(self, msg)
+        return commands.when_mentioned_or(self.prefixes.get(msg.guild.id))(
+            self, msg
+        )
 
     async def _load_extensions(self) -> None:
         """Helper for loading all extensions at once"""
@@ -106,3 +116,17 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger.info(
             f"Extensions | Loaded: {loaded} | Unloaded: {unloaded}"
         )
+
+    async def _initialize_db(self) -> None:
+        """Initialize the bot's database"""
+        with open("./kurisu/core/database/schema.sql") as f:
+            await self.db.executescript(f.read())
+        logging.getLogger("core.database").info("Initialized Database")
+
+    async def _append_prefixes(self) -> None:
+        """Select all custom prefixes from database and load them into cache"""
+        for g, p in self.db.execute_fetchall(
+            "SELECT guild, prefix FROM GuildSettings",
+        ):
+            self.prefixes[g] = p
+        self.logger.info("Appended custom prefixes to cache")

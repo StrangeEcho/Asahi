@@ -4,6 +4,8 @@ import tomllib
 from discord.ext import commands
 import discord
 
+from . import KurisuBot
+
 
 def get_color(color: Literal["ok_color", "error_color", "info_color"]) -> int:
     with open("./kurisu/core/config.toml") as f:
@@ -16,6 +18,8 @@ def get_color(color: Literal["ok_color", "error_color", "info_color"]) -> int:
 
 class KurisuContext(commands.Context):
     """Custom Context"""
+
+    bot: KurisuBot
 
     async def send_ok(self, content: str):
         await self.send(
