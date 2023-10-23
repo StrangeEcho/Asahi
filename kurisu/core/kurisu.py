@@ -41,6 +41,7 @@ class KurisuBot(commands.AutoShardedBot):
         self.logger = logging.getLogger(__name__)
         self.db = aiosqlite.connect("./Kurisu/core/database/database.db")
         self.ok_color: int = self.config.get("ok_color", "Core")
+        self.info_color: int = self.config.get("info_color", "Core")
         self.error_color: int = self.config.get("error_color", "Core")
         self.owner_ids = self.config.get("owner_ids", "Core")
         self.start_time = datetime.now()

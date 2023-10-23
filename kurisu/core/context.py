@@ -10,7 +10,7 @@ config = ConfigHandler()
 
 
 class KurisuContext(commands.Context):
-    """Custom Context"""
+    """Custom context providing helper embed methods"""
 
     bot: KurisuBot
 
