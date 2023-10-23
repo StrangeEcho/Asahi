@@ -15,6 +15,7 @@ def humanize_timedelta(
 def box(text: str, lang: str = "") -> str:
     return f"```{lang}\n{text}\n```"
 
+
 def convert_permission_integer(permission_integer: int) -> list[str]:
     permissions = {
         "create_instant_invite": 1,
@@ -53,7 +54,7 @@ def convert_permission_integer(permission_integer: int) -> list[str]:
         "manage_threads": 8589934592,
         "create_public_threads": 17179869184,
         "create_private_threads": 34359738368,
-        "use_external_stickers": 68719476736
+        "use_external_stickers": 68719476736,
     }
 
     readable_permissions = []

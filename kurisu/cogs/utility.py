@@ -1,10 +1,8 @@
-from io import BytesIO
-from typing import cast, Optional, Union
+from typing import Optional
 
-from PIL import Image, ImageDraw
+from core import KurisuBot, KurisuContext, PrefixManager
 from discord.ext import commands
 from utilities import convert_permission_integer
-from core import KurisuBot, KurisuContext, PrefixManager
 import discord
 
 
@@ -141,7 +139,14 @@ class Utility(commands.Cog):
             .add_field(name="Position", value=role.position, inline=True)
             .add_field(
                 name="Permissions (5)",
-                value=f"\n".join([p.replace("_", " ").title() for p in convert_permission_integer(role.permissions.value)[:5]]),
+                value=f"\n".join(
+                    [
+                        p.replace("_", " ").title()
+                        for p in convert_permission_integer(
+                            role.permissions.value
+                        )[:5]
+                    ]
+                ),
                 inline=True,
             )
         )
@@ -195,12 +200,11 @@ class Utility(commands.Cog):
         await ctx.channel.edit(nsfw=not ctx.channel.is_nsfw())
         await ctx.send_ok("there you go buddy...")
 
-
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     @commands.bot_has_permissions(manage_guild=True)
     async def setafkchannel(
-        self, ctx: KurisuContext, channel: discord.VoiceChannel 
+        self, ctx: KurisuContext, channel: discord.VoiceChannel
     ):
         """Set the channel to where people go when they hit the AFK timeout. Pass in None for no Inactive Channel"""
         if not channel:
@@ -238,7 +242,9 @@ class Utility(commands.Cog):
                 f" or {self.bot.user.mention}"
             )
         if len(prefix) > 10:
-            return await ctx.send_error("Prefix too long. Try again with a prefix under 10 characters")
+            return await ctx.send_error(
+                "Prefix too long. Try again with a prefix under 10 characters"
+            )
         await self.prefixer.add_prefix(ctx.guild.id, prefix)
 
 
