@@ -4,9 +4,10 @@ import tomllib
 from discord.ext import commands
 import discord
 
-from .kurisu import KurisuBot, ConfigHandler
+from .kurisu import ConfigHandler, KurisuBot
 
 config = ConfigHandler()
+
 
 class KurisuContext(commands.Context):
     """Custom Context"""
@@ -22,7 +23,9 @@ class KurisuContext(commands.Context):
 
     async def send_info(self, content: str):
         await self.send(
-            embed=discord.Embed(description=content, color=config.get("info_color", "Core"))
+            embed=discord.Embed(
+                description=content, color=config.get("info_color", "Core")
+            )
         )
 
     async def send_error(self, content: str):

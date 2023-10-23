@@ -15,45 +15,6 @@ class Utility(commands.Cog):
 
     def __init__(self, bot: KurisuBot):
         self.bot = bot
-        self.tm = TodoManager(self.bot)
-
-    @commands.group(invoke_without_command=True)
-    @commands.cooldown(1, 3.5, commands.BucketType.user)
-    async def todo(self, ctx: KurisuContext):
-        """TODO management commands"""
-        await ctx.send_help(ctx.command)
-
-    @todo.command()
-    @commands.cooldown(1, 3.5, commands.BucketType.user)
-    async def add(self, ctx: KurisuContext, *, item: str):
-        """Add to your list of todos"""
-        await self.tm.add_todo(ctx.author.id, item)
-        await ctx.send(":ok_hand:")
-
-    @todo.command()
-    @commands.cooldown(1, 1.5, commands.BucketType.user)
-    async def list(self, ctx: KurisuContext):
-        """List all of your todo items"""
-        items = await self.tm.fetch_todos(ctx.author.id)
-        if not items:
-            return await ctx.send_error("No todos found for you.")
-
-        await ctx.send(
-            embed=discord.Embed(
-                title=f"Todo items for {ctx.author}",
-                description="\n".join(
-                    [f"{n}. {v[0]}" for n, v in enumerate(items, 1)]
-                ),
-                color=self.bot.ok_color,
-            )
-        )
-
-    @todo.command()
-    @commands.cooldown(1, 3.5, commands.BucketType.user)
-    async def remove(self, ctx: KurisuContext, item_number: int):
-        """Remove a todo item"""
-        await self.tm.remove_todo(ctx.author.id, item_number)
-        await ctx.send(":ok_hand:")
 
     @commands.command()
     async def color(self, ctx: KurisuContext, clr: str):
