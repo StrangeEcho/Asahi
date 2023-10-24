@@ -1,6 +1,3 @@
-from typing import Literal
-import tomllib
-
 from discord.ext import commands
 import discord
 
